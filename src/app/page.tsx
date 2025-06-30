@@ -100,7 +100,7 @@ export default function OverviewPage() {
             <CardHeader className="pb-4">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm muted-text font-medium">Crypto Balance</CardTitle>
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-blue-500 text-white flex items-center justify-center shadow-md">
+                <div className="w-10 h-10 rounded-xl bg-linear-to-br from-purple-500 to-blue-500 text-white flex items-center justify-center shadow-md">
                   <Wallet className="w-5 h-5" />
                 </div>
               </div>
@@ -117,7 +117,7 @@ export default function OverviewPage() {
             <CardHeader className="pb-4">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm muted-text font-medium">Fiat Balance</CardTitle>
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 text-white flex items-center justify-center shadow-md">
+                <div className="w-10 h-10 rounded-xl bg-linear-to-br from-green-500 to-emerald-500 text-white flex items-center justify-center shadow-md">
                   <DollarSign className="w-5 h-5" />
                 </div>
               </div>

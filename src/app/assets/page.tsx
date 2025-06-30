@@ -244,7 +244,7 @@ export default function AssetsPage() {
                     <Card key={index} className="glass-card-enhanced glass-hover cursor-pointer h-fit">
                       <CardHeader className="pb-4">
                         <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 text-white flex items-center justify-center shadow-md">
+                          <div className="w-12 h-12 rounded-xl bg-linear-to-br from-green-500 to-emerald-500 text-white flex items-center justify-center shadow-md">
                             <span className="font-bold text-sm">{asset.symbol}</span>
                           </div>
                           <div>

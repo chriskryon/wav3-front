@@ -105,7 +105,7 @@ export default function CardsPage() {
             >
               <CardContent className="p-0">
                 {/* Credit Card Visual */}
-                <div className={`relative h-56 bg-gradient-to-br ${card.gradient} p-6 overflow-hidden`}>
+                <div className={`relative h-56 bg-linear-to-br ${card.gradient} p-6 overflow-hidden`}>
                   {/* Card Pattern */}
                   <div className="absolute inset-0 opacity-20">
                     <div className="absolute top-6 right-6 w-20 h-20 rounded-full bg-white/30"></div>
@@ -236,7 +236,7 @@ export default function CardsPage() {
               <div className="space-y-6">
                 {/* Card Visual in Modal */}
                 <div
-                  className={`relative h-48 bg-gradient-to-br ${selectedCard.gradient} p-6 rounded-xl overflow-hidden`}
+                  className={`relative h-48 bg-linear-to-br ${selectedCard.gradient} p-6 rounded-xl overflow-hidden`}
                 >
                   <div className="absolute inset-0 opacity-20">
                     <div className="absolute top-4 right-4 w-16 h-16 rounded-full bg-white/30"></div>

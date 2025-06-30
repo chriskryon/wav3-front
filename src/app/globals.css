@@ -1,6 +1,9 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@theme {
+  --color-wav3: #1ea3ab;
+  --color-primary: #1ea3ab;
+}
 
 @layer base {
   :root {

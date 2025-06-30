@@ -115,7 +115,7 @@ export default function WalletsPage() {
             >
               <CardContent className="p-0">
                 {/* Wallet Card Visual */}
-                <div className={`relative h-48 bg-gradient-to-br ${wallet.gradient} p-6 overflow-hidden`}>
+                <div className={`relative h-48 bg-linear-to-br ${wallet.gradient} p-6 overflow-hidden`}>
                   {/* Background Pattern */}
                   <div className="absolute inset-0 opacity-20">
                     <div className="absolute top-4 right-4 w-16 h-16 rounded-full bg-white/30"></div>
@@ -272,7 +272,7 @@ export default function WalletsPage() {
               <div className="space-y-6">
                 {/* Wallet Card in Modal */}
                 <div
-                  className={`relative h-40 bg-gradient-to-br ${selectedWallet.gradient} p-6 rounded-xl overflow-hidden`}
+                  className={`relative h-40 bg-linear-to-br ${selectedWallet.gradient} p-6 rounded-xl overflow-hidden`}
                 >
                   <div className="absolute inset-0 opacity-20">
                     <div className="absolute top-4 right-4 w-12 h-12 rounded-full bg-white/30"></div>
