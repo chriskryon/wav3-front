@@ -23,9 +23,9 @@ export default function OverviewPage() {
   const [activeModal, setActiveModal] = useState<string | null>(null);
 
   const balances = {
-    crypto: 25420.5,
-    fiat: 18750.25,
-    total: 94170.75,
+    crypto: 0,
+    fiat: 0,
+    total: 0,
   };
 
   const recentTransactions = [

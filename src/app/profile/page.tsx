@@ -26,6 +26,27 @@ import { useForm } from 'react-hook-form';
 import { ProfileView } from '@/components/profile-view';
 import { useUser } from '@/hooks/useUser';
 
+// KYC Test Warning Card
+function KycTestWarningCard() {
+  return (
+    <div className="mb-8">
+      <div className="rounded-xl border border-yellow-400 bg-yellow-50 p-4 flex items-center gap-4 shadow-sm animate-pulse-slow">
+        <svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="orange" className="w-8 h-8"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        <div>
+          <div className="font-semibold text-yellow-800">
+            Ambiente de Teste: Preencha o KYC com dados fictícios.<br />
+            <span className="font-normal text-yellow-700 text-sm">Não utilize informações reais neste ambiente.</span>
+          </div>
+          <div className="font-semibold text-yellow-800 mt-1">
+            Test Environment: Fill KYC with fake/test data only.<br />
+            <span className="font-normal text-yellow-700 text-sm">Do not use real personal information in this environment.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function ProfilePage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -64,8 +85,13 @@ export default function ProfilePage() {
   // Checa se perfil está completo
   const profileCompleted = userData?.hasBetaAccount === true;
   const account = userData?.account || {};
+  const [kycCompleted, setKycCompleted] = useState(profileCompleted);
 
-  if (profileCompleted) {
+  useEffect(() => {
+    setKycCompleted(profileCompleted);
+  }, [profileCompleted]);
+
+  if (kycCompleted) {
     return (
       <div className='content-height p-8 scroll-area bg-background'>
         <div className='max-w-4xl mx-auto space-y-6'>
@@ -80,7 +106,7 @@ export default function ProfilePage() {
     setIsLoading(true);
     try {
       const user_id = userData?.id;
-      if (!user_id) throw new Error('Usuário não autenticado');
+      if (!user_id) throw new Error('User not authenticated');
       const payload = {
         user_id,
         tax_id_number: data.tax_id_number,
@@ -98,32 +124,33 @@ export default function ProfilePage() {
       const result = await createAccount(payload);
 
       if (result.success && result.data) {
-        // Atualiza token e Zustand/localStorage
         if (result.data.token) localStorage.setItem('token', result.data.token);
         let userToStore = {
           ...result.data.user,
           hasBetaAccount: result.data.hasBetaAccount ?? true,
         };
-        // Busca detalhes da subconta Beta e adiciona ao estado global
         try {
           const betaAccount = await getBetaAccountDetail();
           userToStore = { ...userToStore, account: betaAccount };
         } catch (e) {
           console.error(
-            'Erro ao buscar detalhes da subconta Beta após criação:',
+            'Error fetching Beta subaccount details after creation:',
             e,
           );
         }
         setUserGlobal(userToStore);
-        toast.success('Conta criada com sucesso!');
-        router.push('/');
-        window.location.reload();
+        setKycCompleted(true); // Instantly update for immediate UX
+        toast.success('Account created successfully!');
+        // Show loader overlay before hard reload
+        setTimeout(() => {
+          window.location.reload(); // Hard reload to update header/sidebar
+        }, 1200); // 1.2s for user to see feedback
       } else if (result.message === 'Conta já existente') {
-        toast.error('Conta já existe para este usuário.');
+        toast.error('Account already exists for this user.');
       } else if (result.message) {
         toast.error(result.message);
       } else {
-        toast.error('Erro desconhecido ao criar conta. Tente novamente.');
+        toast.error('Unknown error creating account. Try again.');
       }
     } catch (err: any) {
       toast.error(err?.message || 'Failed to create account');
@@ -161,6 +188,7 @@ export default function ProfilePage() {
   return (
     <div className='content-height p-8 scroll-area bg-background'>
       <div className='max-w-4xl mx-auto space-y-8'>
+        <KycTestWarningCard />
         {/* Header */}
         <div className='text-center'>
           <div className='w-20 h-20 rounded-2xl bg-primary text-white flex items-center justify-center mx-auto mb-4 shadow-lg'>

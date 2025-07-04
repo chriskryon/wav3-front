@@ -26,7 +26,9 @@ export default function AuthPage() {
     name: '',
     email: '',
     password: '',
+    confirmPassword: '',
   });
+  const [registerError, setRegisterError] = useState<string | null>(null);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,6 +70,15 @@ export default function AuthPage() {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+    setRegisterError(null);
+    if (registerForm.password.length < 6) {
+      setRegisterError('Password must be at least 6 characters.');
+      return;
+    }
+    if (registerForm.password !== registerForm.confirmPassword) {
+      setRegisterError('Passwords do not match.');
+      return;
+    }
     setIsLoading(true);
     try {
       const result = await registerUser({
@@ -280,7 +291,7 @@ export default function AuthPage() {
                       htmlFor='register-password'
                       className='text-sm font-medium muted-text'
                     >
-                      Password
+                      Password <span className="text-xs text-muted">(min. 6 characters)</span>
                     </Label>
                     <div className='relative'>
                       <Lock className='absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-primary/70' />
@@ -289,6 +300,7 @@ export default function AuthPage() {
                         type={showPassword ? 'text' : 'password'}
                         placeholder='Create a password'
                         value={registerForm.password}
+                        minLength={6}
                         onChange={(e) =>
                           setRegisterForm({
                             ...registerForm,
@@ -318,6 +330,40 @@ export default function AuthPage() {
                       </Button>
                     </div>
                   </div>
+
+                  <div className='space-y-1'>
+                    <Label
+                      htmlFor='register-confirm-password'
+                      className='text-sm font-medium muted-text'
+                    >
+                      Confirm Password
+                    </Label>
+                    <div className='relative'>
+                      <Lock className='absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-primary/70' />
+                      <Input
+                        id='register-confirm-password'
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder='Confirm your password'
+                        value={registerForm.confirmPassword}
+                        minLength={6}
+                        onChange={(e) =>
+                          setRegisterForm({
+                            ...registerForm,
+                            confirmPassword: e.target.value,
+                          })
+                        }
+                        className='pl-10 pr-10 glass-input h-11 rounded-xl text-main bg-white/80 border border-primary/10 focus:border-primary/40 focus:ring-2 focus:ring-primary/20 transition'
+                        required
+                        autoComplete='new-password'
+                      />
+                    </div>
+                  </div>
+
+                  {registerError && (
+                    <div className="text-red-600 text-sm font-medium mt-2 animate-fade-in">
+                      {registerError}
+                    </div>
+                  )}
 
                   <Button
                     type='submit'

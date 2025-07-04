@@ -221,6 +221,7 @@ export default function WalletsPage() {
       setSharedResult(result);
       if (result.id && result.wallet_type === 'shared') {
         toast.success('Endereço compartilhado criado com sucesso!');
+        queryClient.invalidateQueries({ queryKey: ['wallets'] });
       } else if (result.message) {
         if (result.message.includes('Já existe uma shared wallet')) {
           toast.error('Já existe uma shared wallet para esse ativo e rede.');
@@ -314,18 +315,17 @@ export default function WalletsPage() {
           <div className='flex flex-col items-center justify-center py-24 gap-6'>
             <Wallet2 className='w-14 h-14 text-primary mb-2' />
             <p className='text-xl text-center font-bold text-main'>
-              Você deve fazer o KYC para criar as carteiras
+              You must complete KYC to create wallets
             </p>
             <p className='text-base text-center text-muted-foreground max-w-md'>
-              Acesse seu perfil e envie seu KYC para liberar o cadastro de
-              wallets.
+              Go to your profile and submit your KYC to enable wallet registration.
             </p>
             <Button
               variant='outline'
               className='glass-button mt-2'
               onClick={() => { window.location.href = '/profile'; }}
             >
-              Ir para meu perfil
+              Go to my profile
             </Button>
           </div>
         ) : (
@@ -334,7 +334,7 @@ export default function WalletsPage() {
               <div className='flex flex-col items-center justify-center py-16 gap-4'>
                 <Loader2 className='w-12 h-12 text-primary animate-spin' />
                 <span className='text-lg text-primary font-bold tracking-wide'>
-                  Carregando carteiras...
+                  Loading wallets...
                 </span>
               </div>
             ) : Object.keys(groupedWallets).length === 0 ? (
@@ -343,8 +343,31 @@ export default function WalletsPage() {
                   <Wallet2 className='w-10 h-10 text-primary' />
                 </div>
                 <span className='text-lg text-main font-semibold tracking-wide'>
-                  Nenhuma carteira encontrada.
+                  No wallets found.
                 </span>
+                <div className='flex flex-col sm:flex-row gap-3 mt-4'>
+                  <Button
+                    onClick={() => {
+                      setShowNewWalletModal('external');
+                      toast.info('Fill the form to add a payment wallet.');
+                    }}
+                    className='bg-primary hover:bg-primary/90 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300'
+                  >
+                    <BanknoteArrowUp className='w-4 h-4 mr-2' />
+                    Add Payment Wallet
+                  </Button>
+                  <Button
+                    variant='outline'
+                    onClick={() => {
+                      setShowNewWalletModal('deposit');
+                      toast.info('Fill the form to add a deposit wallet.');
+                    }}
+                    className='glass-button border-primary text-primary font-semibold shadow-lg hover:shadow-xl transition-all duration-300'
+                  >
+                    <BanknoteArrowDown className='w-4 h-4 mr-2' />
+                    Add Deposit Wallet
+                  </Button>
+                </div>
               </div>
             ) : (
               Object.entries(groupedWallets).map(([type, wallets]) => (
@@ -352,13 +375,11 @@ export default function WalletsPage() {
                   <h2 className='text-lg font-bold mb-3 flex items-center gap-2 px-1'>
                     {type === 'external' ? (
                       <>
-                        <Wallet2 className='w-5 h-5 text-primary' /> Carteiras
-                        para Pagamentos
+                        <Wallet2 className='w-5 h-5 text-primary' /> Wallets for Payments
                       </>
                     ) : (
                       <>
-                        <HandCoins className='w-5 h-5 text-green-600' />{' '}
-                        Carteiras para Recebimentos
+                        <HandCoins className='w-5 h-5 text-green-600' /> Wallets for Deposits
                       </>
                     )}
                   </h2>
@@ -388,8 +409,8 @@ export default function WalletsPage() {
             <DialogHeader>
               <DialogTitle className='text-xl font-bold text-main'>
                 {showNewWalletModal === 'external'
-                  ? 'Adicionar Carteira para Pagamentos'
-                  : 'Receber Criptomoeda'}
+                  ? 'Add Wallet for Payments'
+                  : 'Receive Cryptocurrency'}
               </DialogTitle>
             </DialogHeader>
             {showNewWalletModal === 'external' ? (
@@ -489,7 +510,7 @@ export default function WalletsPage() {
                         </span>
                       </div>
                       <div className='flex items-center justify-between'>
-                        <span className='text-sm opacity-80'>Criada em</span>
+                        <span className='text-sm opacity-80'>Created at</span>
                         <span className='font-mono text-xs'>
                           {new Date(selectedWallet.created_at).toLocaleString()}
                         </span>
@@ -499,7 +520,7 @@ export default function WalletsPage() {
                 </div>
                 {/* Full Address */}
                 <div className='glass-item p-4'>
-                  <Label className='muted-text text-sm'>Endereço</Label>
+                  <Label className='muted-text text-sm'>Address</Label>
                   <div className='flex items-center gap-2 mt-2'>
                     <code className='flex-1 p-3 bg-surface rounded-lg text-sm font-mono break-all text-main border border-black/10'>
                       {selectedWallet.address}
@@ -531,7 +552,7 @@ export default function WalletsPage() {
                     className='bg-red-600 hover:bg-red-700 text-white font-semibold px-6'
                     onClick={() => setShowDeleteConfirm(true)}
                   >
-                    Apagar
+                    Delete
                   </Button>
                 </div>
               </div>
@@ -544,12 +565,11 @@ export default function WalletsPage() {
           <DialogContent className='glass-card-enhanced max-w-sm'>
             <DialogHeader>
               <DialogTitle className='text-lg font-bold text-main'>
-                Confirmar deleção
+                Confirm delete
               </DialogTitle>
             </DialogHeader>
             <div className='py-4 text-main text-center'>
-              Tem certeza que deseja apagar esta carteira? Esta ação não pode
-              ser desfeita.
+              Are you sure you want to delete this wallet? This action cannot be undone.
             </div>
             <div className='flex gap-3 justify-end pt-2'>
               <Button
@@ -558,7 +578,7 @@ export default function WalletsPage() {
                 onClick={() => setShowDeleteConfirm(false)}
                 disabled={deleting}
               >
-                Cancelar
+                Cancel
               </Button>
               <Button
                 variant='destructive'
@@ -569,7 +589,7 @@ export default function WalletsPage() {
                 {deleting ? (
                   <Loader2 className='w-4 h-4 animate-spin mr-2' />
                 ) : null}
-                Apagar
+                Delete
               </Button>
             </div>
           </DialogContent>

@@ -23,7 +23,7 @@ const sharedWalletAssets = [
 import { BankAccountCard } from '@/components/banking/BankAccountCard';
 import { BankAccountModal } from '@/components/banking/BankAccountModal';
 import { BankAccountDetailsCard } from '@/components/banking/BankAccountDetailsCard';
-import { BanknoteArrowUp, Plus } from 'lucide-react';
+import { BanknoteArrowUp, PiggyBank, Plus } from 'lucide-react';
 
 // Mocked data for select options
 const fiatAssets = [
@@ -322,11 +322,18 @@ export default function BankingAccountPage() {
           ) : bankAccounts.length === 0 ? (
             <div className='flex flex-col items-center justify-center py-16 gap-4'>
               <div className='rounded-full bg-primary/10 p-6 flex items-center justify-center shadow'>
-                <Plus className='w-10 h-10 text-primary' />
+                <PiggyBank className='w-10 h-10 text-primary' />
               </div>
               <span className='text-lg text-main font-semibold tracking-wide'>
                 No bank accounts found.
               </span>
+              {/* Shared (Recebimento) - Quando não há contas, mostrar botão para adicionar */}
+              <div className='w-full max-w-md mx-auto mt-6'>
+                <NoBankAccountCard type='shared' onAdd={handleAddShared} />
+              </div>
+              <div className='w-full max-w-md mx-auto mt-6'>
+                <NoBankAccountCard type='external' onAdd={handleAdd} />
+              </div>
             </div>
           ) : (
             <div className='flex flex-col gap-10'>
@@ -336,8 +343,7 @@ export default function BankingAccountPage() {
                   <span className='inline-block w-3 h-3 rounded-full bg-green-500 mr-2' />{' '}
                   Accounts for Deposit (Shared)
                 </h2>
-                {bankAccounts.filter((a: any) => a.bank_type === 'shared')
-                  .length === 0 ? (
+                {bankAccounts.filter((a: any) => a.bank_type === 'shared').length === 0 ? (
                   <div>
                     <NoBankAccountCard type='shared' onAdd={handleAddShared} />
                   </div>
@@ -359,26 +365,13 @@ export default function BankingAccountPage() {
                   </div>
                 )}
               </div>
-              {/* Modal Shared Bank Account */}
-              <SharedBankAccountModal
-                open={showSharedModal}
-                onOpenChange={setShowSharedModal}
-                onSuccess={async () => {
-                  setShowSharedModal(false);
-                  await queryClient.invalidateQueries({
-                    queryKey: ['bankAccounts', 'api'],
-                  });
-                  toast.success('Conta compartilhada adicionada!');
-                }}
-              />
               {/* External (Envio) */}
               <div>
                 <h2 className='text-lg font-bold mb-3 flex items-center gap-2 px-1'>
                   <span className='inline-block w-3 h-3 rounded-full bg-blue-500 mr-2' />{' '}
                   Accounts for Withdraw (External)
                 </h2>
-                {bankAccounts.filter((a: any) => a.bank_type === 'external')
-                  .length === 0 ? (
+                {bankAccounts.filter((a: any) => a.bank_type === 'external').length === 0 ? (
                   <div>
                     <NoBankAccountCard type='external' onAdd={handleAdd} />
                   </div>
@@ -402,6 +395,19 @@ export default function BankingAccountPage() {
               </div>
             </div>
           )}
+
+          {/* Modal Shared Bank Account - sempre presente para garantir abertura */}
+          <SharedBankAccountModal
+            open={showSharedModal}
+            onOpenChange={setShowSharedModal}
+            onSuccess={async () => {
+              setShowSharedModal(false);
+              await queryClient.invalidateQueries({
+                queryKey: ['bankAccounts', 'api'],
+              });
+              toast.success('Conta compartilhada adicionada!');
+            }}
+          />
 
           {/* Modal add/edit */}
           {/* Modal add/edit e detalhes */}
