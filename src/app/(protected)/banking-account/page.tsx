@@ -343,15 +343,25 @@ export default function BankingAccountPage() {
                   <span className='inline-block w-3 h-3 rounded-full bg-green-500 mr-2' />{' '}
                   Accounts for Deposit (Shared)
                 </h2>
-                {bankAccounts.filter((a: any) => a.bank_type === 'shared').length === 0 ? (
-                  <div>
-                    <NoBankAccountCard type='shared' onAdd={handleAddShared} />
-                  </div>
-                ) : (
-                  <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
-                    {bankAccounts
-                      .filter((a: any) => a.bank_type === 'shared')
-                      .map((account: any) => (
+                {/* Deduplica contas shared por instant_payment (ou id se não houver) */}
+                {(() => {
+                  const sharedAccounts = bankAccounts.filter((a: any) => a.bank_type === 'shared');
+                  // Deduplica pelo instant_payment (ou id como fallback)
+                  const deduped = Array.from(
+                    new Map(
+                      sharedAccounts.map(acc => [acc.instant_payment || acc.id, acc])
+                    ).values()
+                  );
+                  if (deduped.length === 0) {
+                    return (
+                      <div>
+                        <NoBankAccountCard type='shared' onAdd={handleAddShared} />
+                      </div>
+                    );
+                  }
+                  return (
+                    <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
+                      {deduped.map((account: any) => (
                         <BankAccountCard
                           key={account.id}
                           account={account}
@@ -362,8 +372,9 @@ export default function BankingAccountPage() {
                           onView={() => handleEdit(account)}
                         />
                       ))}
-                  </div>
-                )}
+                    </div>
+                  );
+                })()}
               </div>
               {/* External (Envio) */}
               <div>

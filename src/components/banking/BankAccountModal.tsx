@@ -295,20 +295,34 @@ export function BankAccountModal({
         {/* Chave de Pagamento Instantâneo */}
         <div className='relative mt-4'>
           <Label className='text-sm font-medium muted-text'>
-            Instant Payment Number *
+            {(() => {
+              const country = getValues('country');
+              if (country === 'BR') return 'Chave PIX *';
+              if (country === 'MX') return 'Cuenta SPEI *';
+              if (country === 'US') return 'FedNow Routing Number *';
+              return 'Instant Payment Number *';
+            })()}
           </Label>
           <Controller
             name='instant_payment'
             control={control}
             rules={{ required: true }}
-            render={({ field }) => (
-              <Input
-                {...field}
-                placeholder='PIX, SPEI, etc'
-                className='glass-input mt-1 pl-3 focus:ring-2 focus:ring-primary/40 focus:border-primary/60 transition-all duration-200 shadow-sm'
-                required
-              />
-            )}
+            render={({ field }) => {
+              const country = getValues('country');
+              let placeholder = '';
+              if (country === 'BR') placeholder = 'Ex: 11999999999, CPF, e-mail, CNPJ...';
+              else if (country === 'MX') placeholder = 'Ex: 123456789012345678';
+              else if (country === 'US') placeholder = 'Ex: 021000021';
+              else placeholder = 'Digite o identificador do pagamento instantâneo';
+              return (
+          <Input
+            {...field}
+            placeholder={placeholder}
+            className='glass-input mt-1 pl-3 focus:ring-2 focus:ring-primary/40 focus:border-primary/60 transition-all duration-200 shadow-sm'
+            required
+          />
+              );
+            }}
           />
         </div>
         {/* Banco */}

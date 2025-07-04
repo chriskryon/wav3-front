@@ -152,36 +152,42 @@ export function BankAccountCard({
               </div>
               <div className='flex flex-col'>
                 <span className='font-bold text-base leading-tight text-[#1ea3ab]'>
-                  {account.bank_name}
+                    {account.bank_name.length > 15
+                    ? account.bank_name.slice(0, 20) + '...'
+                    : account.bank_name}
                 </span>
                 <span className='text-xs text-gray-500 font-semibold uppercase tracking-wider'>
                   {account.asset}
                 </span>
               </div>
             </div>
-            <div className='flex flex-col sm:flex-row gap-2 sm:gap-6 mt-2'>
-              <div className='flex-1'>
-                <Label className='text-xs font-semibold text-[#1ea3ab]'>
-                  Conta
-                </Label>
-                <div className='font-mono text-base text-[#1ea3ab] bg-white/60 rounded-lg px-2 py-1 mt-1 break-all shadow-inner border border-dashed border-[#1ea3ab]/30'>
-                  {account.account}
+            {/* Removed Conta and Agência fields for shared/external accounts */}
+            {/* Instant Payment Type/Number */}
+            {(account.instant_payment_type || account.instant_payment) && (
+              <div className='flex flex-col sm:flex-row gap-2 sm:gap-6 mt-2'>
+                <div className='flex-1'>
+                  <Label className='text-xs font-semibold text-[#1ea3ab]'>
+                    {account.instant_payment_type ? `Instant: ${account.instant_payment_type}` : 'Instant'}
+                  </Label>
+                  <div
+                    className='font-mono text-base text-[#1ea3ab] bg-white/60 rounded-lg px-2 py-1 mt-1 shadow-inner border border-dashed border-[#1ea3ab]/30 truncate max-w-full'
+                    title={account.instant_payment || '-'}
+                    style={{ maxWidth: '100%' }}
+                  >
+                    {account.instant_payment
+                      ? account.instant_payment.length > 24
+                        ? account.instant_payment.slice(0, 24) + '...'
+                        : account.instant_payment
+                      : '-'}
+                  </div>
                 </div>
               </div>
-              <div className='flex-1'>
-                <Label className='text-xs font-semibold text-[#1ea3ab]'>
-                  Agência
-                </Label>
-                <div className='font-mono text-base text-[#1ea3ab] bg-white/60 rounded-lg px-2 py-1 mt-1 break-all shadow-inner border border-dashed border-[#1ea3ab]/30'>
-                  {account.branch || '-'}
-                </div>
-              </div>
-            </div>
+            )}
             <div className='flex items-center justify-between mt-2'>
               <span className='text-[10px] sm:text-xs opacity-80 font-mono flex items-center gap-1 text-[#1ea3ab]'>
                 <span className='w-2 h-2 rounded-full animate-pulse mr-1 bg-[#1ea3ab]/30' />
                 {account.created_at
-                  ? new Date(account.created_at).toLocaleDateString()
+                  ? new Date(account.created_at).toISOString().slice(0, 10)
                   : ''}
               </span>
               <div className='flex gap-2 flex-wrap'>

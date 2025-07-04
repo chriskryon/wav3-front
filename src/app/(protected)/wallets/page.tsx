@@ -349,12 +349,12 @@ export default function WalletsPage() {
                   <Button
                     onClick={() => {
                       setShowNewWalletModal('external');
-                      toast.info('Fill the form to add a payment wallet.');
+                      toast.info('Fill the form to add a withdraw wallet.');
                     }}
                     className='bg-primary hover:bg-primary/90 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300'
                   >
                     <BanknoteArrowUp className='w-4 h-4 mr-2' />
-                    Add Payment Wallet
+                    Add Withdraw Wallet
                   </Button>
                   <Button
                     variant='outline'
@@ -375,7 +375,7 @@ export default function WalletsPage() {
                   <h2 className='text-lg font-bold mb-3 flex items-center gap-2 px-1'>
                     {type === 'external' ? (
                       <>
-                        <Wallet2 className='w-5 h-5 text-primary' /> Wallets for Payments
+                        <Wallet2 className='w-5 h-5 text-primary' /> Wallets for Withdrawal
                       </>
                     ) : (
                       <>
