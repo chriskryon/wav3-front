@@ -3,13 +3,16 @@
 import { Bell, Settings, User, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
-import { useSidebar } from './ui/sidebar';
+import { useSidebarCollapse } from './app-sidebar';
 
 export function AppHeader() {
   const [userData, setUserData] = useState<any>(null);
-  const sidebar = useSidebar();
-  const isMobile = sidebar.isMobile;
-  const setOpenMobile = sidebar.setOpenMobile;
+  // Usa o contexto global do sidebar
+  // Se quiser detectar mobile, use um hook próprio (ex: useIsMobile) ou adicione ao contexto global se necessário
+  const { collapsed, setCollapsed } = useSidebarCollapse();
+  // Exemplo: se quiser mostrar o botão hamburguer apenas quando colapsado (ou adapte para seu fluxo)
+  const isMobile = false; // ajuste conforme sua lógica
+  const setOpenMobile = () => setCollapsed(false); // ou sua lógica de mobile
 
   useEffect(() => {
     const user = localStorage.getItem('user');
@@ -29,7 +32,7 @@ export function AppHeader() {
           size='icon'
           className='md:hidden mr-2'
           aria-label='Abrir menu'
-          onClick={() => setOpenMobile(true)}
+          onClick={() => setOpenMobile()}
         >
           <Menu className='w-6 h-6 text-main' />
         </Button>

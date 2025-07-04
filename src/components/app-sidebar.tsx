@@ -6,7 +6,6 @@ import {
   Home,
   ShoppingCart,
   Wallet,
-  TrendingUp,
   User,
   LogOut,
   PiggyBank,
