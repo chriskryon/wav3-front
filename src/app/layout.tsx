@@ -1,29 +1,31 @@
-import type React from "react"
-import type { Metadata } from "next"
-import { Inter } from "next/font/google"
-import "./globals.css"
-import { ClientLayout } from "@/components/client-layout"
-import { Toaster } from "@/components/ui/sonner"
+import type React from 'react';
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import './globals.css';
+import { ClientLayout } from '@/components/client-layout';
+import { Toaster } from '@/components/ui/sonner';
+import { ReactQueryProvider } from '@/components/react-query-provider';
 
-const inter = Inter({ subsets: ["latin"] })
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: "OND4 - Cryptocurrency Dashboard",
-  description: "Apple-inspired cryptocurrency dashboard with glassmorphism design",
-    generator: 'v0.dev'
-}
+  title: 'Wav3 - Cross-border Cryptocurrency',
+  description: 'Online Cross-border Cryptocurrency',
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang='en'>
       <body className={`${inter.className} full-screen`}>
-        <ClientLayout>{children}</ClientLayout>
-        <Toaster />
+        <ReactQueryProvider>
+          <ClientLayout>{children}</ClientLayout>
+          <Toaster />
+        </ReactQueryProvider>
       </body>
     </html>
-  )
+  );
 }
