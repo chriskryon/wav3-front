@@ -31,10 +31,8 @@ export default function AuthPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    console.log('fazendo login com:', loginForm);
     try {
       const result = await loginUser(loginForm);
-      console.log('Login result:', result);
       const profileCompleted = result?.hasBetaAccount ?? false;
 
       if (profileCompleted) {

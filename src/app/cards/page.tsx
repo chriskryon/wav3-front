@@ -12,6 +12,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
+import { FakeDataAlert } from '@/components/FakeDataAlert';
 
 export default function CardsPage() {
   const [selectedCard, setSelectedCard] = useState<any>(null);
@@ -88,6 +89,7 @@ export default function CardsPage() {
   return (
     <div className='content-height p-8 scroll-area bg-background'>
       <div className='max-w-7xl mx-auto space-y-8'>
+        <FakeDataAlert />
         {/* Header */}
         <div className='flex flex-col md:flex-row md:items-center justify-between gap-4'>
           <div>

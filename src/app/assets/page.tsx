@@ -22,6 +22,7 @@ import {
   TokenXRP,
 } from '@web3icons/react';
 import React from 'react';
+import { FakeDataAlert } from '@/components/FakeDataAlert';
 
 export default function AssetsPage() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -85,6 +86,7 @@ export default function AssetsPage() {
   return (
     <div className='content-height p-8 scroll-area bg-background'>
       <div className='max-w-7xl mx-auto h-full flex flex-col'>
+        <FakeDataAlert />
         {/* Header */}
         <div className='flex items-center justify-between mb-8'>
           <div>

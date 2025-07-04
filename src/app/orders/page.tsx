@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { FakeDataAlert } from '@/components/FakeDataAlert';
 
 export default function OrdersPage() {
   const [statusFilter, setStatusFilter] = useState('all');
@@ -129,6 +130,7 @@ export default function OrdersPage() {
   return (
     <div className='content-height p-8 scroll-area bg-background'>
       <div className='max-w-7xl mx-auto space-y-8'>
+        <FakeDataAlert />
         {/* Header */}
         <div className='flex flex-col md:flex-row md:items-center justify-between gap-4'>
           <div>

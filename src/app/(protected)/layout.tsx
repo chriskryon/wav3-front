@@ -8,16 +8,12 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
   const { user, fetchUser } = useUser()
 
   useEffect(() => {
-    console.log("ProtectedLayout mounted")
     if (!user) {
         fetchUser();
     }
   }, [user, fetchUser])
 
   useEffect(() => {
-    // Debug: veja o que está vindo do Zustand/localStorage
-    console.log('user:', user)
-    console.log('hasBetaAccount:', user?.hasBetaAccount)
   }, [user])
 
   return (

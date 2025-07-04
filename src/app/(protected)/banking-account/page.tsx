@@ -277,7 +277,6 @@ export default function BankingAccountPage() {
       // }).catch(err => {
       //   toast.error('Erro ao deletar conta bancária')
       // })
-      console.log(`Deletando conta: ${deleteConfirm.id}`); // Simulação
       setDeleteConfirm(null);
     }
   };

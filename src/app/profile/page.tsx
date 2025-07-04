@@ -79,7 +79,6 @@ export default function ProfilePage() {
   const onSubmit = async (data: any) => {
     setIsLoading(true);
     try {
-      console.log('Submitting profile data:', data);
       const user_id = userData?.id;
       if (!user_id) throw new Error('Usuário não autenticado');
       const payload = {

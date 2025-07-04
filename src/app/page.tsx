@@ -17,6 +17,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { ActionModal } from '@/components/action-modal';
+import { FakeDataAlert } from '@/components/FakeDataAlert';
 
 export default function OverviewPage() {
   const [activeModal, setActiveModal] = useState<string | null>(null);
@@ -89,6 +90,7 @@ export default function OverviewPage() {
   return (
     <div className='content-height p-8 scroll-area bg-background'>
       <div className='max-w-7xl mx-auto space-y-8'>
+        <FakeDataAlert />
         {/* Balance Cards */}
         <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
           <Card className='glass-card-enhanced glass-hover'>
