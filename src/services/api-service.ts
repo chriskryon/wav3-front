@@ -31,6 +31,8 @@ export function setUserGlobal(user: User | null) {
 // Cria uma instância do axios
 const api = axios.create({ baseURL: API_URL });
 
+console.log("API rodando em:", API_URL);
+
 // Middleware para adicionar o token Bearer automaticamente
 api.interceptors.request.use((config) => {
   const token =
@@ -337,6 +339,14 @@ export async function deleteBankAccount(
     return { message: 'Erro ao deletar conta bancária' };
   } catch (error: any) {
     if (error.response?.data?.message) {
+      return { message: error.response.data.message };
+    }
+    return { message: 'Erro ao deletar conta bancária' };
+  }
+}
+: 'Erro ao deletar conta bancária' };
+  } catch (error: any) {
+    if (error.response && error.response.data && error.response.data.message) {
       return { message: error.response.data.message };
     }
     return { message: 'Erro ao deletar conta bancária' };
