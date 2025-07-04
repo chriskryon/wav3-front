@@ -1,9 +1,10 @@
+/** biome-ignore-all lint/a11y/useValidAnchor: <explanation> */
 'use client';
 
 import type React from 'react';
 
 import { useState } from 'react';
-import { Eye, EyeOff, Mail, Lock, User, TrendingUp } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';

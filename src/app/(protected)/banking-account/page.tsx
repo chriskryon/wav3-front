@@ -283,8 +283,7 @@ export default function BankingAccountPage() {
   };
 
   return (
-    <>
-      <div className='content-height p-8 scroll-area bg-background'>
+    <div className='content-height p-8 scroll-area bg-background'>
         <div className='max-w-5xl mx-auto space-y-8'>
           {/* Header */}
           <div className='flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4'>
@@ -414,7 +413,6 @@ export default function BankingAccountPage() {
                   account={showModal.account}
                   onDelete={async (account) => {
                     // Chama a deleção real e faz refetch
-                    const queryClient = useQueryClient();
                     try {
                       await deleteBankAccount(account.id);
                       await queryClient.invalidateQueries({
@@ -422,7 +420,7 @@ export default function BankingAccountPage() {
                       });
                       setShowModal(false);
                       toast.success('Bank account deleted!');
-                    } catch (err) {
+                    } catch (_err) {
                       toast.error('Error deleting bank account.');
                     }
                   }}
@@ -474,6 +472,5 @@ export default function BankingAccountPage() {
           </Dialog>
         </div>
       </div>
-    </>
   );
 }

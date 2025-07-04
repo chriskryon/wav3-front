@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useUser } from '@/hooks/useUser';
 import {
   Plus,
   Eye,
@@ -324,7 +323,7 @@ export default function WalletsPage() {
             <Button
               variant='outline'
               className='glass-button mt-2'
-              onClick={() => (window.location.href = '/profile')}
+              onClick={() => { window.location.href = '/profile'; }}
             >
               Ir para meu perfil
             </Button>
