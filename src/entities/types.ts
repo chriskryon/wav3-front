@@ -39,19 +39,19 @@ export interface CreateBetaAccountResponse {
 
 // Wallets
 export interface Wallet {
-  id: string
-  network: string
-  asset: string
-  address: string
-  address_tag?: string | null
-  wallet_type: string
-  created_at: string
-  updated_at: string
-  deleted_at?: string | null
+  id: string;
+  network: string;
+  asset: string;
+  address: string;
+  address_tag?: string | null;
+  wallet_type: string;
+  created_at: string;
+  updated_at: string;
+  deleted_at?: string | null;
 }
 
 export interface ListWalletsResponse {
-  list: Wallet[]
+  list: Wallet[];
 }
 
 export interface RegisterWalletPayload {
@@ -68,7 +68,7 @@ export interface RegisterWalletResponse {
   asset: string;
   address: string;
   address_tag: string;
-  wallet_type: "external";
+  wallet_type: 'external';
   created_at: string;
   updated_at: string;
   deleted_at: string | null;
@@ -86,7 +86,7 @@ export interface RegisterSharedWalletResponse {
   network: string;
   address: string;
   address_tag?: string;
-  wallet_type?: "shared";
+  wallet_type?: 'shared';
   created_at?: string;
   updated_at?: string;
   deleted_at?: string | null;
