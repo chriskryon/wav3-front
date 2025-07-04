@@ -344,11 +344,3 @@ export async function deleteBankAccount(
     return { message: 'Erro ao deletar conta bancária' };
   }
 }
-: 'Erro ao deletar conta bancária' };
-  } catch (error: any) {
-    if (error.response && error.response.data && error.response.data.message) {
-      return { message: error.response.data.message };
-    }
-    return { message: 'Erro ao deletar conta bancária' };
-  }
-}
