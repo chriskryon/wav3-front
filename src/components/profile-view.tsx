@@ -31,7 +31,6 @@ interface ProfileViewProps {
 }
 
 export const ProfileView: React.FC<ProfileViewProps> = ({ local }) => {
-  console.log('ProfileView props:', local);
   // Garante que accountid seja puxado de local.id
   const accountid = local.accountid || local.id || '-';
   return (

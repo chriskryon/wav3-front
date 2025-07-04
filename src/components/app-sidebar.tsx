@@ -9,6 +9,7 @@ import {
   User,
   LogOut,
   PiggyBank,
+  ArrowLeftRight,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -37,6 +38,11 @@ const menuItems = [
     title: 'Banking Account',
     url: '/banking-account',
     icon: PiggyBank,
+  },
+  {
+    title: 'Exchange',
+    url: '/exchange',
+    icon: ArrowLeftRight,
   },
   {
     title: 'Orders',

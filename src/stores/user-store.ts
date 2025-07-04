@@ -27,7 +27,6 @@ export const useUserStore = create<UserStore>((set) => ({
       const res = await fetch('/me/account', { credentials: 'include' });
       if (!res.ok) throw new Error('Erro ao buscar usuário');
       const data = await res.json();
-      console.log('Fetched user data:', data);
       set({ user: data });
     } catch {
       set({ user: null });

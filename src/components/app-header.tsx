@@ -17,10 +17,8 @@ export function AppHeader() {
   useEffect(() => {
     const user = localStorage.getItem('user');
     if (user) {
-      console.log('User data found in localStorage:', user);
       setUserData(JSON.parse(user));
     }
-    console.log('AppHeader mounted');
   }, []);
 
   return (

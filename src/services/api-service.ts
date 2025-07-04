@@ -31,7 +31,6 @@ export function setUserGlobal(user: User | null) {
 // Cria uma instância do axios
 const api = axios.create({ baseURL: API_URL });
 
-console.log("API rodando em:", API_URL);
 
 // Middleware para adicionar o token Bearer automaticamente
 api.interceptors.request.use((config) => {
@@ -61,9 +60,6 @@ export async function registerUser({
   const hasBetaAccount = response.data?.hasBetaAccount ?? false;
 
   // Logging para debug
-  console.log('registerUser response.data:', response.data);
-  console.log('user:', user);
-  console.log('hasBetaAccount:', hasBetaAccount);
 
   // Monta objeto para Zustand/localStorage
   const userToStore: User = {
@@ -84,7 +80,6 @@ export async function loginUser({
   hasBetaAccount: boolean;
 }> {
   const response = await api.post('/login', { email, password });
-  console.log('Login response:', response.data);
 
   if (response.data?.token) localStorage.setItem('token', response.data.token);
 

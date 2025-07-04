@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { ClientLayout } from '@/components/client-layout';
+import { RouteChangeLoader } from '@/components/RouteChangeLoader';
 import { Toaster } from '@/components/ui/sonner';
 import { ReactQueryProvider } from '@/components/react-query-provider';
 
@@ -46,6 +47,7 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body className={`${inter.className} full-screen`}>
+        <RouteChangeLoader />
         <ReactQueryProvider>
           <ClientLayout>{children}</ClientLayout>
           <Toaster />
