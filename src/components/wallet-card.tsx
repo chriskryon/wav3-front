@@ -62,7 +62,7 @@ export function WalletCard({ wallet, type, onCopy, onView }: WalletCardProps) {
                   </span>
                 </div>
                 <span className='text-[10px] sm:text-xs bg-black/30 rounded px-2 py-0.5 font-semibold uppercase tracking-wider shadow-sm'>
-                  {wallet.wallet_type === 'external' ? 'PAYMENT' : 'WITHDRAW'}
+                  {wallet.wallet_type === 'external' ? 'PAYMENT' : 'DEPOSIT'}
                 </span>
               </div>
               <span className='text-[10px] sm:text-xs font-mono opacity-80 bg-black/20 rounded px-2 py-0.5 shadow-sm mt-1 sm:mt-0 w-fit'>
@@ -83,7 +83,7 @@ export function WalletCard({ wallet, type, onCopy, onView }: WalletCardProps) {
                     onCopy(wallet.address);
                   }}
                   className='ml-2 h-8 w-8 p-0 hover:bg-primary/90 bg-white/80 text-primary border border-white/20 shadow-md transition-all group-hover/address:scale-110'
-                  aria-label='Copiar endereço'
+                  aria-label='Copy address'
                 >
                   <Copy className='w-4 h-4' />
                 </Button>
@@ -109,7 +109,7 @@ export function WalletCard({ wallet, type, onCopy, onView }: WalletCardProps) {
                     onCopy(wallet.address);
                   }}
                   className='h-8 w-8 p-0 hover:bg-white/20 text-white border border-white/10 shadow-md'
-                  aria-label='Copiar endereço'
+                  aria-label='Copy address'
                 >
                   <Copy className='w-4 h-4' />
                 </Button>
@@ -121,7 +121,7 @@ export function WalletCard({ wallet, type, onCopy, onView }: WalletCardProps) {
                     e.stopPropagation();
                     onView(wallet);
                   }}
-                  aria-label='Ver detalhes'
+                  aria-label='View details'
                 >
                   <Eye className='w-4 h-4' />
                 </Button>

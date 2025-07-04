@@ -14,11 +14,27 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
   // Estado global do sidebar
   const [collapsed, setCollapsed] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
+      // Mobile: collapsed by default, Desktop: expanded by default
       const stored = localStorage.getItem('sidebar:collapsed');
-      return stored !=='false';
+      if (stored !== null) return stored === 'true';
+      if (window.innerWidth < 768) return true; // mobile: collapsed
+      return false; // desktop: expanded
     }
-    return true;
+    return false;
   });
+
+  // Update collapsed state on resize (mobile < 768px)
+  useEffect(() => {
+    function handleResize() {
+      if (window.innerWidth < 768) {
+        setCollapsed(true);
+      } else {
+        setCollapsed(false);
+      }
+    }
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const user = localStorage.getItem('user');
