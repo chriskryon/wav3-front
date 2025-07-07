@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Plus, Filter, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -21,98 +21,56 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { FakeDataAlert } from '@/components/FakeDataAlert';
+import { OrderDetailModal } from './OrderDetailModal';
+import { ICONS_CRYPTO_FIAT } from '@/lib/assetIcons';
 
 export default function OrdersPage() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [showNewOrderModal, setShowNewOrderModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [showOrderDetailModal, setShowOrderDetailModal] = useState(false);
   const ordersPerPage = 9;
 
+  // MOCK conforme API
   const orders = [
     {
-      id: 'ORD-001',
-      type: 'Buy',
-      asset: 'BTC',
-      amount: 0.5,
-      price: 42000,
-      total: 21000,
-      status: 'Completed',
-      date: '2024-01-15 14:30',
-      fee: 21,
+      id: 'dd299198-f1b4-4b82-8daa-9c16b1da7fb1',
+      account_id: '39b745ba...847f49',
+      sub_account_id: '94850a8c...881047',
+      recipient_email: 'testing@betaapp.com',
+      description: '',
+      status: 'confirmed',
+      source_asset: 'ETH',
+      source_amount: 1000000,
+      target_asset: 'BTC',
+      target_amount: 0.039094,
+      valid_until: '2023-11-14T14:56:43.615066Z',
+      created_at: '2023-11-13T14:56:43.615066Z',
     },
     {
-      id: 'ORD-002',
-      type: 'Sell',
-      asset: 'ETH',
-      amount: 2.5,
-      price: 2500,
-      total: 6250,
-      status: 'Pending',
-      date: '2024-01-15 13:45',
-      fee: 6.25,
-    },
-    {
-      id: 'ORD-003',
-      type: 'Buy',
-      asset: 'USDT',
-      amount: 1000,
-      price: 1,
-      total: 1000,
-      status: 'Failed',
-      date: '2024-01-14 16:20',
-      fee: 1,
-    },
-    {
-      id: 'ORD-004',
-      type: 'Sell',
-      asset: 'BNB',
-      amount: 10,
-      price: 300,
-      total: 3000,
-      status: 'Completed',
-      date: '2024-01-14 11:15',
-      fee: 3,
-    },
-    {
-      id: 'ORD-005',
-      type: 'Buy',
-      asset: 'ADA',
-      amount: 1000,
-      price: 0.45,
-      total: 450,
-      status: 'Pending',
-      date: '2024-01-13 09:30',
-      fee: 0.45,
-    },
-    {
-      id: 'ORD-006',
-      type: 'Sell',
-      asset: 'SOL',
-      amount: 15,
-      price: 70,
-      total: 1050,
-      status: 'Completed',
-      date: '2024-01-12 16:45',
-      fee: 1.05,
+      id: '3e9bb519-58a4-454f-8474-c3ca4cf9c3d8',
+      account_id: '39b745ba...847f49',
+      sub_account_id: '94850a8c...881047',
+      recipient_email: 'testing@betaapp.com',
+      description: '',
+      status: 'confirmed',
+      source_asset: 'ETH',
+      source_amount: 1000000,
+      target_asset: 'BTC',
+      target_amount: 0.039193,
+      valid_until: '2023-11-14T14:47:08.137369Z',
+      created_at: '2023-11-13T14:47:08.137369Z',
     },
   ];
 
-  const filteredOrders =
-    statusFilter === 'all'
-      ? orders
-      : orders.filter((order) => order.status.toLowerCase() === statusFilter);
-
-  const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
-  const startIndex = (currentPage - 1) * ordersPerPage;
-  const paginatedOrders = filteredOrders.slice(
-    startIndex,
-    startIndex + ordersPerPage,
-  );
+  const filteredOrders = orders; // ignore filter for now
+  const totalPages = Math.max(1, Math.ceil(filteredOrders.length / ordersPerPage));
+  const paginatedOrders = filteredOrders.slice((currentPage - 1) * ordersPerPage, currentPage * ordersPerPage);
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
-      case 'completed':
+      case 'confirmed':
         return 'bg-green-500/20 text-green-500 border-green-500/30';
       case 'pending':
         return 'bg-yellow-500/20 text-yellow-500 border-yellow-500/30';
@@ -184,36 +142,74 @@ export default function OrdersPage() {
                 <div className='flex items-center justify-between'>
                   <h3 className='font-bold text-main text-lg'>{order.id}</h3>
                   <div
-                    className={`w-10 h-10 rounded-xl flex items-center justify-center text-white text-sm font-bold shadow-md ${getTypeBadgeColor(order.type)}`}
+                    className="w-16 h-16 rounded-xl relative flex items-center justify-center text-white text-sm font-bold shadow-md bg-wav3/90"
                   >
-                    {order.type === 'Buy' ? 'B' : 'S'}
+                    {/* Source asset icon (top left) */}
+                    <div className="absolute left-1 top-1">
+                      {(() => {
+                        const key = order.source_asset?.toUpperCase() as keyof typeof ICONS_CRYPTO_FIAT;
+                        const IconSrc = ICONS_CRYPTO_FIAT[key];
+                        if (!IconSrc) return <span className="w-6 h-6 flex items-center justify-center bg-white/20 rounded text-xs">{order.source_asset?.[0]}</span>;
+                        try {
+                          return <IconSrc variant='mono' color='#FFFFFF' className="w-6 h-6" />;
+                        } catch {
+                          return <IconSrc style={{ width: 24, height: 24 }} />;
+                        }
+                      })()}
+                    </div>
+                    {/* Target asset icon (bottom right) */}
+                    <div className="absolute right-1 bottom-1">
+                      {(() => {
+                        const key = order.target_asset?.toUpperCase() as keyof typeof ICONS_CRYPTO_FIAT;
+                        const IconTgt = ICONS_CRYPTO_FIAT[key];
+                        if (!IconTgt) return <span className="w-8 h-8 flex items-center justify-center bg-white/20 rounded text-base">{order.target_asset?.[0]}</span>;
+                        try {
+                          return <IconTgt variant='mono' color='#FFFFFF' className="w-8 h-8" />;
+
+                        } catch {
+                          return <IconTgt style={{ width: 32, height: 32 }} />;
+                        }
+                      })()}
+                    </div>
                   </div>
                 </div>
 
                 {/* Order Details */}
                 <div className='space-y-3'>
-                  <div className='flex justify-between'>
-                    <span className='muted-text text-sm'>Asset:</span>
-                    <span className='text-main font-semibold'>
-                      {order.asset}
+                  <div className='flex justify-between items-center'>
+                    <span className='muted-text text-sm'>From:</span>
+                    <span className='flex items-center gap-2'>
+                      {(() => {
+                        const key = order.source_asset?.toUpperCase() as keyof typeof ICONS_CRYPTO_FIAT;
+                        const IconSrc = ICONS_CRYPTO_FIAT[key];
+                        if (!IconSrc) return <span className="w-5 h-5 flex items-center justify-center bg-white/20 rounded text-xs">{order.source_asset?.[0]}</span>;
+                        try {
+                          return <IconSrc variant='mono' color='#1ea3ab' className="w-5 h-5" />;
+                        } catch {
+                          return <IconSrc style={{ width: 20, height: 20 }} />;
+                        }
+                      })()}
+                      <span className='text-main font-semibold'>
+                        {order.source_amount} {order.source_asset}
+                      </span>
                     </span>
                   </div>
-                  <div className='flex justify-between'>
-                    <span className='muted-text text-sm'>Quantity:</span>
-                    <span className='text-main font-semibold'>
-                      {order.amount}
-                    </span>
-                  </div>
-                  <div className='flex justify-between'>
-                    <span className='muted-text text-sm'>Price:</span>
-                    <span className='text-main font-semibold'>
-                      ${order.price.toLocaleString()}
-                    </span>
-                  </div>
-                  <div className='flex justify-between'>
-                    <span className='muted-text text-sm'>Total:</span>
-                    <span className='primary-text font-bold'>
-                      ${order.total.toLocaleString()}
+                  <div className='flex justify-between items-center'>
+                    <span className='muted-text text-sm'>To:</span>
+                    <span className='flex items-center gap-2'>
+                      {(() => {
+                        const key = order.target_asset?.toUpperCase() as keyof typeof ICONS_CRYPTO_FIAT;
+                        const IconTgt = ICONS_CRYPTO_FIAT[key];
+                        if (!IconTgt) return <span className="w-5 h-5 flex items-center justify-center bg-white/20 rounded text-xs">{order.target_asset?.[0]}</span>;
+                        try {
+                          return <IconTgt variant='mono' color='#1ea3ab' className="w-5 h-5" />;
+                        } catch {
+                          return <IconTgt style={{ width: 20, height: 20 }} />;
+                        }
+                      })()}
+                      <span className='text-main font-semibold'>
+                        {order.target_amount} {order.target_asset}
+                      </span>
                     </span>
                   </div>
                 </div>
@@ -225,7 +221,9 @@ export default function OrdersPage() {
                   >
                     {order.status}
                   </Badge>
-                  <span className='text-xs muted-text'>{order.date}</span>
+                  <span className='text-xs muted-text'>
+                    {new Date(order.created_at).toLocaleString()}
+                  </span>
                 </div>
 
                 {/* View Button */}
@@ -234,6 +232,7 @@ export default function OrdersPage() {
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedOrder(order);
+                    setShowOrderDetailModal(true);
                   }}
                   className='w-full bg-primary hover:bg-primary/90 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-300'
                 >
@@ -248,8 +247,7 @@ export default function OrdersPage() {
         {/* Pagination */}
         <div className='flex items-center justify-between'>
           <div className='text-sm muted-text'>
-            Showing {startIndex + 1} to{' '}
-            {Math.min(startIndex + ordersPerPage, filteredOrders.length)} of{' '}
+            Showing {1} to {Math.min(ordersPerPage, filteredOrders.length)} of{' '}
             {filteredOrders.length} orders
           </div>
           <div className='flex gap-2'>
@@ -347,84 +345,7 @@ export default function OrdersPage() {
         </Dialog>
 
         {/* Order Details Modal */}
-        <Dialog
-          open={!!selectedOrder}
-          onOpenChange={() => setSelectedOrder(null)}
-        >
-          <DialogContent className='glass-card-enhanced max-w-md'>
-            <DialogHeader>
-              <DialogTitle className='text-xl font-bold text-main'>
-                Order Details
-              </DialogTitle>
-            </DialogHeader>
-            {selectedOrder && (
-              <div className='space-y-4'>
-                <div className='grid grid-cols-2 gap-4'>
-                  <div>
-                    <Label className='muted-text text-sm'>Order ID</Label>
-                    <p className='font-semibold text-main'>
-                      {selectedOrder.id}
-                    </p>
-                  </div>
-                  <div>
-                    <Label className='muted-text text-sm'>Status</Label>
-                    <Badge className={getStatusColor(selectedOrder.status)}>
-                      {selectedOrder.status}
-                    </Badge>
-                  </div>
-                </div>
-                <div className='grid grid-cols-2 gap-4'>
-                  <div>
-                    <Label className='muted-text text-sm'>Type</Label>
-                    <p className='font-semibold text-main'>
-                      {selectedOrder.type}
-                    </p>
-                  </div>
-                  <div>
-                    <Label className='muted-text text-sm'>Asset</Label>
-                    <p className='font-semibold text-main'>
-                      {selectedOrder.asset}
-                    </p>
-                  </div>
-                </div>
-                <div className='grid grid-cols-2 gap-4'>
-                  <div>
-                    <Label className='muted-text text-sm'>Amount</Label>
-                    <p className='font-semibold text-main'>
-                      {selectedOrder.amount} {selectedOrder.asset}
-                    </p>
-                  </div>
-                  <div>
-                    <Label className='muted-text text-sm'>Price</Label>
-                    <p className='font-semibold text-main'>
-                      ${selectedOrder.price.toLocaleString()}
-                    </p>
-                  </div>
-                </div>
-                <div className='grid grid-cols-2 gap-4'>
-                  <div>
-                    <Label className='muted-text text-sm'>Total</Label>
-                    <p className='font-bold primary-text'>
-                      ${selectedOrder.total.toLocaleString()}
-                    </p>
-                  </div>
-                  <div>
-                    <Label className='muted-text text-sm'>Fee</Label>
-                    <p className='font-semibold text-main'>
-                      ${selectedOrder.fee}
-                    </p>
-                  </div>
-                </div>
-                <div>
-                  <Label className='muted-text text-sm'>Date</Label>
-                  <p className='font-semibold text-main'>
-                    {selectedOrder.date}
-                  </p>
-                </div>
-              </div>
-            )}
-          </DialogContent>
-        </Dialog>
+        <OrderDetailModal open={showOrderDetailModal} onOpenChange={setShowOrderDetailModal} />
       </div>
     </div>
   );

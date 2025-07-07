@@ -2,6 +2,8 @@
 'use client';
 
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { listAssets } from '@/services/api-service';
 import {
   ArrowDown,
   ArrowUp,
@@ -18,16 +20,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { ActionModal } from '@/components/action-modal';
 import { FakeDataAlert } from '@/components/FakeDataAlert';
+import { ICONS_CRYPTO_FIAT as icons } from '@/lib/icon-utils';
 
 export default function OverviewPage() {
-  const [activeModal, setActiveModal] = useState<string | null>(null);
 
+  // Mock de balances (até integração com API real)
   const balances = {
-    crypto: 0,
-    fiat: 0,
-    total: 0,
+    crypto: 123456.78,
+    fiat: 654321.12,
+    total: 777777.90,
   };
 
+  // Mock de transações (até integração com API real)
   const recentTransactions = [
     {
       id: 1,
@@ -75,23 +79,89 @@ export default function OverviewPage() {
       status: 'Pending',
     },
   ];
+  const [activeModal, setActiveModal] = useState<string | null>(null);
 
-  const activeWallets = [
-    { name: 'Bitcoin Wallet', asset: 'BTC', balance: 1.25, network: 'Bitcoin' },
-    {
-      name: 'Ethereum Wallet',
-      asset: 'ETH',
-      balance: 15.5,
-      network: 'Ethereum',
-    },
-    { name: 'USDT Wallet', asset: 'USDT', balance: 5000, network: 'Tron' },
+  if (typeof window !== 'undefined') {
+    console.log('Objeto icons:', icons);
+    console.log('BTC do icons:', icons["BTC"]);
+  }
+
+  // Função para renderizar o ícone, seja componente React ou string (URL)
+  // Agora aceita um variant opcional para passar para os componentes
+  function renderAssetIcon(symbol: string, fallbackUrl: string, variant: 'background' | 'default' = 'default') {
+    const IconComponent = (icons as Record<string, any>)[symbol];
+    if (IconComponent) {
+      // Testa se é um componente React válido
+      const isReactComponent = typeof IconComponent === 'function' || (typeof IconComponent === 'object' && IconComponent !== null);
+      if (isReactComponent) {
+        // Passa o prop variant para o componente, se suportado
+        return <IconComponent className="w-10 h-10 shadow" variant={variant} />;
+      } else if (typeof IconComponent === 'string') {
+        // Se for uma string (URL)
+        return <img src={IconComponent} alt={symbol} className="w-10 h-10 rounded-full border shadow bg-white" />;
+      }
+    }
+    // Fallback para o ícone da API se não estiver no objeto icons
+    return <img src={fallbackUrl} alt={symbol} className="w-10 h-10 rounded-full border shadow bg-white" />;
+  }
+
+  // Tabs para filtro de assets
+  const [assetsTab, setAssetsTab] = useState<'all' | 'crypto' | 'fiat'>('all');
+
+  // Query para cada tipo de asset
+  const { data: cryptoAssets, isLoading: isCryptoLoading } = useQuery({
+    queryKey: ['assets', 'crypto'],
+    queryFn: async () => await listAssets({ type: 'crypto' }),
+    staleTime: 1000 * 60,
+  });
+  const { data: fiatAssets, isLoading: isFiatLoading } = useQuery({
+    queryKey: ['assets', 'fiat'],
+    queryFn: async () => await listAssets({ type: 'fiat' }),
+    staleTime: 1000 * 60,
+  });
+
+  // Soma dos assets de ambos para o ALL
+  const allAssets = [
+    ...(cryptoAssets?.assets || []),
+    ...(fiatAssets?.assets || []),
   ];
 
+  let filteredAssets: any[] = [];
+  let isAssetsLoading = false;
+  if (assetsTab === 'all') {
+    filteredAssets = allAssets;
+    isAssetsLoading = isCryptoLoading || isFiatLoading;
+  } else if (assetsTab === 'crypto') {
+    filteredAssets = cryptoAssets?.assets || [];
+    isAssetsLoading = isCryptoLoading;
+  } else if (assetsTab === 'fiat') {
+    filteredAssets = fiatAssets?.assets || [];
+    isAssetsLoading = isFiatLoading;
+  }
+
+  // Monta objeto para mapear symbol -> { name, icon }
+  let assetIconMap: Record<string, { name: string; icon: string }> = {};
+  if (allAssets.length > 0) {
+    allAssets.forEach((asset: any) => {
+      assetIconMap[asset.symbol] = {
+        name: asset.name,
+        icon: asset.small_image_url,
+      };
+    });
+    if (typeof window !== 'undefined') {
+      console.log('Assets loaded:');
+      Object.entries(assetIconMap).forEach(([symbol, { name, icon }]) => {
+        console.log(`symbol: ${symbol}, name: ${name}, icon: ${icon}`);
+      });
+    }
+  }
+
   return (
-    <div className='content-height p-8 scroll-area bg-background'>
+    <div className='min-h-screen p-8 bg-background'>
       <div className='max-w-7xl mx-auto space-y-8'>
         <FakeDataAlert />
-        {/* Balance Cards */}
+
+        {/* Balance Cards (mock) */}
         <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
           <Card className='glass-card-enhanced glass-hover'>
             <CardHeader className='pb-4'>
@@ -135,8 +205,7 @@ export default function OverviewPage() {
                 ${balances.crypto.toLocaleString()}
               </div>
               <div className='text-sm muted-text mt-1'>
-                {((balances.crypto / balances.total) * 100).toFixed(1)}% of
-                total
+                {((balances.crypto / balances.total) * 100).toFixed(1)}% of total
               </div>
             </CardContent>
           </Card>
@@ -203,8 +272,9 @@ export default function OverviewPage() {
           </CardContent>
         </Card>
 
+        {/* Recent Transactions + Assets lado a lado (como antes) */}
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
-          {/* Recent Transactions */}
+          {/* Recent Transactions (mock, até API real) */}
           <Card className='glass-card-enhanced'>
             <CardHeader>
               <div className='flex items-center justify-between'>
@@ -217,116 +287,100 @@ export default function OverviewPage() {
               </div>
             </CardHeader>
             <CardContent>
-              <Tabs defaultValue='all' className='w-full'>
-                <TabsList className='glass-tabs mb-6 p-1'>
-                  <TabsTrigger value='all' className='glass-tab-trigger'>
-                    All
-                  </TabsTrigger>
-                  <TabsTrigger value='crypto' className='glass-tab-trigger'>
-                    Crypto
-                  </TabsTrigger>
-                  <TabsTrigger value='fiat' className='glass-tab-trigger'>
-                    Fiat
-                  </TabsTrigger>
-                </TabsList>
-                <TabsContent
-                  value='all'
-                  className='space-y-4 max-h-80 scroll-area'
-                >
-                  {recentTransactions.map((tx) => (
-                    <div
-                      key={tx.id}
-                      className='glass-item p-4 flex items-center justify-between'
-                    >
-                      <div className='flex items-center gap-4'>
-                        <div
-                          className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-md ${
-                            tx.type === 'Buy'
-                              ? 'bg-green-500/20 text-green-500 border border-green-500/30'
-                              : tx.type === 'Sell'
-                                ? 'bg-red-500/20 text-red-500 border border-red-500/30'
-                                : 'bg-primary/20 text-primary border border-primary/30'
-                          }`}
-                        >
-                          {tx.type === 'Buy' ? (
-                            <ArrowDown className='w-6 h-6' />
-                          ) : tx.type === 'Sell' ? (
-                            <ArrowUp className='w-6 h-6' />
-                          ) : (
-                            <Send className='w-6 h-6' />
-                          )}
-                        </div>
-                        <div>
-                          <div className='font-semibold text-main'>
-                            {tx.type} {tx.asset}
-                          </div>
-                          <div className='text-sm muted-text'>{tx.date}</div>
-                        </div>
+              <div className='space-y-4 max-h-80 scroll-area'>
+                {recentTransactions.map((tx) => (
+                  <div
+                    key={tx.id}
+                    className='glass-item p-4 flex items-center justify-between'
+                  >
+                    <div className='flex items-center gap-4'>
+                      <div
+                        className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-md ${
+                          tx.type === 'Buy'
+                            ? 'bg-green-500/20 text-green-500 border border-green-500/30'
+                            : tx.type === 'Sell'
+                              ? 'bg-red-500/20 text-red-500 border border-red-500/30'
+                              : 'bg-primary/20 text-primary border border-primary/30'
+                        }`}
+                      >
+                        {tx.type === 'Buy' ? (
+                          <ArrowDown className='w-6 h-6' />
+                        ) : tx.type === 'Sell' ? (
+                          <ArrowUp className='w-6 h-6' />
+                        ) : (
+                          <Send className='w-6 h-6' />
+                        )}
                       </div>
-                      <div className='text-right'>
-                        <div className='font-bold text-main'>
-                          ${tx.value.toLocaleString()}
+                      <div>
+                        <div className='font-semibold text-main'>
+                          {tx.type} {tx.asset}
                         </div>
-                        <Badge
-                          className={`text-xs font-medium mt-1 ${
-                            tx.status === 'Completed'
-                              ? 'bg-green-500/20 text-green-500 border-green-500/40'
-                              : 'bg-yellow-500/20 text-yellow-500 border-yellow-500/40'
-                          }`}
-                        >
-                          {tx.status}
-                        </Badge>
+                        <div className='text-sm muted-text'>{tx.date}</div>
                       </div>
                     </div>
-                  ))}
-                </TabsContent>
-              </Tabs>
+                    <div className='text-right'>
+                      <div className='font-bold text-main'>
+                        ${tx.value.toLocaleString()}
+                      </div>
+                      <Badge
+                        className={`text-xs font-medium mt-1 ${
+                          tx.status === 'Completed'
+                            ? 'bg-green-500/20 text-green-500 border-green-500/40'
+                            : 'bg-yellow-500/20 text-yellow-500 border-yellow-500/40'
+                        }`}
+                      >
+                        {tx.status}
+                      </Badge>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </CardContent>
           </Card>
 
-          {/* Active Wallets */}
+          {/* Assets */}
           <Card className='glass-card-enhanced'>
             <CardHeader>
               <div className='flex items-center justify-between'>
                 <CardTitle className='text-xl font-bold text-main'>
-                  Active Wallets
+                  Assets
                 </CardTitle>
                 <Button variant='ghost' size='sm' className='glass-button'>
                   <Plus className='w-4 h-4' />
                 </Button>
               </div>
             </CardHeader>
-            <CardContent className='space-y-4'>
-              {activeWallets.map((wallet, index) => (
-                <div key={index} className='glass-item p-4'>
-                  <div className='flex items-center justify-between mb-4'>
-                    <div className='flex items-center gap-4'>
-                      <div className='w-12 h-12 rounded-xl bg-primary text-white flex items-center justify-center shadow-md'>
-                        <span className='font-bold text-sm'>
-                          {wallet.asset}
-                        </span>
-                      </div>
-                      <div>
-                        <div className='font-semibold text-main'>
-                          {wallet.name}
-                        </div>
-                        <div className='text-sm muted-text'>
-                          {wallet.network}
-                        </div>
+            <CardContent className='space-y-4 max-h-80 scroll-area'>
+              <Tabs value={assetsTab} onValueChange={(v) => setAssetsTab(v as 'all' | 'crypto' | 'fiat')} className='w-full mb-4'>
+                <TabsList className='glass-tabs mb-2 p-1'>
+                  <TabsTrigger value='all' className='glass-tab-trigger'>All</TabsTrigger>
+                  <TabsTrigger value='crypto' className='glass-tab-trigger'>Crypto</TabsTrigger>
+                  <TabsTrigger value='fiat' className='glass-tab-trigger'>Fiat</TabsTrigger>
+                </TabsList>
+              </Tabs>
+              {isAssetsLoading ? (
+                <div className='flex items-center justify-center py-4'>
+                  <div className='w-8 h-8 border-4 border-primary/30 border-t-primary rounded-full animate-spin mr-3'></div>
+                  <span className='text-main font-semibold'>Loading assets...</span>
+                </div>
+              ) : filteredAssets.length === 0 ? (
+                <div className='text-center text-muted'>No assets found.</div>
+              ) : (
+                filteredAssets.map((asset: any) => (
+                  <div key={asset.id} className='glass-item flex items-center gap-3 border border-wav3 px-3 py-2 rounded-xl mb-2'>
+                    {renderAssetIcon(asset.symbol, asset.small_image_url, 'background')}
+                    <div className='flex-1'>
+                      <div className='font-semibold text-main'>{asset.name} <span className='text-xs text-muted'>({asset.symbol})</span></div>
+                      <div className='text-xs muted-text'>
+                        {(asset.networks || []).map((n: any) => n.name).join(', ')}
                       </div>
                     </div>
                     <Badge variant='outline' className='glass-badge'>
-                      {wallet.network}
+                      {asset.type}
                     </Badge>
                   </div>
-                  <div className='flex items-center justify-between'>
-                    <div className='text-sm muted-text'>Balance</div>
-                    <div className='font-bold primary-text'>
-                      {wallet.balance} {wallet.asset}
-                    </div>
-                  </div>
-                </div>
-              ))}
+                ))
+              )}
             </CardContent>
           </Card>
         </div>
