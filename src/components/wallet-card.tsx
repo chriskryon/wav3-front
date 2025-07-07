@@ -62,7 +62,7 @@ export function WalletCard({ wallet, type, onCopy, onView }: WalletCardProps) {
                   </span>
                 </div>
                 <span className='text-[10px] sm:text-xs bg-black/30 rounded px-2 py-0.5 font-semibold uppercase tracking-wider shadow-sm'>
-                  {wallet.wallet_type === 'external' ? 'PAYMENT' : 'DEPOSIT'}
+                  {wallet.wallet_type === 'external' ? 'WITHDRAW' : 'DEPOSIT'}
                 </span>
               </div>
               <span className='text-[10px] sm:text-xs font-mono opacity-80 bg-black/20 rounded px-2 py-0.5 shadow-sm mt-1 sm:mt-0 w-fit'>
