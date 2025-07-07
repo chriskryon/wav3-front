@@ -33,26 +33,26 @@ export const QuoteStep: React.FC<QuoteStepProps> = ({
   onSwap,
   onGetQuote,
 }) => (
-  <div>
-    <div className='text-center mb-4'>
-      <h2 className='text-3xl md:text-4xl font-extrabold text-[#1ea3ab] mb-2 tracking-tight'>
+  <div className="glass-card-enhanced/90 border-2 border-wav3 rounded-2xl shadow-xl p-3 md:p-5 flex flex-col gap-4 backdrop-blur-xl bg-white/80">
+    <div className='text-center mb-2'>
+      <h2 className='text-2xl md:text-3xl font-bold text-[#1ea3ab] mb-1 tracking-tight'>
         Requesting a Quote
       </h2>
-      <p className='text-lg md:text-xl text-gray-500 font-medium'>
+      <p className='text-base md:text-lg text-gray-500 font-medium'>
         Get a quote for buying and selling cryptocurrencies.
       </p>
     </div>
-    <div className='flex flex-col gap-6'>
+    <div className='flex flex-col gap-3'>
       {/* Card Send */}
       <div className='flex flex-col gap-2'>
-        <span className='text-sm font-semibold text-gray-500 mb-1 ml-1'>Send</span>
-        <div className='flex flex-row gap-2'>
+        <span className='text-sm font-semibold text-[#1ea3ab] mb-1 ml-1'>Send</span>
+        <div className='flex flex-row gap-2 bg-white/70 glass-card-enhanced/60 border border-wav3 rounded-xl p-1 shadow-inner items-center'>
           <Input
             type='number'
             min={0}
             value={direction === 'pay' ? sourceAmount : ''}
             onChange={(e) => onSourceAmountChange(e.target.value)}
-            className='flex-1 text-2xl font-mono border-none bg-white focus:ring-0 focus:border-none outline-none px-4 py-0 h-16 rounded-xl shadow border border-[#1ea3ab]/20'
+            className='flex-1 text-2xl font-mono border-none bg-transparent focus:ring-0 focus:border-none outline-none px-4 py-0 h-16 rounded-xl shadow-none'
             placeholder='0.00'
             style={{ minWidth: 0 }}
           />
@@ -70,7 +70,7 @@ export const QuoteStep: React.FC<QuoteStepProps> = ({
         <Button
           type='button'
           variant='ghost'
-          className='h-12 w-12 rounded-2xl border-2 border-[#1ea3ab]/30 flex items-center justify-center bg-white hover:bg-[#e6f7f8] shadow-lg transition-colors text-[#1ea3ab] text-2xl'
+          className='h-12 w-12 rounded-xl border-2 border-wav3 flex items-center justify-center bg-white/70 hover:bg-[#e6f7f8] shadow transition-colors text-[#1ea3ab] text-xl backdrop-blur-lg'
           onClick={onSwap}
           style={{ zIndex: 2 }}
         >
@@ -79,22 +79,27 @@ export const QuoteStep: React.FC<QuoteStepProps> = ({
       </div>
       {/* Card Get */}
       <div className='flex flex-col gap-2'>
-        <span className='text-sm font-semibold text-gray-500 mb-1 ml-1'>Get</span>
-        <div className='flex flex-row gap-2 w-full'>
+        <span className='text-sm font-semibold text-[#1ea3ab] mb-1 ml-1'>Get</span>
+        <div className='flex flex-row gap-2 w-full bg-white/70 glass-card-enhanced/60 border border-wav3 rounded-xl p-1 shadow-inner items-center'>
           <AssetSelect
             value={targetAsset.symbol}
             onChange={onTargetAssetChange}
-            assets={assets}
+            assets={
+              sourceAsset
+                ? sourceAsset.type === 'fiat'
+                  ? assets.filter(a => a.type === 'crypto')
+                  : assets.filter(a => a.type === 'fiat')
+                : []
+            }
             excludeSymbol={sourceAsset.symbol}
             className='w-full'
           />
         </div>
       </div>
       {/* Min/Max/Reserves info (placeholder) */}
-      
     </div>
     <Button
-      className='bg-[#1ea3ab] hover:bg-[#1ea3ab]/90 text-white font-semibold shadow-lg mt-4 text-lg py-4 rounded-xl'
+      className='w-full bg-[#1ea3ab] hover:bg-[#188a91] text-white font-semibold shadow mt-3 text-base py-3 rounded-xl glass-card-enhanced/80 border border-wav3 backdrop-blur-lg transition-all duration-200'
       onClick={onGetQuote}
       disabled={
         loading ||

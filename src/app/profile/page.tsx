@@ -153,6 +153,8 @@ export default function ProfilePage() {
   };
 
   const countries = [
+    // Placeholder for select
+    { code: '', name: 'Select Country' },
     { code: 'BR', name: 'Brazil' },
     { code: 'MX', name: 'Mexico' },
     { code: 'AR', name: 'Argentina' },
@@ -161,14 +163,30 @@ export default function ProfilePage() {
     { code: 'CA', name: 'Canada' },
   ];
 
+  // Tax ID types for each country
   const taxIdTypes = {
     BR: [
       { value: 'CPF', label: 'CPF' },
       { value: 'CNPJ', label: 'CNPJ' },
     ],
-    MX: [{ value: 'RFC', label: 'RFC' }],
-    AR: [{ value: 'CUIT', label: 'CUIT' }],
-    CO: [{ value: 'NIT', label: 'NIT' }],
+    MX: [
+      { value: 'RFC', label: 'RFC' },
+    ],
+    AR: [
+      { value: 'CUIT', label: 'CUIT' },
+    ],
+    CO: [
+      { value: 'NIT', label: 'NIT' },
+    ],
+    US: [
+      { value: 'SSN', label: 'SSN (Social Security Number)' },
+      { value: 'EIN', label: 'EIN (Employer Identification Number)' },
+      { value: 'ITIN', label: 'ITIN (Individual Taxpayer Identification Number)' },
+    ],
+    CA: [
+      { value: 'SIN', label: 'SIN (Social Insurance Number)' },
+      { value: 'BN', label: 'BN (Business Number)' },
+    ],
   };
 
   const localIdTypes = [
@@ -247,14 +265,15 @@ export default function ProfilePage() {
                       Country *
                     </Label>
                     <ProfileSelect
-                      value={watch('country') || countries[0].code}
+                      value={watch('country') || ''}
                       onValueChange={(value) => {
                         setValue('country', value);
                         setValue('tax_id_type', '');
                       }}
                       disabled={userData?.profileCompleted}
                     >
-                      {countries.map((country) => (
+                      {/* Only render real countries as items, not the placeholder */}
+                      {countries.filter(c => c.code !== '').map((country) => (
                         <ProfileSelectItem key={country.code} value={country.code}>
                           {country.name}
                         </ProfileSelectItem>
@@ -264,23 +283,24 @@ export default function ProfilePage() {
                       <span className="text-red-500 text-xs">Required</span>
                     )}
                   </div>
+                  {/* Tax ID Type: always show, with country-specific options */}
                   <div className="space-y-1">
                     <Label htmlFor="tax_id_type" className="text-xs font-medium muted-text">
                       Tax ID Type *
                     </Label>
                     <ProfileSelect
-                      value={watch('tax_id_type') || (taxIdTypes[watch('country') as keyof typeof taxIdTypes]?.[0]?.value ?? '')}
+                      value={
+                        watch('tax_id_type') ||
+                        (taxIdTypes[watch('country') as keyof typeof taxIdTypes]?.[0]?.value ?? '')
+                      }
                       onValueChange={(value) => setValue('tax_id_type', value)}
                       disabled={!watch('country') || userData?.profileCompleted}
                     >
-                      {watch('country') &&
-                        taxIdTypes[
-                          watch('country') as keyof typeof taxIdTypes
-                        ]?.map((type) => (
-                          <ProfileSelectItem key={type.value} value={type.value}>
-                            {type.label}
-                          </ProfileSelectItem>
-                        ))}
+                      {(taxIdTypes[watch('country') as keyof typeof taxIdTypes] || []).map((type) => (
+                        <ProfileSelectItem key={type.value} value={type.value}>
+                          {type.label}
+                        </ProfileSelectItem>
+                      ))}
                     </ProfileSelect>
                     {errors.tax_id_type && (
                       <span className="text-red-500 text-xs">Required</span>
