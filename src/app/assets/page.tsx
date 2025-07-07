@@ -14,10 +14,9 @@ import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import {
-  TokenBTA,
   TokenBTC,
   TokenETH,
-  TokenTRX,
+  TokenRIF,
   TokenUSDT,
   TokenXRP,
 } from '@web3icons/react';
@@ -28,6 +27,7 @@ export default function AssetsPage() {
   const [searchTerm, setSearchTerm] = useState('');
 
   const assetIcons = {
+    USDRIF: TokenRIF,
     BTC: TokenBTC,
     ETH: TokenETH,
     XRP: TokenXRP,
