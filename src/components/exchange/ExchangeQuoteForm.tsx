@@ -10,6 +10,7 @@ import { useQuery } from '@tanstack/react-query';
 import type { QuoteRequest, QuoteResponse } from '@/entities/types';
 
 export function ExchangeQuoteForm() {
+  const [mounted, setMounted] = useState(false);
   const { data: cryptoData, isLoading: loadingCrypto, error: errorCrypto } = useQuery({
     queryKey: ['exchange-assets', 'crypto'],
     queryFn: async () => {
@@ -110,6 +111,7 @@ export function ExchangeQuoteForm() {
 
   // Inicializa os assets quando carregar
   useEffect(() => {
+    setMounted(true);
     if (assets && assets.length > 1 && (!sourceAsset || !targetAsset)) {
       setSourceAsset(assets[0]);
       setTargetAsset(assets[1]);
@@ -125,7 +127,7 @@ export function ExchangeQuoteForm() {
   };
 
   // Loading e erro de assets
-  if (loadingCrypto || loadingFiat || !sourceAsset || !targetAsset) {
+  if (!mounted || loadingCrypto || loadingFiat || !sourceAsset || !targetAsset) {
     return <div className='text-center text-lg text-[#1ea3ab] py-10'>Loading assets...</div>;
   }
   if (errorCrypto || errorFiat || !assets || assets.length === 0) {
