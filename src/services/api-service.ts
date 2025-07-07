@@ -5,6 +5,7 @@ import type {
   CreateBetaAccountPayload,
   ListBankAccountsResponse,
   ListWalletsResponse,
+  OrderResponse,
   RegisterBankAccountPayload,
   RegisterBankAccountResponse,
   RegisterSharedBankAccountPayload,
@@ -14,8 +15,10 @@ import type {
   RegisterWalletPayload,
   RegisterWalletResponse,
 } from '@/entities/types';
+import type { QuoteRequest, QuoteResponse, QuoteError } from '@/entities/types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
+console.log('API_URL:', API_URL);
 
 export function setUserGlobal(user: User | null) {
   if (typeof window !== 'undefined') {
@@ -337,5 +340,64 @@ export async function deleteBankAccount(
       return { message: error.response.data.message };
     }
     return { message: 'Erro ao deletar conta bancária' };
+  }
+}
+
+/**
+ * Lista os ativos disponíveis.
+ * @param params type (opcional): "crypto" ou "fiat"
+ */
+export async function listAssets(params?: { type?: 'crypto' | 'fiat' }) {
+  try {
+    const response = await api.get('/accounts/assets', { params });
+    return response.data;
+  } catch (error: any) {
+    if (error.response?.data?.message) {
+      throw new Error(error.response.data.message);
+    }
+    throw new Error('Falha ao listar ativos.');
+  }
+}
+
+/**
+ * Obtém uma cotação de conversão entre ativos (exchange).
+ * @param payload Dados para cotação (source_asset, target_asset, network, product, source_amount/target_amount)
+ * @returns Dados da cotação ou lança erro detalhado
+ */
+export async function getQuote(payload: QuoteRequest): Promise<QuoteResponse> {
+  try {
+    const response = await api.post<QuoteResponse>('/accounts/quote', payload);
+
+    return response.data;
+  } catch (error: any) {
+    if (error.response?.data?.message) {
+      // Lança erro detalhado do backend
+      throw new Error(error.response.data.message);
+    }
+    throw new Error('Falha ao obter cotação.');
+  }
+}
+
+/**
+ * Cria uma ordem de exchange (order) a partir dos mesmos parâmetros do quote.
+ * @param payload Dados da ordem (source_asset, target_asset, network, source_amount, target_amount, pool_balance)
+ * @returns Dados da ordem criada ou lança erro detalhado
+ */
+export async function createOrder(payload: {
+  source_asset: string;
+  target_asset: string;
+  network: string;
+  source_amount: number;
+  target_amount: number;
+  pool_balance?: boolean;
+}): Promise<OrderResponse> {
+  try {
+    const response = await api.post<OrderResponse>('/accounts/order', payload);
+    return response.data;
+  } catch (error: any) {
+    if (error.response?.data?.message) {
+      throw new Error(error.response.data.message);
+    }
+    throw new Error('Falha ao criar ordem.');
   }
 }
