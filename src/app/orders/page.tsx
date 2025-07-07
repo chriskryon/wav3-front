@@ -222,7 +222,11 @@ export default function OrdersPage() {
                     {order.status}
                   </Badge>
                   <span className='text-xs muted-text'>
-                    {new Date(order.created_at).toLocaleString()}
+                    {(() => {
+                      const d = new Date(order.created_at);
+                      const pad = (n: number) => n.toString().padStart(2, '0');
+                      return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+                    })()}
                   </span>
                 </div>
 
