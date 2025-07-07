@@ -99,6 +99,9 @@ export function SharedBankAccountModal({
             <legend className='block text-lg font-bold mb-4 text-center text-main tracking-tight'>
               Choose the asset for your shared account
             </legend>
+            <p className="text-sm text-center text-gray-600 mb-2">
+              This is an account where you can deposit money.
+            </p>
             <div className="flex gap-4 justify-center flex-wrap">
               {sharedBankAssets.map((opt) => (
                 <button

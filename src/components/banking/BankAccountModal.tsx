@@ -563,19 +563,19 @@ export function BankAccountModal({
           </div>
           <div className='flex flex-wrap gap-x-6 gap-y-1 text-xs text-main'>
             <div>
-              <b>Apelido:</b> {getValues('name')}
+              <b>Nickname:</b> {getValues('name')}
             </div>
             <div>
-              <b>Banco:</b> {getValues('bank_name')}
+              <b>Bank:</b> {getValues('bank_name')}
             </div>
             <div>
-              <b>Agência:</b> {getValues('branch')}
+              <b>Branch:</b> {getValues('branch')}
             </div>
             <div>
-              <b>Conta:</b> {getValues('account')}
+              <b>Account:</b> {getValues('account')}
             </div>
             <div>
-              <b>Instant Payment:</b> {getValues('instant_payment_type')}:{' '}
+              <b>Instant Payment:</b> {getValues('instant_payment_type')}: {' '}
               {getValues('instant_payment')}
             </div>
           </div>
