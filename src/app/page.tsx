@@ -339,43 +339,41 @@ export default function OverviewPage() {
           </Card>
 
           {/* Assets */}
-          <Card className='glass-card-enhanced'>
-            <CardHeader>
-              <div className='flex items-center justify-between'>
-                <CardTitle className='text-xl font-bold text-main'>
-                  Assets
-                </CardTitle>
-                <Button variant='ghost' size='sm' className='glass-button'>
-                  <Plus className='w-4 h-4' />
+          <Card className="glass-card-enhanced/80 border border-zinc-900/10 shadow-lg backdrop-blur-md">
+            <CardHeader className="pb-2 pt-3 px-4">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-lg font-bold text-main">Assets</CardTitle>
+                <Button variant="ghost" size="sm" className="glass-button">
+                  <Plus className="w-4 h-4" />
                 </Button>
               </div>
             </CardHeader>
-            <CardContent className='space-y-4 max-h-80 scroll-area'>
-              <Tabs value={assetsTab} onValueChange={(v) => setAssetsTab(v as 'all' | 'crypto' | 'fiat')} className='w-full mb-4'>
-                <TabsList className='glass-tabs mb-2 p-1'>
-                  <TabsTrigger value='all' className='glass-tab-trigger'>All</TabsTrigger>
-                  <TabsTrigger value='crypto' className='glass-tab-trigger'>Crypto</TabsTrigger>
-                  <TabsTrigger value='fiat' className='glass-tab-trigger'>Fiat</TabsTrigger>
+            <CardContent className="space-y-2 max-h-72 scroll-area px-4 pb-4 pt-1">
+              <Tabs value={assetsTab} onValueChange={(v) => setAssetsTab(v as 'all' | 'crypto' | 'fiat')} className="w-full mb-2">
+                <TabsList className="glass-tabs mb-1 p-0.5 gap-1">
+                  <TabsTrigger value="all" className="glass-tab-trigger text-xs px-2 py-1 min-w-[48px]">All</TabsTrigger>
+                  <TabsTrigger value="crypto" className="glass-tab-trigger text-xs px-2 py-1 min-w-[48px]">Crypto</TabsTrigger>
+                  <TabsTrigger value="fiat" className="glass-tab-trigger text-xs px-2 py-1 min-w-[48px]">Fiat</TabsTrigger>
                 </TabsList>
               </Tabs>
               {isAssetsLoading ? (
-                <div className='flex items-center justify-center py-4'>
-                  <div className='w-8 h-8 border-4 border-primary/30 border-t-primary rounded-full animate-spin mr-3'></div>
-                  <span className='text-main font-semibold'>Loading assets...</span>
+                <div className="flex items-center justify-center py-4">
+                  <div className="w-6 h-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin mr-2"></div>
+                  <span className="text-main font-semibold text-sm">Loading assets...</span>
                 </div>
               ) : filteredAssets.length === 0 ? (
-                <div className='text-center text-muted'>No assets found.</div>
+                <div className="text-center text-muted text-xs">No assets found.</div>
               ) : (
                 filteredAssets.map((asset: any) => (
-                  <div key={asset.id} className='glass-item flex items-center gap-3 border border-wav3 px-3 py-2 rounded-xl mb-2'>
+                  <div key={asset.id} className="glass-item flex items-center gap-2 border border-wav3 px-2 py-1 rounded-lg mb-1 shadow-sm backdrop-blur-md">
                     {renderAssetIcon(asset.symbol, asset.small_image_url, 'background')}
-                    <div className='flex-1'>
-                      <div className='font-semibold text-main'>{asset.name} <span className='text-xs text-muted'>({asset.symbol})</span></div>
-                      <div className='text-xs muted-text'>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-semibold text-main text-sm truncate">{asset.name} <span className="text-xs text-muted">({asset.symbol})</span></div>
+                      <div className="text-xs muted-text truncate">
                         {(asset.networks || []).map((n: any) => n.name).join(', ')}
                       </div>
                     </div>
-                    <Badge variant='outline' className='glass-badge'>
+                    <Badge variant="outline" className="glass-badge text-xs px-2 py-0.5">
                       {asset.type}
                     </Badge>
                   </div>

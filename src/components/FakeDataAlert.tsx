@@ -1,5 +1,4 @@
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import { Info, AlertTriangle } from 'lucide-react';
+import { AlertTriangle } from 'lucide-react';
 import type { ReactNode } from 'react';
 
 interface FakeDataAlertProps {
