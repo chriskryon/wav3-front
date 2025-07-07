@@ -184,3 +184,68 @@ export interface RegisterSharedBankAccountResponse {
   updated_at: string;
   message?: string; // para erros
 }
+
+// --- QUOTE ---
+/**
+ * Interface para request do endpoint /accounts/quote
+ */
+export interface QuoteRequest {
+  source_asset: string; // Ex: "BTC", "USDT", "BRL"
+  target_asset: string; // Ex: "BRL", "USDT", "BTC"
+  network: string;      // Ex: "bitcoin", "ethereum", "polygon"
+  product: string;      // Sempre "exchange"
+  source_amount?: number;
+  target_amount?: number;
+}
+
+/**
+ * Interface para response do endpoint /accounts/quote
+ */
+export interface QuoteResponse {
+  target_amount_estimate?: number;
+  source_amount_estimate?: number;
+  source_asset: string;
+  source_amount: number;
+  target_asset: string;
+  asset: {
+    name: string;
+    type: string;
+    small_image_url: string;
+    medium_image_url: string;
+    large_image_url: string;
+  };
+  price: {
+    symbol: string;
+    price: number;
+  };
+}
+
+/**
+ * Interface para erro do endpoint /accounts/quote
+ */
+export interface QuoteError {
+  message: string;
+}
+
+
+// Tipos para resposta da ordem
+export interface OrderAsset {
+  name: string;
+  type: string;
+  symbol: string;
+  small_image_url: string;
+  medium_image_url: string;
+  large_image_url: string;
+}
+
+export interface OrderResponse {
+  amount: number;
+  asset: OrderAsset;
+  date_time: string;
+  deposit: boolean;
+  exp_time: number;
+  message?: string;
+  network: string;
+  tag?: string;
+  wallet_address?: string;
+}
