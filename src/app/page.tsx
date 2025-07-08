@@ -339,7 +339,7 @@ export default function OverviewPage() {
           </Card>
 
           {/* Assets */}
-          <Card className="glass-card-enhanced/80 border border-zinc-900/10 shadow-lg backdrop-blur-md">
+          <Card className="glass-card-enhanced border border-wav3 px-4 py-3 rounded-xl shadow-md backdrop-blur-md">
             <CardHeader className="pb-2 pt-3 px-4">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg font-bold text-main">Assets</CardTitle>
@@ -364,16 +364,25 @@ export default function OverviewPage() {
               ) : filteredAssets.length === 0 ? (
                 <div className="text-center text-muted text-xs">No assets found.</div>
               ) : (
+                // Refined individual asset cards
                 filteredAssets.map((asset: any) => (
-                  <div key={asset.id} className="glass-item flex items-center gap-2 border border-wav3 px-2 py-1 rounded-lg mb-1 shadow-sm backdrop-blur-md">
+                  <div
+                    key={asset.id}
+                    className="glass-item flex items-center gap-4 border border-wav3/30 px-4 py-3 rounded-lg mb-2 shadow-md backdrop-blur-md hover:shadow-lg transition-shadow duration-300"
+                  >
                     {renderAssetIcon(asset.symbol, asset.small_image_url, 'background')}
                     <div className="flex-1 min-w-0">
-                      <div className="font-semibold text-main text-sm truncate">{asset.name} <span className="text-xs text-muted">({asset.symbol})</span></div>
+                      <div className="font-semibold text-main text-sm truncate">
+                        {asset.name} <span className="text-xs text-muted">({asset.symbol})</span>
+                      </div>
                       <div className="text-xs muted-text truncate">
                         {(asset.networks || []).map((n: any) => n.name).join(', ')}
                       </div>
                     </div>
-                    <Badge variant="outline" className="glass-badge text-xs px-2 py-0.5">
+                    <Badge
+                      variant="outline"
+                      className="glass-badge text-xs px-3 py-1 bg-primary/10 text-primary border-primary/30 rounded-full"
+                    >
                       {asset.type}
                     </Badge>
                   </div>
