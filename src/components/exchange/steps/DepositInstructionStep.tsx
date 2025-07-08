@@ -7,12 +7,16 @@ interface DepositInstructionStepProps {
   order: OrderResponse;
   onReturn: () => void;
   onDepositMade: () => void;
+  onBack: () => void;
+  onNext: (data?: any) => void;
 }
 
 export const DepositInstructionStep: React.FC<DepositInstructionStepProps> = ({
   order,
   onReturn,
   onDepositMade,
+  onBack,
+  onNext,
 }) => {
   const [timer, setTimer] = useState(order.exp_time || 1200);
 
@@ -33,6 +37,11 @@ export const DepositInstructionStep: React.FC<DepositInstructionStepProps> = ({
   const normalizedRadius = radius - stroke / 2;
   const circumference = normalizedRadius * 2 * Math.PI;
   const strokeDashoffset = circumference - percent * circumference;
+
+  const handleNext = () => {
+    const depositData = { /* Simulated deposit data */ };
+    onNext(depositData);
+  };
 
   return (
     <div className="w-full max-w-xl mx-auto bg-white rounded-3xl shadow-2xl p-10 flex flex-col gap-8 border-2 border-[#1ea3ab]/30 mt-6 mb-6 min-h-[480px] justify-center relative">
@@ -125,6 +134,21 @@ export const DepositInstructionStep: React.FC<DepositInstructionStepProps> = ({
           onClick={onDepositMade}
         >
           Deposit Made
+        </Button>
+      </div>
+      <div className="flex gap-4 mt-4">
+        <Button
+          variant="outline"
+          className="flex-1 border-gray-300 text-[#1ea3ab] bg-white hover:bg-[#e6f7f8] font-bold text-lg py-3 rounded-xl shadow"
+          onClick={onBack}
+        >
+          Back
+        </Button>
+        <Button
+          className="flex-1 bg-[#1ea3ab] hover:bg-[#1ea3ab]/90 text-white font-bold shadow-lg text-lg py-3 rounded-xl"
+          onClick={handleNext}
+        >
+          Next
         </Button>
       </div>
     </div>

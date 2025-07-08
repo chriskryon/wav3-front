@@ -6,6 +6,7 @@ import { ClientLayout } from '@/components/client-layout';
 import { RouteChangeLoader } from '@/components/RouteChangeLoader';
 import { Toaster } from '@/components/ui/sonner';
 import { ReactQueryProvider } from '@/components/react-query-provider';
+import { TooltipProvider } from '@/components/ui/tooltip';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -49,8 +50,10 @@ export default function RootLayout({
       <body className={`${inter.className} full-screen`}>
         <RouteChangeLoader />
         <ReactQueryProvider>
-          <ClientLayout>{children}</ClientLayout>
-          <Toaster />
+          <TooltipProvider>
+            <ClientLayout>{children}</ClientLayout>
+            <Toaster />
+          </TooltipProvider>
         </ReactQueryProvider>
       </body>
     </html>

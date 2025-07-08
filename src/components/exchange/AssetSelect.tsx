@@ -38,7 +38,7 @@ export const AssetSelect: React.FC<AssetSelectProps> = ({
   className = '',
 }) => (
   <Select value={value} onValueChange={onChange}>
-    <SelectTrigger className={`w-full h-16 rounded-xl flex items-center justify-start border-2 border-[#1ea3ab]/40 bg-[#f6fcfd] shadow hover:bg-[#e6f7f8] px-4 ${className}`}>
+    <SelectTrigger className={`w-full h-12 rounded-xl flex items-center justify-start border-2 border-[#1ea3ab]/40 bg-[#f6fcfd] shadow hover:bg-[#e6f7f8] px-4 ${className}`}>
       <div className='flex flex-row items-center gap-3 w-full'>
         {renderAssetIcon(assets.find(a => a.symbol === value))}
         <span className='text-base font-semibold text-[#1ea3ab]'>
@@ -46,16 +46,18 @@ export const AssetSelect: React.FC<AssetSelectProps> = ({
         </span>
       </div>
     </SelectTrigger>
-    <SelectContent className='max-h-64 overflow-y-auto bg-[#f6fcfd] rounded-xl shadow-lg border border-[#1ea3ab]/20'>
+    <SelectContent className='max-h-64 overflow-y-auto bg-[#f6fcfd]/60 backdrop-blur-sm bg-opacity-90 rounded-xl shadow-lg border border-[#1ea3ab]/20'>
       {assets.filter(a => !excludeSymbol || a.symbol !== excludeSymbol).map((asset) => (
         <SelectItem
           key={asset.symbol}
           value={asset.symbol}
-          className='flex flex-row items-center gap-2 py-2 px-2 rounded-lg transition-colors hover:bg-[#e6f7f8] focus:bg-[#e6f7f8] cursor-pointer min-h-[40px]'
+          className='flex items-center gap-2 py-1 px-2 rounded-lg transition-colors hover:bg-[#58b3b8] focus:bg-[#e6f7f8] cursor-pointer min-h-[36px]'
         >
-          {renderAssetIconSmall(asset)}
-          <span className='text-sm font-semibold text-[#1ea3ab]'>
-            {asset.name} ({asset.symbol})
+          <span className='flex flex-row items-center gap-2'>
+            {renderAssetIconSmall(asset)}
+            <span className='text-sm font-medium text-[#1ea3ab] truncate'>
+              {asset.name} ({asset.symbol})
+            </span>
           </span>
         </SelectItem>
       ))}
