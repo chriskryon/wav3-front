@@ -1,9 +1,10 @@
 'use client';
 
-import { Bell, Settings, User, Menu } from 'lucide-react';
+import { Bell, User, Menu, LogOut, User as UserIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
 import { useSidebarCollapse } from './app-sidebar';
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 
 export function AppHeader() {
   const [userData, setUserData] = useState<any>(null);
@@ -51,8 +52,26 @@ export function AppHeader() {
           ) : null}
         </div>
         {!userData?.hasBetaAccount && (
-          <span className='inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-50 text-yellow-700 border border-yellow-200 mt-1 shadow-sm'>
-            <svg width="14" height="14" viewBox="0 0 20 20" fill="none" className="mr-1"><circle cx="10" cy="10" r="10" fill="#facc15"/><path d="M10 6V10" stroke="white" strokeWidth="2" strokeLinecap="round"/><circle cx="10" cy="13" r="1" fill="white"/></svg>
+          <span
+            className='inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-50 text-yellow-700 border border-yellow-200 mt-1 shadow-sm cursor-pointer hover:bg-yellow-100 hover:shadow-md transition-colors'
+            onClick={() => {
+              if (typeof window !== 'undefined') {
+                window.location.href = '/profile';
+              }
+            }}
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 20 20"
+              fill="none"
+              className="mr-1 transition-colors"
+              style={{ color: '#facc15' }}
+            >
+              <circle cx="10" cy="10" r="10" fill="currentColor" />
+              <path d="M10 6V10" stroke="white" strokeWidth="2" strokeLinecap="round" />
+              <circle cx="10" cy="13" r="1" fill="white" />
+            </svg>
             Please complete your KYC information
           </span>
         )}
@@ -70,16 +89,36 @@ export function AppHeader() {
           {/* Badge de notificação (exemplo) */}
           <span className='absolute top-1 right-1 w-2 h-2 bg-primary rounded-full border-2 border-white animate-pulse' />
         </div>
-        <Button
-          variant='ghost'
-          size='sm'
-          className='backdrop-blur-sm bg-black/5 hover:bg-black/10 w-10 h-10 p-0 rounded-full border border-black/10 shadow-sm smooth-transition'
-        >
-          <Settings className='w-4 h-4 text-main' />
-        </Button>
-        <div className='w-9 h-9 rounded-full bg-gradient-to-br from-primary to-primary/80 text-white flex items-center justify-center shadow-md font-bold text-base uppercase select-none'>
-          {userData?.name ? userData.name[0] : <User className='w-4 h-4' />}
-        </div>
+
+        <DropdownMenu.Root>
+          <DropdownMenu.Trigger asChild>
+            <button className='w-9 h-9 rounded-full bg-gradient-to-br from-primary to-primary/80 text-white flex items-center justify-center shadow-md font-bold text-base uppercase select-none'>
+              {userData?.name ? userData.name[0] : <User className='w-4 h-4' />}
+            </button>
+          </DropdownMenu.Trigger>
+          <DropdownMenu.Content
+            className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg focus:outline-none"
+          >
+            <DropdownMenu.Item
+              className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-[#1ea3ab]/80 hover:text-white rounded-md cursor-pointer transition-colors"
+              onSelect={() => {
+                if (typeof window !== 'undefined') {
+                  window.location.href = '/profile';
+                }
+              }}
+            >
+              <UserIcon className="w-4 h-4 text-gray-700 group-hover:text-white transition-colors" />
+              Profile
+            </DropdownMenu.Item>
+            <DropdownMenu.Item
+              className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-[#e63946]/80 hover:text-white rounded-md cursor-pointer transition-colors"
+              onSelect={() => console.log('Exit clicked')}
+            >
+              <LogOut className="w-4 h-4 text-gray-700 group-hover:text-white transition-colors" />
+              Exit
+            </DropdownMenu.Item>
+          </DropdownMenu.Content>
+        </DropdownMenu.Root>
       </div>
     </header>
   );

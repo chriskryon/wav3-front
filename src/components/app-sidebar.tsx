@@ -10,6 +10,8 @@ import {
   LogOut,
   PiggyBank,
   ArrowLeftRight,
+  Landmark,
+  ReceiptText,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -38,7 +40,7 @@ const menuItems = [
   {
     title: 'Banking Account',
     url: '/banking-account',
-    icon: PiggyBank,
+    icon: Landmark,
   },
   {
     title: 'Exchange',
@@ -48,7 +50,7 @@ const menuItems = [
   {
     title: 'Orders',
     url: '/orders',
-    icon: ShoppingCart,
+    icon: ReceiptText,
   },
   {
     title: 'Cards',
@@ -187,13 +189,18 @@ export function AppSidebar() {
 
         {/* User Info & Logout */}
         <div
-          className={`flex items-center gap-3 w-full px-3 ${collapsed ? 'justify-center' : ''}`}
+          className={`flex items-center gap-3 w-full px-3 ${collapsed ? 'justify-center' : ''} cursor-pointer`}
+          onClick={() => {
+            if (typeof window !== 'undefined') {
+              window.location.href = '/profile';
+            }
+          }}
         >
           <div className='w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center shadow-md'>
             <User className='w-5 h-5' />
           </div>
           {!collapsed && userData && (
-            <div className='flex-1 min-w-0 animate-fade-in'>
+            <div className='flex-1 min-w-0 animate-fade-in '>
               <div className='text-sm font-medium text-main truncate'>
                 {userData.name || userData.email}
               </div>

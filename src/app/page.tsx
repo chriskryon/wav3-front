@@ -163,19 +163,19 @@ export default function OverviewPage() {
 
         {/* Balance Cards (mock) */}
         <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
-          <Card className='glass-card-enhanced glass-hover'>
+          <Card className='glass-card-enhanced glass-hover transition-transform transform hover:scale-105'>
             <CardHeader className='pb-4'>
               <div className='flex items-center justify-between'>
-                <CardTitle className='text-sm muted-text font-medium'>
+                <CardTitle className='text-sm text-muted-foreground font-medium'>
                   Total Portfolio
                 </CardTitle>
-                <div className='w-10 h-10 rounded-xl bg-primary text-white flex items-center justify-center shadow-md'>
+                <div className='w-10 h-10 rounded-xl bg-gradient-to-br from-yellow-500 to-orange-500 text-white flex items-center justify-center shadow-md'>
                   <DollarSign className='w-5 h-5' />
                 </div>
               </div>
             </CardHeader>
             <CardContent>
-              <div className='text-3xl font-bold primary-text'>
+              <div className='text-4xl font-extrabold text-primary'>
                 ${balances.total.toLocaleString()}
               </div>
               <div className='flex items-center gap-2 mt-3'>
@@ -189,43 +189,43 @@ export default function OverviewPage() {
             </CardContent>
           </Card>
 
-          <Card className='glass-card-enhanced glass-hover'>
+          <Card className='glass-card-enhanced glass-hover transition-transform transform hover:scale-105'>
             <CardHeader className='pb-4'>
               <div className='flex items-center justify-between'>
-                <CardTitle className='text-sm muted-text font-medium'>
+                <CardTitle className='text-sm text-muted-foreground font-medium'>
                   Crypto Balance
                 </CardTitle>
-                <div className='w-10 h-10 rounded-xl bg-linear-to-br from-purple-500 to-blue-500 text-white flex items-center justify-center shadow-md'>
+                <div className='w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-blue-500 text-white flex items-center justify-center shadow-md'>
                   <Wallet className='w-5 h-5' />
                 </div>
               </div>
             </CardHeader>
             <CardContent>
-              <div className='text-2xl font-bold text-main'>
+              <div className='text-3xl font-bold text-primary'>
                 ${balances.crypto.toLocaleString()}
               </div>
-              <div className='text-sm muted-text mt-1'>
+              <div className='text-sm text-muted-foreground mt-1'>
                 {((balances.crypto / balances.total) * 100).toFixed(1)}% of total
               </div>
             </CardContent>
           </Card>
 
-          <Card className='glass-card-enhanced glass-hover'>
+          <Card className='glass-card-enhanced glass-hover transition-transform transform hover:scale-105'>
             <CardHeader className='pb-4'>
               <div className='flex items-center justify-between'>
-                <CardTitle className='text-sm muted-text font-medium'>
+                <CardTitle className='text-sm text-muted-foreground font-medium'>
                   Fiat Balance
                 </CardTitle>
-                <div className='w-10 h-10 rounded-xl bg-linear-to-br from-green-500 to-emerald-500 text-white flex items-center justify-center shadow-md'>
+                <div className='w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 text-white flex items-center justify-center shadow-md'>
                   <DollarSign className='w-5 h-5' />
                 </div>
               </div>
             </CardHeader>
             <CardContent>
-              <div className='text-2xl font-bold text-main'>
+              <div className='text-3xl font-bold text-primary'>
                 ${balances.fiat.toLocaleString()}
               </div>
-              <div className='text-sm muted-text mt-1'>
+              <div className='text-sm text-muted-foreground mt-1'>
                 {((balances.fiat / balances.total) * 100).toFixed(1)}% of total
               </div>
             </CardContent>
@@ -279,7 +279,7 @@ export default function OverviewPage() {
             <CardHeader>
               <div className='flex items-center justify-between'>
                 <CardTitle className='text-xl font-bold text-main'>
-                  Recent Transactions
+                  Recent Orders
                 </CardTitle>
                 <Button variant='ghost' size='sm' className='glass-button'>
                   <RefreshCw className='w-4 h-4' />
@@ -343,9 +343,7 @@ export default function OverviewPage() {
             <CardHeader className="pb-2 pt-3 px-4">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg font-bold text-main">Assets</CardTitle>
-                <Button variant="ghost" size="sm" className="glass-button">
-                  <Plus className="w-4 h-4" />
-                </Button>
+                {/* Botão '+' removido */}
               </div>
             </CardHeader>
             <CardContent className="space-y-2 max-h-72 scroll-area px-4 pb-4 pt-1">
