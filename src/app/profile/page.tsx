@@ -294,7 +294,13 @@ export default function ProfilePage() {
                         watch('tax_id_type') ||
                         (taxIdTypes[watch('country') as keyof typeof taxIdTypes]?.[0]?.value ?? '')
                       }
-                      onValueChange={(value) => setValue('tax_id_type', value)}
+                      onValueChange={(value) => {
+                        setValue('tax_id_type', value);
+                        if (!value) {
+                          const defaultType = taxIdTypes[watch('country') as keyof typeof taxIdTypes]?.[0]?.value;
+                          setValue('tax_id_type', defaultType || '');
+                        }
+                      }}
                       disabled={!watch('country') || userData?.profileCompleted}
                     >
                       {(taxIdTypes[watch('country') as keyof typeof taxIdTypes] || []).map((type) => (
