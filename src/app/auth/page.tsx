@@ -12,7 +12,7 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { loginUser, registerUser } from '@/services/api-service';
+import { getBetaAccountDetail, loginUser, registerUser, setUserGlobal } from '@/services/api-service';
 import logo from '../logo.svg';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
@@ -40,9 +40,6 @@ export default function AuthPage() {
 
       if (profileCompleted) {
         try {
-          const { getBetaAccountDetail, setUserGlobal } = await import(
-            '@/services/api-service'
-          );
           const betaAccount = await getBetaAccountDetail();
           const user = result.user;
           if (user) {
