@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ICONS_CRYPTO_FIAT } from '@/lib/assetIcons';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
+import { pdf } from '@react-pdf/renderer';
+import { OrderDetailPDF } from './OrderDetailPDF';
+import { Download } from 'lucide-react';
 
 // Mock detailed order data
-const mockOrderDetail = {
+export const mockOrderDetail = {
   id: 'e6282263-f947-48c8-9c25-334696a4940e',
   source_asset: 'XRP',
   source_amount: 64.76,
@@ -57,6 +60,9 @@ interface OrderDetailModalProps {
 
 export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ open, onOpenChange }) => {
   const order = mockOrderDetail;
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const [loading, setLoading] = useState(false);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className='glass-card-enhanced max-w-lg max-h-[90vh] overflow-y-auto'>
@@ -189,6 +195,25 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ open, onOpen
                 );
               })}
             </div>
+          </div>
+          <div className='flex justify-end mt-4'>
+            <button
+              onClick={async () => {
+                setLoading(true);
+                const blob = await pdf(<OrderDetailPDF order={order} user={user} />).toBlob();
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `wav3_order_${order.id}.pdf`;
+                link.click();
+                URL.revokeObjectURL(url);
+                setLoading(false);
+              }}
+              className='flex items-center gap-2 bg-primary text-white px-4 py-2 rounded shadow hover:bg-primary/90 transition-all'
+            >
+              <Download className='w-4 h-4' />
+              {loading ? 'Generating PDF...' : 'Download PDF'}
+            </button>
           </div>
         </div>
       </DialogContent>
