@@ -36,23 +36,26 @@ export function AppHeader() {
         </Button>
       )}
 
-      <div className='flex flex-col items-center sm:items-start text-center sm:text-left gap-1 py-2'>
-        <h1 className='text-xl sm:text-2xl font-semibold primary-text truncate max-w-xs sm:max-w-none'>
-          {userData?.hasBetaAccount
-            ? `Hello, ${userData.name || 'Crypto Trader'}!`
-            : 'Complete Your Profile'}
-        </h1>
-        <p className='text-xs sm:text-sm text-main'>
+      <div className='flex flex-col items-center sm:items-start text-center sm:text-left gap-0 py-1'>
+        <div className="flex items-center gap-2">
+          <h1 className='text-sm sm:text-base font-semibold text-[#1ea3ab] tracking-tight truncate max-w-[180px] sm:max-w-none'>
+            {userData?.hasBetaAccount
+              ? `Hello, ${userData.name || 'User'}!`
+              : 'Complete Your Profile'}
+          </h1>
           {userData?.hasBetaAccount ? (
-            <span className='inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800'>
+            <span className='inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[#e6f7f8] text-[#1ea3ab] border border-[#1ea3ab]/30 ml-1 shadow-sm'>
+              <svg width="14" height="14" viewBox="0 0 20 20" fill="none" className="mr-1"><circle cx="10" cy="10" r="10" fill="#1ea3ab"/><path d="M6 10.5L9 13.5L14 8.5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
               Verified
             </span>
-          ) : (
-            <span className='inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800'>
-              Please complete your KYC information
-            </span>
-          )}
-        </p>
+          ) : null}
+        </div>
+        {!userData?.hasBetaAccount && (
+          <span className='inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-50 text-yellow-700 border border-yellow-200 mt-1 shadow-sm'>
+            <svg width="14" height="14" viewBox="0 0 20 20" fill="none" className="mr-1"><circle cx="10" cy="10" r="10" fill="#facc15"/><path d="M10 6V10" stroke="white" strokeWidth="2" strokeLinecap="round"/><circle cx="10" cy="13" r="1" fill="white"/></svg>
+            Please complete your KYC information
+          </span>
+        )}
       </div>
 
       <div className='flex items-center gap-2 sm:gap-4'>
