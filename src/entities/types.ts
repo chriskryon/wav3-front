@@ -202,22 +202,24 @@ export interface QuoteRequest {
  * Interface para response do endpoint /accounts/quote
  */
 export interface QuoteResponse {
-  target_amount_estimate?: number;
-  source_amount_estimate?: number;
-  source_asset: string;
-  source_amount: number;
-  target_asset: string;
   asset: {
-    name: string;
+    name?: string;
     type: string;
     small_image_url: string;
     medium_image_url: string;
     large_image_url: string;
   };
-  price: {
+  price?: {
     symbol: string;
     price: number;
   };
+  price_reference?: number; // Preço de referência, se disponível
+  source_amount: number;
+  source_amount_estimate?: number;
+  source_asset: string;
+  target_amount?: number;
+  target_amount_estimate?: number;
+  target_asset: string;
 }
 
 /**
