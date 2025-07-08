@@ -141,21 +141,26 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ open, onOpen
                   : isCurrent
                   ? 'shadow border-[#1ea3ab]'
                   : 'shadow border-[#e6f7f8]';
+                // Use a unique key based on order_step and executed_at
+                const timelineKey = `${step.order_step}-${step.executed_at}`;
                 return (
-                  <div key={idx} className="relative flex items-center gap-2 mb-2 min-h-[48px]">
+                  <div key={timelineKey} className="relative flex items-center gap-2 mb-2 min-h-[48px]">
                     {/* Step icon circle */}
                     <div className={`flex items-center justify-center w-8 h-8 rounded-full border ${iconBorder} ${iconBg} shadow z-10 shrink-0`}>
                       {step.executed ? (
                         <svg className="fill-current" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24">
+                          <title>Executed</title>
                           <polyline points="20 6 10 18 4 12" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                       ) : isCurrent ? (
                         <svg className="fill-current animate-pulse" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24">
+                          <title>Current</title>
                           <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="2.2" />
                           <circle cx="12" cy="12" r="6" fill="#1ea3ab" opacity="0.2" className="animate-ping" />
                         </svg>
                       ) : (
                         <svg className="fill-current" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24">
+                          <title>Title</title>
                           <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="2.2" />
                         </svg>
                       )}
