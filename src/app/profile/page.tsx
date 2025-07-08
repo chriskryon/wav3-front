@@ -28,7 +28,9 @@ function KycTestWarningCard() {
   return (
     <div className="mb-8">
       <div className="rounded-xl border border-yellow-400 bg-yellow-50 p-4 flex items-center gap-4 shadow-sm animate-pulse-slow">
-        <svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="orange" className="w-8 h-8"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        <svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="orange" className="w-8 h-8"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        <title>KYC Warning</title>
+        </svg>
         <div>
           <div className="font-semibold text-yellow-800 mt-1">
             Test Environment: Fill KYC with fake/test data only.<br />
@@ -197,18 +199,18 @@ export default function ProfilePage() {
   ];
 
   return (
-    <div className="content-height p-2 md:p-4 scroll-area bg-background">
+    <div className="content-height p-2 md:p-4 scroll-area bg-gradient-to-br from-[#e6f2f2] via-[#f8fafc] to-[#e6f2f2]">
       <div className="max-w-xl mx-auto space-y-4">
         <KycTestWarningCard />
         {/* Header */}
         <div className="text-center mb-1">
-          <div className="w-12 h-12 rounded-xl bg-primary text-white flex items-center justify-center mx-auto mb-1 shadow-md">
+          <div className="w-12 h-12 rounded-xl bg-primary/80 text-white flex items-center justify-center mx-auto mb-1 shadow-lg backdrop-blur-md">
             <User className="w-6 h-6" />
           </div>
           <h1 className="text-xl font-bold text-main">Complete Your Profile</h1>
           <p className="muted-text text-sm mt-1">Please provide your information to comply with KYC requirements</p>
         </div>
-        <Card className="glass-card-enhanced/80 border border-wav3 shadow-lg backdrop-blur-md">
+        <Card className="glass-card border border-primary/20 shadow-xl backdrop-blur-md">
           <CardHeader className="pb-1 px-4 pt-4">
             <CardTitle className="text-base font-bold text-main flex items-center gap-2">
               <CreditCard className="w-4 h-4 text-primary" />
@@ -220,7 +222,7 @@ export default function ProfilePage() {
               {/* Basic Information */}
               <div className='grid grid-cols-1 md:grid-cols-2 gap-3'>
                 <div className="space-y-1">
-                  <Label htmlFor="full_name" className="text-xs font-medium muted-text">
+                  <Label htmlFor="full_name" className="text-xs font-medium text-primary/80">
                     Full Name *
                   </Label>
                   <Input
@@ -228,7 +230,7 @@ export default function ProfilePage() {
                     type="text"
                     placeholder="Enter your full name"
                     {...register('full_name', { required: true })}
-                    className="glass-input h-10 text-sm px-3"
+                    className="glass-input h-10 text-sm px-3 bg-white/80 border border-primary/10 focus:border-primary/40 focus:ring-2 focus:ring-primary/20 transition"
                     disabled
                   />
                   {errors.full_name && (
@@ -236,7 +238,7 @@ export default function ProfilePage() {
                   )}
                 </div>
                 <div className="space-y-1">
-                  <Label htmlFor="email" className="text-xs font-medium muted-text">
+                  <Label htmlFor="email" className="text-xs font-medium text-primary/80">
                     Email *
                   </Label>
                   <Input
@@ -244,7 +246,7 @@ export default function ProfilePage() {
                     type="email"
                     placeholder="Enter your email"
                     {...register('email', { required: true })}
-                    className="glass-input h-10 text-sm px-3"
+                    className="glass-input h-10 text-sm px-3 bg-white/80 border border-primary/10 focus:border-primary/40 focus:ring-2 focus:ring-primary/20 transition"
                     disabled
                   />
                   {errors.email && (
@@ -261,7 +263,7 @@ export default function ProfilePage() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   <div className="space-y-1">
-                    <Label htmlFor="country" className="text-xs font-medium muted-text">
+                    <Label htmlFor="country" className="text-xs font-medium text-primary/80">
                       Country *
                     </Label>
                     <ProfileSelect
@@ -283,9 +285,8 @@ export default function ProfilePage() {
                       <span className="text-red-500 text-xs">Required</span>
                     )}
                   </div>
-                  {/* Tax ID Type: always show, with country-specific options */}
                   <div className="space-y-1">
-                    <Label htmlFor="tax_id_type" className="text-xs font-medium muted-text">
+                    <Label htmlFor="tax_id_type" className="text-xs font-medium text-primary/80">
                       Tax ID Type *
                     </Label>
                     <ProfileSelect
@@ -307,7 +308,7 @@ export default function ProfilePage() {
                     )}
                   </div>
                   <div className="space-y-1">
-                    <Label htmlFor="tax_id_number" className="text-xs font-medium muted-text">
+                    <Label htmlFor="tax_id_number" className="text-xs font-medium text-primary/80">
                       Tax ID Number *
                     </Label>
                     <Input
@@ -315,7 +316,7 @@ export default function ProfilePage() {
                       type="text"
                       placeholder="Enter tax ID number"
                       {...register('tax_id_number', { required: true })}
-                      className="glass-input h-10 text-sm px-3"
+                      className="glass-input h-10 text-sm px-3 bg-white/80 border border-primary/10 focus:border-primary/40 focus:ring-2 focus:ring-primary/20 transition"
                       disabled={userData?.profileCompleted}
                     />
                     {errors.tax_id_number && (
@@ -432,26 +433,26 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              {/* Submit Button */}
-              <div className='flex justify-center pt-4'>
+                {/* Submit Button */}
+                <div className='flex justify-center pt-4'>
                 <Button
                   type="submit"
                   disabled={isLoading || userData?.profileCompleted}
-                  className="w-full md:w-auto px-8 h-10 bg-primary hover:bg-primary/90 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 glass-card-enhanced/80"
+                  className="w-full md:w-auto px-8 h-10 bg-primary/80 text-white font-semibold shadow-lg hover:bg-primary/90 hover:shadow-xl transition-all duration-300"
                 >
                   {isLoading ? (
-                    <>
-                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
-                      Saving Profile...
-                    </>
+                  <>
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
+                    Saving Profile...
+                  </>
                   ) : (
-                    <>
-                      <Save className="w-5 h-5 mr-2" />
-                      Complete Profile
-                    </>
+                  <>
+                    <Save className="w-5 h-5 mr-2" />
+                    Complete Profile
+                  </>
                   )}
                 </Button>
-              </div>
+                </div>
             </form>
           </CardContent>
         </Card>
