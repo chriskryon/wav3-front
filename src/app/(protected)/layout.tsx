@@ -1,8 +1,8 @@
 "use client"
 
-import { useEffect } from "react"
 import { useUser } from "@/hooks/useUser"
 import { RequireBetaAccount } from "@/components/auth/RequireBetaAccount"
+import { useEffect } from "react"
 
 export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
   const { user, fetchUser } = useUser()
@@ -12,9 +12,6 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
         fetchUser();
     }
   }, [user, fetchUser])
-
-  useEffect(() => {
-  }, [user])
 
   return (
     <RequireBetaAccount hasBetaAccount={user?.hasBetaAccount}>
