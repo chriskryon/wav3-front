@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { renderAssetIconUnified } from '../AssetSelect';
-import { OrderResponse } from '@/entities/types';
+import type { OrderResponse } from '@/entities/types';
 
 interface DepositInstructionStepProps {
   order: OrderResponse;
@@ -49,6 +49,7 @@ export const DepositInstructionStep: React.FC<DepositInstructionStepProps> = ({
         <span className="text-2xl font-extrabold text-[#1ea3ab] tracking-tight">Deposit Instructions</span>
         <span className="relative flex flex-col items-center justify-center min-w-[100px]">
           <svg width={90} height={90} className="mb-1" style={{ display: 'block' }}>
+            <title>Deposit Timer</title>
             <circle
               cx={45}
               cy={45}

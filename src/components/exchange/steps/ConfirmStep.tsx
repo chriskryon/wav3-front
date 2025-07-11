@@ -17,10 +17,10 @@ export const ConfirmStep: React.FC<ConfirmStepProps> = ({ data, onBack, onNext }
       <h2 className="text-xl font-bold">Confirm Step</h2>
       <p>Source: {data?.source}</p>
       <p>Target: {data?.target}</p>
-      <button onClick={onBack} className="mt-4 px-4 py-2 bg-gray-500 text-white rounded">
+      <button type="button" onClick={onBack} className="mt-4 px-4 py-2 bg-gray-500 text-white rounded">
         Back
       </button>
-      <button onClick={handleNext} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded">
+      <button type="button" onClick={handleNext} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded">
         Next
       </button>
     </div>
