@@ -60,7 +60,7 @@ interface OrderDetailModalProps {
 
 export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ open, onOpenChange }) => {
   const order = mockOrderDetail;
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const user = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('user') || '{}') : {};
   const [loading, setLoading] = useState(false);
 
   return (
