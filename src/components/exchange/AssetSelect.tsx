@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 import { Select, SelectTrigger, SelectContent, SelectItem } from '@/components/ui/select';
 import { TokenIcon } from '@/components/ui/token-icon';
 import { US, CO, MX, BR, AR, EU } from 'country-flag-icons/react/3x2';
@@ -10,6 +10,7 @@ const CustomUsdcUsfrifIcon = ({ size = 32 }: { size?: number }) => (
     style={{ width: size, height: size }}
   >
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <title>Asset Selection</title>
       <circle cx="12" cy="12" r="12" fill="#1ea3ab"/>
       <text x="12" y="16" textAnchor="middle" fontSize={size === 32 ? 10 : 8} fill="white" fontWeight="bold">USDC</text>
     </svg>

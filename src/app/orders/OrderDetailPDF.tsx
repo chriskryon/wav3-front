@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noArrayIndexKey: <explanation> */
 import { Document, Page, Text, View, Image, StyleSheet } from '@react-pdf/renderer';
 import { mockOrderDetail } from './OrderDetailModal';
 

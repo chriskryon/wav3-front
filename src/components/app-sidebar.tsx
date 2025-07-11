@@ -188,13 +188,22 @@ export function AppSidebar() {
         </Button>
 
         {/* User Info & Logout */}
-        <div
-          className={`flex items-center gap-3 w-full px-3 ${collapsed ? 'justify-center' : ''} cursor-pointer`}
+        <button
+          type="button"
+          className={`flex items-center gap-3 w-full px-3 ${collapsed ? 'justify-center' : ''} cursor-pointer focus:outline-none`}
           onClick={() => {
             if (typeof window !== 'undefined') {
               window.location.href = '/profile';
             }
           }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              if (typeof window !== 'undefined') {
+                window.location.href = '/profile';
+              }
+            }
+          }}
+          aria-label="Go to profile"
         >
           <div className='w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center shadow-md'>
             <User className='w-5 h-5' />
@@ -221,7 +230,7 @@ export function AppSidebar() {
               <LogOut className='w-5 h-5 text-red-500 group-hover:text-red-700 transition-colors' />
             </Button>
           )}
-        </div>
+        </button>
       </div>
     </aside>
   );

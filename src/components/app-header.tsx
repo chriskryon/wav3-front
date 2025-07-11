@@ -46,17 +46,27 @@ export function AppHeader() {
           </h1>
           {userData?.hasBetaAccount ? (
             <span className='inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[#e6f7f8] text-[#1ea3ab] border border-[#1ea3ab]/30 ml-1 shadow-sm'>
-              <svg width="14" height="14" viewBox="0 0 20 20" fill="none" className="mr-1"><circle cx="10" cy="10" r="10" fill="#1ea3ab"/><path d="M6 10.5L9 13.5L14 8.5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              <svg width="14" height="14" viewBox="0 0 20 20" fill="none" className="mr-1"><circle cx="10" cy="10" r="10" fill="#1ea3ab"/><path d="M6 10.5L9 13.5L14 8.5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <title>Verified</title>
+              </svg>
               Verified
             </span>
           ) : null}
         </div>
         {!userData?.hasBetaAccount && (
-          <span
+          <button
+            type="button"
             className='inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-50 text-yellow-700 border border-yellow-200 mt-1 shadow-sm cursor-pointer hover:bg-yellow-100 hover:shadow-md transition-colors'
             onClick={() => {
               if (typeof window !== 'undefined') {
                 window.location.href = '/profile';
+              }
+            }}
+            onKeyUp={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                if (typeof window !== 'undefined') {
+                  window.location.href = '/profile';
+                }
               }
             }}
           >
@@ -68,12 +78,13 @@ export function AppHeader() {
               className="mr-1 transition-colors"
               style={{ color: '#facc15' }}
             >
+              <title>KYC</title>
               <circle cx="10" cy="10" r="10" fill="currentColor" />
               <path d="M10 6V10" stroke="white" strokeWidth="2" strokeLinecap="round" />
               <circle cx="10" cy="13" r="1" fill="white" />
             </svg>
             Please complete your KYC information
-          </span>
+          </button>
         )}
       </div>
 
@@ -92,7 +103,7 @@ export function AppHeader() {
 
         <DropdownMenu.Root>
           <DropdownMenu.Trigger asChild>
-            <button className='w-9 h-9 rounded-full bg-gradient-to-br from-primary to-primary/80 text-white flex items-center justify-center shadow-md font-bold text-base uppercase select-none'>
+            <button type='button' className='w-9 h-9 rounded-full bg-gradient-to-br from-primary to-primary/80 text-white flex items-center justify-center shadow-md font-bold text-base uppercase select-none'>
               {userData?.name ? userData.name[0] : <User className='w-4 h-4' />}
             </button>
           </DropdownMenu.Trigger>

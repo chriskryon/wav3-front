@@ -198,6 +198,7 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ open, onOpen
           </div>
           <div className='flex justify-end mt-4'>
             <button
+              type="button"
               onClick={async () => {
                 setLoading(true);
                 const blob = await pdf(<OrderDetailPDF order={order} user={user} />).toBlob();

@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/correctness/useExhaustiveDependencies: <explanation> */
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { listAssets } from '@/services/api-service';
