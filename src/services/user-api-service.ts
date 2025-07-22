@@ -12,7 +12,7 @@ export async function registerUser({
   hasBetaAccount?: boolean;
 }> {
   try {
-    const response = await api.post('/users/signup', { name, email, password });
+    const response = await api.post('/user/signup', { name, email, password });
 
     if (response.data?.token) {
       localStorage.setItem('token', response.data.token);
@@ -47,7 +47,7 @@ export async function loginUser({
   hasBetaAccount: boolean;
 }> {
   try {
-    const response = await api.post('/users/signin', { email, password });
+    const response = await api.post('/user/signin', { email, password });
 
     if (response.data?.token) {
       localStorage.setItem('token', response.data.token);
