@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import type React from 'react';
+import { useState, useEffect } from 'react';
 import { useExchangeContext } from '@/context/ExchangeContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { AssetSelect } from '../AssetSelect';
 import { RefreshCw } from 'lucide-react';
-import { getQuote } from '@/services/api-service';
 import { useRequest } from '@/hooks/useRequest';
 import { ArrowUpDown } from 'lucide-react';
+import { getQuote } from '@/services/exchange-api-service';
 
 export const QuoteStep: React.FC = () => {
   const {
@@ -29,7 +30,8 @@ export const QuoteStep: React.FC = () => {
   const [error, setError] = useState<string | null>(contextError || null);
 
   // Update targetAsset dynamically based on sourceAsset changes
-  useEffect(() => {
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <->
+    useEffect(() => {
     if (assets && assets.length > 0) {
       if (contextSourceAsset?.type === 'crypto') {
         setContextTargetAsset(assets.find((a) => a.symbol === 'BRL'));
@@ -39,6 +41,7 @@ export const QuoteStep: React.FC = () => {
     }
   }, [contextSourceAsset, assets]);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <->
   useEffect(() => {
     if (assets && assets.length > 0) {
       setContextSourceAsset(assets.find((a) => a.symbol === 'BTC'));

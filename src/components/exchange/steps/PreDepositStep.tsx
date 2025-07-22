@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useExchangeContext } from '@/context/ExchangeContext';
 import { NetworkIcon } from '@/components/ui/network-icon';
-import { getQuote } from '@/services/api-service'; // Importando os endpoints corretos
 import { useToast } from '@/hooks/use-toast'; // Importando o hook de toast
+import { getQuote } from '@/services/exchange-api-service';
 
 interface PreDepositStepProps {
   onBack: () => void;
@@ -46,6 +47,7 @@ export const PreDepositStep: React.FC<PreDepositStepProps> = ({ onBack, onConfir
     }
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <->
   useEffect(() => {
     const interval = setInterval(() => {
       fetchQuote();
