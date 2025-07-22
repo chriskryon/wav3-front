@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import {
   Plus,
-  Eye,
   Copy,
   HandCoins,
   Loader2,
@@ -20,24 +19,18 @@ import {
 } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import {
-  deleteWallet,
-  registerWallet,
-  listWallets,
-  registerWalletShared,
-} from '@/services/api-service';
 import type { Wallet } from '@/entities/types';
 import {
   TokenBTC,
   TokenETH,
   TokenXRP,
   TokenUSDT,
-  TokenXCUR,
 } from '@web3icons/react';
 import { WalletCard } from '@/components/wallet-card';
 import { ExternalWallet } from '@/components/wallets/ExternalWallet';
 import { SharedWallet } from '@/components/wallets/SharedWallet';
 import { Label } from '@/components/ui/label';
+import { deleteWallet, listWallets, registerExternalWallet, registerSharedWallet } from '@/services/wallet-api-service';
 
 export default function WalletsPage() {
   const [showNewWalletModal, setShowNewWalletModal] = useState<
@@ -141,7 +134,7 @@ export default function WalletsPage() {
 
   // Mutação para adicionar wallet
   const addWalletMutation = useMutation({
-    mutationFn: registerWallet,
+    mutationFn: registerExternalWallet,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['wallets'] });
     },
@@ -188,53 +181,68 @@ export default function WalletsPage() {
       onSuccess: (result: any) => {
         if (result.message) {
           if (result.message.toLowerCase().includes('duplicate')) {
-            toast.error('Endereço de wallet já cadastrado.');
+            toast.error('Wallet address already registered.');
           } else if (
             result.message === 'Falha ao registrar wallet na Beta Ramps'
           ) {
-            toast.error('Falha ao registrar wallet na Beta Ramps.');
+            toast.error('Failed to register wallet in Beta Ramps.');
           } else {
             toast.error(result.message);
           }
         } else if (result.id) {
-          toast.success('Carteira cadastrada com sucesso!');
+          toast.success('Wallet registered successfully!');
           setShowNewWalletModal(false);
           setNewWallet({ name: '', asset: '', address: '', network: '' });
         } else {
-          toast.error('Erro inesperado ao registrar wallet');
+          toast.error('Unexpected error registering wallet');
         }
       },
-      onError: () => toast.error('Erro ao registrar wallet'),
+      onError: () => toast.error('Error registering wallet'),
     });
   };
 
   const handleRegisterShared = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!sharedWallet.asset || !sharedWallet.network) {
-      toast.error('Selecione o ativo e a rede!');
+      toast.error('Select asset and network!');
       return;
     }
     setIsRegisteringShared(true);
     setSharedResult(null);
     try {
-      const result = await registerWalletShared(sharedWallet);
+      const result = await registerSharedWallet(sharedWallet);
       setSharedResult(result);
+
+      // Sucesso: carteira compartilhada criada
       if (result.id && result.wallet_type === 'shared') {
-        toast.success('Endereço compartilhado criado com sucesso!');
+        toast.success('Shared wallet created successfully!');
         queryClient.invalidateQueries({ queryKey: ['wallets'] });
-      } else if (result.message) {
-        if (result.message.includes('Já existe uma shared wallet')) {
-          toast.error('Já existe uma shared wallet para esse ativo e rede.');
-        } else if (result.message.includes('Asset ou network inválido')) {
-          toast.error('Asset ou network inválido.');
-        } else {
-          toast.error(result.message);
-        }
-      } else {
-        toast.error('Erro inesperado ao registrar shared wallet.');
+        return;
       }
+
+      // Erro de validação (400)
+      if (result.message && Array.isArray(result.details)) {
+        const detailMsg = result.details.map((d: any) => d.message).join(', ');
+        toast.error(detailMsg || 'Validation error when registering wallet.');
+        return;
+      }
+
+      // Mensagem de erro simples (400 ou 404)
+      if (result.message) {
+        toast.error(result.message);
+        return;
+      }
+
+      // Erro inesperado (500)
+      if (result.error) {
+        toast.error(result.error);
+        return;
+      }
+
+      // Fallback
+      toast.error('Unexpected error registering shared wallet.');
     } catch (err: any) {
-      toast.error(err?.message || 'Erro ao registrar shared wallet.');
+      toast.error(err?.message || 'Error registering shared wallet.');
     } finally {
       setIsRegisteringShared(false);
     }
@@ -245,11 +253,11 @@ export default function WalletsPage() {
     setDeleting(true);
     deleteWalletMutation.mutate(selectedWallet.id, {
       onSuccess: () => {
-        toast.success('Carteira apagada com sucesso!');
+        toast.success('Wallet deleted successfully!');
         setSelectedWallet(null);
         setShowDeleteConfirm(false);
       },
-      onError: () => toast.error('Erro ao apagar carteira'),
+      onError: () => toast.error('Error deleting wallet'),
       onSettled: () => setDeleting(false),
     });
   };
@@ -297,7 +305,7 @@ export default function WalletsPage() {
             style={{ minHeight: 80 }}
           >
             <Plus className='w-7 h-7 mb-1' />
-            <span className='text-base font-semibold'>Pagamentos</span>
+            <span className='text-base font-semibold'>Payments</span>
           </Button>
           <Button
             variant='outline'
@@ -306,7 +314,7 @@ export default function WalletsPage() {
             style={{ minHeight: 80 }}
           >
             <HandCoins className='w-7 h-7 mb-1' />
-            <span className='text-base font-semibold'>Recebimentos</span>
+            <span className='text-base font-semibold'>Deposits</span>
           </Button>
         </div>
 
@@ -547,13 +555,15 @@ export default function WalletsPage() {
                 </div>
                 {/* Action Buttons */}
                 <div className='flex justify-end'>
-                  <Button
-                    variant='destructive'
-                    className='bg-red-600 hover:bg-red-700 text-white font-semibold px-6'
-                    onClick={() => setShowDeleteConfirm(true)}
-                  >
-                    Delete
-                  </Button>
+                  {selectedWallet.wallet_type === 'external' && (
+                    <Button
+                      variant='destructive'
+                      className='bg-red-600 hover:bg-red-700 text-white font-semibold px-6'
+                      onClick={() => setShowDeleteConfirm(true)}
+                    >
+                      Delete
+                    </Button>
+                  )}
                 </div>
               </div>
             )}

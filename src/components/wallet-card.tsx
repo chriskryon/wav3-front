@@ -1,6 +1,6 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Copy, Eye } from 'lucide-react';
+import { Copy, MoreHorizontal } from 'lucide-react';
 import { TokenIcon } from '@/components/ui/token-icon';
 
 // Paleta de gradientes por asset
@@ -35,6 +35,7 @@ export function WalletCard({ wallet, type, onCopy, onView }: WalletCardProps) {
         <div
           className={`relative min-h-[8rem] sm:min-h-[8rem] bg-gradient-to-br ${assetGradients[wallet.asset] || wallet.gradient || 'from-gray-400 to-gray-600'} p-3 sm:p-6 overflow-hidden flex flex-col justify-between`}
         >
+          {/* <div className='absolute inset-0 bg-black/20 pointer-events-none'></div> */}
           {/* Background Pattern */}
           <div className='absolute inset-0 opacity-25 pointer-events-none select-none'>
             <div className='absolute top-2 right-2 sm:top-4 sm:right-4 w-10 h-10 sm:w-20 sm:h-20 rounded-full bg-white/30 blur-xl'></div>
@@ -101,7 +102,7 @@ export function WalletCard({ wallet, type, onCopy, onView }: WalletCardProps) {
                 {new Date(wallet.created_at).toLocaleDateString()}
               </span>
               <div className='flex gap-2 mt-2 sm:mt-0 flex-wrap'>
-                <Button
+                {/* <Button
                   size='icon'
                   variant='ghost'
                   onClick={(e) => {
@@ -112,7 +113,7 @@ export function WalletCard({ wallet, type, onCopy, onView }: WalletCardProps) {
                   aria-label='Copy address'
                 >
                   <Copy className='w-4 h-4' />
-                </Button>
+                </Button> */}
                 <Button
                   size='icon'
                   variant='outline'
@@ -123,7 +124,7 @@ export function WalletCard({ wallet, type, onCopy, onView }: WalletCardProps) {
                   }}
                   aria-label='View details'
                 >
-                  <Eye className='w-4 h-4' />
+                  <MoreHorizontal className='w-4 h-4' />
                 </Button>
               </div>
             </div>
