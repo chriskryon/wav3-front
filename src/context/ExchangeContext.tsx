@@ -1,8 +1,9 @@
 /** biome-ignore-all lint/correctness/useExhaustiveDependencies: <explanation> */
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import type React from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { listAssets } from '@/services/api-service';
-import { QuoteResponse } from '@/entities/types';
+import type { QuoteResponse } from '@/entities/types';
+import { listAssets } from '@/services/asset-api-service';
 
 interface ExchangeContextProps {
   step: 'quote' | 'pre-deposit' | 'confirm' | 'deposit' | 'success';
@@ -55,8 +56,8 @@ export const ExchangeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const { data: assets = [], isLoading: assetsLoading } = useQuery({
     queryKey: ['exchange-assets'],
     queryFn: async () => {
-      const cryptoAssets = await listAssets({ type: 'crypto' });
-      const fiatAssets = await listAssets({ type: 'fiat' });
+      const cryptoAssets = await listAssets('crypto');
+      const fiatAssets = await listAssets('fiat');
       return [...(cryptoAssets.assets || []), ...(fiatAssets.assets || [])];
     },
     staleTime: 1000 * 60 * 5,

@@ -3,7 +3,6 @@
 
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { listAssets } from '@/services/api-service';
 import {
   ArrowDown,
   ArrowUp,
@@ -21,6 +20,8 @@ import { Badge } from '@/components/ui/badge';
 import { ActionModal } from '@/components/action-modal';
 import { FakeDataAlert } from '@/components/FakeDataAlert';
 import { ICONS_CRYPTO_FIAT as icons } from '@/lib/icon-utils';
+import { listAssets } from '@/services/asset-api-service';
+import Image from 'next/image';
 
 export default function OverviewPage() {
 
@@ -83,7 +84,7 @@ export default function OverviewPage() {
 
   if (typeof window !== 'undefined') {
     console.log('Objeto icons:', icons);
-    console.log('BTC do icons:', icons["BTC"]);
+    console.log('BTC do icons:', icons.BTC);
   }
 
   // Função para renderizar o ícone, seja componente React ou string (URL)
@@ -91,18 +92,17 @@ export default function OverviewPage() {
   function renderAssetIcon(symbol: string, fallbackUrl: string, variant: 'background' | 'default' = 'default') {
     const IconComponent = (icons as Record<string, any>)[symbol];
     if (IconComponent) {
-      // Testa se é um componente React válido
       const isReactComponent = typeof IconComponent === 'function' || (typeof IconComponent === 'object' && IconComponent !== null);
       if (isReactComponent) {
-        // Passa o prop variant para o componente, se suportado
         return <IconComponent className="w-10 h-10 shadow" variant={variant} />;
       } else if (typeof IconComponent === 'string') {
-        // Se for uma string (URL)
-        return <img src={IconComponent} alt={symbol} className="w-10 h-10 rounded-full border shadow bg-white" />;
+        return <Image src={IconComponent} alt={symbol} width={40} height={40} className="rounded-full border shadow bg-white" />;
+        // return <img src={IconComponent} alt={symbol} className="w-10 h-10 rounded-full border shadow bg-white" />;
       }
     }
     // Fallback para o ícone da API se não estiver no objeto icons
-    return <img src={fallbackUrl} alt={symbol} className="w-10 h-10 rounded-full border shadow bg-white" />;
+      return <Image src={fallbackUrl} alt={symbol} width={40} height={40} className="rounded-full border shadow bg-white" />;
+    // return <img src={fallbackUrl} alt={symbol} className="w-10 h-10 rounded-full border shadow bg-white" />;
   }
 
   // Tabs para filtro de assets
@@ -111,12 +111,12 @@ export default function OverviewPage() {
   // Query para cada tipo de asset
   const { data: cryptoAssets, isLoading: isCryptoLoading } = useQuery({
     queryKey: ['assets', 'crypto'],
-    queryFn: async () => await listAssets({ type: 'crypto' }),
+    queryFn: async () => await listAssets('crypto'),
     staleTime: 1000 * 60,
   });
   const { data: fiatAssets, isLoading: isFiatLoading } = useQuery({
     queryKey: ['assets', 'fiat'],
-    queryFn: async () => await listAssets({ type: 'fiat' }),
+    queryFn: async () => await listAssets('fiat'),
     staleTime: 1000 * 60,
   });
 
