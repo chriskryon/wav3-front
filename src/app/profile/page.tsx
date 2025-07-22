@@ -118,11 +118,11 @@ export default function ProfilePage() {
       };
       const result = await createAccount(payload);
 
-      if (result.success && result.data) {
-        if (result.data.token) localStorage.setItem('token', result.data.token);
+      if (result?.id) {
+        // Account created successfully, result is the CreateAccountResponse
         let userToStore = {
-          ...result.data.user,
-          hasBetaAccount: result.data.hasBetaAccount ?? true,
+          ...userData,
+          hasBetaAccount: true,
         };
         try {
           const betaAccount = await getBetaAccountDetail();
@@ -140,9 +140,9 @@ export default function ProfilePage() {
         setTimeout(() => {
           window.location.reload(); // Hard reload to update header/sidebar
         }, 1200); // 1.2s for user to see feedback
-      } else if (result.message === 'Conta já existente') {
+      } else if (result?.message === 'Conta já existente') {
         toast.error('Account already exists for this user.');
-      } else if (result.message) {
+      } else if (result?.message) {
         toast.error(result.message);
       } else {
         toast.error('Unknown error creating account. Try again.');
