@@ -6,16 +6,18 @@ import type React from 'react';
 import { useState } from 'react';
 import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { getBetaAccountDetail, loginUser, registerUser, setUserGlobal } from '@/services/api-service';
+import { setUserGlobal } from '@/services/api-service';
 import logo from '../logo.svg';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import { loginUser, registerUser } from '@/services/user-api-service';
+import { getAccountDetails } from '@/services/account-api-service';
 
 export default function AuthPage() {
   const router = useRouter();
@@ -40,7 +42,7 @@ export default function AuthPage() {
 
       if (profileCompleted) {
         try {
-          const betaAccount = await getBetaAccountDetail();
+          const betaAccount = await getAccountDetails();
           const user = result.user;
           if (user) {
             setUserGlobal({ ...user, account: betaAccount });
