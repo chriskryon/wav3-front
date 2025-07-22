@@ -4,11 +4,9 @@ import {
   Coins,
   CreditCard,
   Home,
-  ShoppingCart,
   Wallet,
   User,
   LogOut,
-  PiggyBank,
   ArrowLeftRight,
   Landmark,
   ReceiptText,
@@ -92,6 +90,7 @@ export function AppSidebar() {
 
   const handleLogout = () => {
     localStorage.removeItem('user');
+    localStorage.removeItem('token');
     router.push('/auth');
   };
 
@@ -220,15 +219,21 @@ export function AppSidebar() {
           )}
           {/* Logout button only when expanded */}
           {!collapsed && (
-            <Button
+            // biome-ignore lint/a11y/useSemanticElements: <hydratation error>
+<div
+              tabIndex={0}
+              role='button'
               onClick={handleLogout}
-              variant='ghost'
-              size='icon'
+              onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                handleLogout();
+              }
+              }}
+              className='w-10 h-10 ml-auto group hover:bg-red-50 rounded-full transition-colors shadow-md cursor-pointer focus:outline-none flex items-center justify-center'
               aria-label='Logout'
-              className='ml-auto group hover:bg-red-50 rounded-full transition-colors shadow-md'
             >
               <LogOut className='w-5 h-5 text-red-500 group-hover:text-red-700 transition-colors' />
-            </Button>
+            </div>
           )}
         </button>
       </div>
