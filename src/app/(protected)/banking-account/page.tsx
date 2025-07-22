@@ -11,49 +11,33 @@ import {
 import { toast } from 'sonner';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useIsFetching } from '@tanstack/react-query';
-import { listBankAccounts, deleteBankAccount } from '@/services/api-service';
 import { SharedBankAccountModal } from '@/components/banking/SharedBankAccountModal';
-
-const sharedWalletAssets = [
-  { value: 'BRL', label: 'Real Brasileiro (BRL)', network: 'bitcoin' },
-  { value: 'MXN', label: 'Peso Mexicano (MXN)', network: 'erc-20' },
-  { value: 'USD', label: 'Dólar Americano (USD)', network: 'ripple' },
-];
-
 import { BankAccountCard } from '@/components/banking/BankAccountCard';
 import { BankAccountModal } from '@/components/banking/BankAccountModal';
 import { BankAccountDetailsCard } from '@/components/banking/BankAccountDetailsCard';
 import { BanknoteArrowUp, PiggyBank, Plus } from 'lucide-react';
-
-// Mocked data for select options
-const fiatAssets = [
-  { value: 'MXN', label: 'Peso Mexicano (MXN)' },
-  { value: 'USD', label: 'Dólar Americano (USD)' },
-  { value: 'BRL', label: 'Real Brasileiro (BRL)' },
-];
-const countries = [
-  { value: 'Mexico', label: 'Mexico' },
-  { value: 'Brazil', label: 'Brazil' },
-  { value: 'United States', label: 'United States' },
-];
-const instantPaymentTypes = [
-  { value: 'SPEI', label: 'SPEI (México)' },
-  { value: 'PIX', label: 'PIX (Brasil)' },
-];
+import { deleteBankAccount, listBankAccounts } from '@/services/bank-account-api-service';
+import { NoBankAccountCard } from '@/components/no-banking-account-card';
 
 // Gradientes criativos por moeda/país (tons mais leves e "americano" mais marcante)
 const bankGradients: Record<string, string> = {
   // Brasil: verde, amarelo, azul (tons claros)
-  BRL: 'from-green-100 via-yellow-50 to-blue-100',
+  BR: 'from-green-100 via-yellow-50 to-blue-100',
+  Brazil: 'from-green-100 via-yellow-50 to-blue-100',
+
   // México: verde, branco, vermelho (tons claros)
+  MX: 'from-green-100 via-white to-red-100',
+  Mexico: 'from-green-100 via-white to-red-100',
   MXN: 'from-green-100 via-white to-red-100',
-  // EUA: azul, branco, vermelho (mais marcante, mas suave)
+
+  // Estados Unidos: azul, branco, vermelho (mais marcante, mas suave)
+  US: 'from-blue-200 via-white to-red-200',
+  'United States of America': 'from-blue-200 via-white to-red-200',
   USD: 'from-blue-200 via-white to-red-200',
 };
 
 // Mocked bank accounts (simulate API, com gradiente por asset)
 const allGradients = [
-  // Mais agressivos e saturados
   'from-green-400 via-yellow-300 to-blue-600',
   'from-green-500 via-red-300 to-red-600',
   'from-blue-500 via-white to-red-500',
@@ -63,146 +47,6 @@ const allGradients = [
   'from-emerald-400 via-lime-400 to-green-600',
   'from-gray-400 via-slate-400 to-blue-400',
 ];
-function randomGradient() {
-  return allGradients[Math.floor(Math.random() * allGradients.length)];
-}
-const mockBankAccounts = [
-  // SHARED (Recebimento)
-  {
-    id: 'sh-brl-1',
-    bank_name: 'Flagship Instituição de Pagamento',
-    bank_code: '',
-    branch: '0000',
-    account: '0000',
-    bank_type: 'shared',
-    type: 'shared',
-    instant_payment:
-      '00020126580014br.gov.bcb.pix01366eb61eb6-161c-4356-a4b6-8228ebbf0ab75204000053039865802BR5910Beta_Ramps6009Sao_Paulo62290525DEGtrh2wR9fmFLV0UsVw6rdIb63042230',
-    instant_payment_type: 'PIX',
-    country: 'Brazil',
-    asset: 'BRL',
-    city: '',
-    state: '',
-    postal_code: '',
-    street_line: '',
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-    deleted_at: null,
-    name: 'Conta Compartilhada Flagship',
-    gradient: randomGradient(),
-  },
-  {
-    id: 'sh-mxn-1',
-    bank_name: 'NVIO',
-    bank_code: '',
-    branch: '0000',
-    account: '0000',
-    bank_type: 'shared',
-    type: 'shared',
-    instant_payment: '710969000024615336',
-    instant_payment_type: 'SPEI',
-    country: 'Mexico',
-    asset: 'MXN',
-    city: '',
-    state: '',
-    postal_code: '',
-    street_line: '',
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-    deleted_at: null,
-    name: 'Conta Compartilhada NVIO',
-    gradient: randomGradient(),
-  },
-  {
-    id: 'sh-usd-1',
-    bank_name: 'Bridge',
-    bank_code: '',
-    branch: '101019644',
-    account: '211214188608',
-    bank_type: 'shared',
-    type: 'shared',
-    instant_payment: 'BRGGPBDNAJ8YPMR2FW6K',
-    instant_payment_type: '',
-    country: 'United States',
-    asset: 'USD',
-    city: 'Kansas City',
-    state: 'MO',
-    postal_code: '64108',
-    street_line: '1801 Main St.',
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-    deleted_at: null,
-    name: 'Conta Compartilhada Bridge',
-    gradient: randomGradient(),
-  },
-  // EXTERNAL (Envio)
-  {
-    id: 'ex-brl-1',
-    bank_name: 'Banco do Brasil',
-    bank_code: '',
-    branch: '12354',
-    account: '9876514321',
-    bank_type: 'external',
-    type: 'external',
-    instant_payment: '123456178900',
-    instant_payment_type: 'PIX',
-    country: 'BR',
-    asset: 'BRL',
-    city: 'São Paulo',
-    state: 'SP',
-    postal_code: '01000-000',
-    street_line: 'Av. Paulista, 1000',
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-    deleted_at: null,
-    name: 'Minha Conta Pessoal',
-    gradient: randomGradient(),
-  },
-  {
-    id: 'ex-mxn-1',
-    bank_name: 'BBVA Bancomer',
-    bank_code: '',
-    branch: '5678',
-    account: '1234567890',
-    bank_type: 'external',
-    type: 'external',
-    instant_payment: '123456789012',
-    instant_payment_type: 'SPEI',
-    country: 'Mexico',
-    asset: 'MXN',
-    city: 'Cidade do México',
-    state: 'CDMX',
-    postal_code: '01000',
-    street_line: 'Av. Reforma, 200',
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-    deleted_at: null,
-    name: 'Conta Pessoal BBVA',
-    gradient: randomGradient(),
-  },
-  {
-    id: 'ex-usd-1',
-    bank_name: 'Bank of America',
-    bank_code: '',
-    branch: '001',
-    account: '123456789',
-    bank_type: 'external',
-    type: 'external',
-    instant_payment: '',
-    instant_payment_type: '',
-    country: 'United States',
-    asset: 'USD',
-    city: 'New York',
-    state: 'NY',
-    postal_code: '10001',
-    street_line: '5th Avenue, 200',
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-    deleted_at: null,
-    name: 'Conta Pessoal Bank of America',
-    gradient: randomGradient(),
-  },
-];
 
 // Hook para buscar contas bancárias da API real
 function useBankAccounts() {
@@ -210,57 +54,20 @@ function useBankAccounts() {
     queryKey: ['bankAccounts', 'api'],
     queryFn: async () => {
       const res = await listBankAccounts();
-      // Adiciona gradiente visual temporário para cards
-      return res.list.map((acc) => ({ ...acc, gradient: randomGradient() }));
+      // Adiciona gradiente baseado no país/asset da conta
+      return res.list.map((acc: any) => ({ 
+        ...acc, 
+        gradient: bankGradients[acc.country] || bankGradients[acc.asset] || allGradients[0]
+      }));
     },
   });
 }
-
-// Card genérico para ausência de contas
-function NoBankAccountCard({
-  type,
-  onAdd,
-}: {
-  type: 'shared' | 'external';
-  onAdd: () => void;
-}) {
-  return (
-    <div className='relative rounded-2xl overflow-hidden shadow-lg bg-gradient-to-br from-primary/10 via-white to-primary/5 border border-primary/20 flex flex-col items-center justify-center min-h-[220px] p-6'>
-      <div className='absolute inset-0 opacity-10 pointer-events-none bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-primary/30 via-white/0 to-transparent' />
-      <div className='z-10 flex flex-col items-center gap-3'>
-        <button
-          type='button'
-          className='rounded-full bg-primary/10 p-4 flex items-center justify-center shadow focus:outline-none focus:ring-2 focus:ring-primary/50 transition hover:bg-primary/20'
-          onClick={onAdd}
-          aria-label={type === 'shared' ? 'Add deposit account' : 'Add withdraw account'}
-        >
-          <Plus className='w-8 h-8 text-primary' />
-        </button>
-        <span className='text-base text-main font-semibold tracking-wide text-center'>
-            {type === 'shared'
-            ? 'No deposit accounts found.'
-            : 'No withdraw accounts found.'}
-        </span>
-        <Button
-          className='bg-primary hover:bg-primary/90 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300'
-          onClick={onAdd}
-        >
-           {type === 'shared' ? 'deposit' : 'withdraw'}
-        </Button>
-      </div>
-    </div>
-  );
-}
-
-// Remover hooks de mock: useAddBankAccount, useEditBankAccount, useDeleteBankAccount
-// (Apenas useBankAccounts real permanece)
 
 export default function BankingAccountPage() {
   const [showSharedModal, setShowSharedModal] = useState(false);
   const queryClient = useQueryClient();
   const { data: bankAccounts = [], isLoading } = useBankAccounts();
   const isFetching = useIsFetching({ queryKey: ['bankAccounts', 'api'] }) > 0;
-  // Removidos hooks de mock: useAddBankAccount, useEditBankAccount, useDeleteBankAccount
   const [showModal, setShowModal] = useState<
     false | { mode: 'add' } | { mode: 'edit'; account: any }
   >(false);
@@ -354,7 +161,7 @@ export default function BankingAccountPage() {
                   // Deduplica pelo instant_payment (ou id como fallback)
                   const deduped = Array.from(
                     new Map(
-                      sharedAccounts.map(acc => [acc.instant_payment || acc.id, acc])
+                      sharedAccounts.map((acc: any) => [acc.instant_payment || acc.id, acc])
                     ).values()
                   );
                   if (deduped.length === 0) {
@@ -370,9 +177,9 @@ export default function BankingAccountPage() {
                         <BankAccountCard
                           key={account.id}
                           account={account}
-                          onCopy={(text: string) => {
-                            navigator.clipboard.writeText(text);
-                            toast.success('Copiado!');
+                          onCopy={() => {
+                            navigator.clipboard.writeText(account.instant_payment);
+                            toast.success('Instant payment key copied!');
                           }}
                           onView={() => handleEdit(account)}
                         />
@@ -399,9 +206,9 @@ export default function BankingAccountPage() {
                         <BankAccountCard
                           key={account.id}
                           account={account}
-                          onCopy={(text: string) => {
-                            navigator.clipboard.writeText(text);
-                            toast.success('Copiado!');
+                          onCopy={() => {
+                            navigator.clipboard.writeText(account.instant_payment);
+                            toast.success('Instant payment key copied!');
                           }}
                           onView={() => handleEdit(account)}
                         />

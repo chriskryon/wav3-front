@@ -62,7 +62,7 @@ const VisuallyHidden: React.FC<{ children: React.ReactNode }> = ({
 import { Controller } from 'react-hook-form';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { registerBankAccount } from '@/services/api-service';
+import { registerBankAccount } from '@/services/bank-account-api-service';
 
 // ISO 3166-1 alpha-2 codes
 const countries = [
@@ -151,9 +151,21 @@ export function BankAccountModal({
   // Mutação real para registrar conta bancária
   const mutation = useMutation({
     mutationFn: async (data: BankAccountForm) => {
-      const payload = toRegisterBankAccountPayload(data);
+      const payload = {
+        bank_name: data.bank_name,
+        account_number: data.account,
+        account_type: data.asset,
+        instant_payment: data.instant_payment,
+        instant_payment_type: data.instant_payment_type,
+        city: data.city,
+        state: data.state,
+        postal_code: data.postal_code,
+        street_line: data.street_line,
+      };
+
       return await registerBankAccount(payload);
     },
+
     onSuccess: (result) => {
       if (result?.id) {
         queryClient.invalidateQueries({ queryKey: ['bankAccounts'] });
@@ -167,6 +179,7 @@ export function BankAccountModal({
         toast.error('Erro inesperado ao registrar conta bancária.');
       }
     },
+    
     onError: (error) => {
       if (error?.message) {
         toast.error(error.message);
@@ -776,9 +789,9 @@ export function BankAccountModal({
                     // Ao sair do step Account Details, limpa apenas os campos do próximo step (Address)
                     setValue('city', '');
                     setValue('state', '');
-                    setValue('postal_code', '');
-                    setValue('street_line', '');
-                  }
+                        setValue('postal_code', '');
+                        setValue('street_line', '');
+                      }
                   setStep(step + 1);
                 }}
                 disabled={isSubmitting || mutation.isPending}

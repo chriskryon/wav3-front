@@ -7,14 +7,13 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
-
 import { toast } from 'sonner';
-import { registerSharedBankAccount } from '@/services/api-service';
 import type {
   RegisterSharedBankAccountPayload,
   RegisterSharedBankAccountResponse,
 } from '@/entities/types';
 import { US, BR, MX } from 'country-flag-icons/react/3x2';
+import { registerSharedBankAccount } from '@/services/bank-account-api-service';
 
 const sharedBankAssets = [
   {
@@ -64,18 +63,21 @@ export function SharedBankAccountModal({
     }
     setIsRegistering(true);
     setResult(null);
+
     try {
       const payload: RegisterSharedBankAccountPayload = { asset };
       const res = await registerSharedBankAccount(payload);
-      setResult(res);
-      if (res.id && res.bank_type === 'shared') {
-        toast.success('Shared account created successfully!');
-        onOpenChange(false);
-        if (onSuccess) onSuccess(res);
-      } else if (res.message) {
-        toast.error(res.message);
+
+      setResult(res as RegisterSharedBankAccountResponse);
+      if ((res as RegisterSharedBankAccountResponse).id && (res as RegisterSharedBankAccountResponse).bank_type === 'shared') {
+      toast.success('Shared account created successfully!');
+      onOpenChange(false);
+      
+      if (onSuccess) onSuccess(res as RegisterSharedBankAccountResponse);
+      } else if ((res as any).message) {
+      toast.error((res as any).message);
       } else {
-        toast.error('Unexpected error while registering shared account.');
+      toast.error('Unexpected error while registering shared account.');
       }
     } catch (err: any) {
       toast.error(err?.message || 'Error registering shared account.');
