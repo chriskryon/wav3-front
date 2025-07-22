@@ -21,7 +21,7 @@ import {
 import { useForm } from 'react-hook-form';
 import { ProfileView } from '@/components/profile-view';
 import { useUser } from '@/hooks/useUser';
-import { createAccount } from '@/services/account-api-service';
+import { createAccount, getAccountDetails } from '@/services/account-api-service';
 
 // KYC Test Warning Card
 function KycTestWarningCard() {
@@ -125,7 +125,7 @@ export default function ProfilePage() {
           hasBetaAccount: true,
         };
         try {
-          const betaAccount = await getBetaAccountDetail();
+          const betaAccount = await getAccountDetails();
           userToStore = { ...userToStore, account: betaAccount };
         } catch (e) {
           console.error(
