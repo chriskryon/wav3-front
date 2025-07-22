@@ -15,13 +15,13 @@ import {
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import {
-  createAccount,
   setUserGlobal,
   getBetaAccountDetail,
 } from '@/services/api-service';
 import { useForm } from 'react-hook-form';
 import { ProfileView } from '@/components/profile-view';
 import { useUser } from '@/hooks/useUser';
+import { createAccount } from '@/services/account-api-service';
 
 // KYC Test Warning Card
 function KycTestWarningCard() {
