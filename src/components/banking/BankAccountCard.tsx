@@ -167,7 +167,7 @@ export function BankAccountCard({
               <div className='flex flex-col sm:flex-row gap-2 sm:gap-6 mt-2'>
                 <div className='flex-1'>
                   <Label className='text-xs font-semibold text-[#1ea3ab]'>
-                    {account.instant_payment_type ? `Instant: ${account.instant_payment_type}` : 'Instant'}
+                    {account.instant_payment_type ? `${account.instant_payment_type}` : 'Instant'}
                   </Label>
                   <div
                     className='font-mono text-base text-[#1ea3ab] bg-white/60 rounded-lg px-2 py-1 mt-1 shadow-inner border border-dashed border-[#1ea3ab]/30 truncate max-w-full'
