@@ -6,6 +6,8 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 export const api = axios.create({ baseURL: API_URL });
 
 api.interceptors.request.use((config) => {
+  console.log("API URL:", API_URL);
+  
   const token =
     typeof window !== 'undefined' ? localStorage.getItem('token') : null;
   if (token) {
@@ -23,6 +25,8 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use(
   (response) => {
+    console.log("API URL:", API_URL);
+    
     console.log("Response:", {
       url: response.config.url,
       status: response.status,
