@@ -15,7 +15,7 @@ import type {
   RegisterWalletPayload,
   RegisterWalletResponse,
 } from '@/entities/types';
-import type { QuoteRequest, QuoteResponse, QuoteError } from '@/entities/types';
+import type { QuoteRequest, QuoteResponse } from '@/entities/types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 console.log('API_URL:', API_URL);
@@ -41,7 +41,7 @@ api.interceptors.request.use((config) => {
     typeof window !== 'undefined' ? localStorage.getItem('token') : null;
   if (token) {
     config.headers = config.headers || {};
-    config.headers['Authorization'] = `Bearer ${token}`;
+    config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 });
@@ -164,36 +164,6 @@ export interface GetAccountByInternalIdResponse {
   beta?: BetaAccountDetails;
   local?: Record<string, any>;
   error?: string;
-}
-
-export async function getAccountByInternalId(
-  accountId: string,
-): Promise<GetAccountByInternalIdResponse> {
-  try {
-    const response = await api.get(`/accounts/internal/${accountId}/beta`);
-    return response.data;
-  } catch (error: any) {
-    if (error.response?.data) {
-      return error.response.data;
-    }
-    throw error;
-  }
-}
-
-export async function getAccountByEmail(
-  email: string,
-): Promise<GetAccountByInternalIdResponse> {
-  try {
-    const response = await api.get(
-      `/accounts/by-email/${encodeURIComponent(email)}`,
-    );
-    return response.data;
-  } catch (error: any) {
-    if (error.response?.data) {
-      return error.response.data;
-    }
-    throw error;
-  }
 }
 
 // --- Carteiras (Wallets) ---
