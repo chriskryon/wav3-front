@@ -168,7 +168,7 @@ export const PreDepositStep: React.FC<PreDepositStepProps> = ({ onBack, onConfir
 
       <div className="flex flex-col gap-4 p-4 rounded-lg shadow bg-wav3/10 border border-wav3/30">
         <div className="flex items-center justify-between">
-          <span className="text-sm font-semibold text-gray-500">From:</span>
+          <span className="text-sm font-semibold text-gray-500">You Pay:</span>
           <div className="flex items-center gap-2">
             <NetworkIcon symbol={sourceAsset.symbol} className="w-6 h-6" />
             <span className="text-lg font-bold text-[#1ea3ab]">
@@ -177,7 +177,7 @@ export const PreDepositStep: React.FC<PreDepositStepProps> = ({ onBack, onConfir
           </div>
         </div>
         <div className="flex items-center justify-between">
-          <span className="text-sm font-semibold text-gray-500">To:</span>
+          <span className="text-sm font-semibold text-gray-500">You Receive:</span>
           <div className="flex items-center gap-2">
             <NetworkIcon symbol={targetAsset.symbol} className="w-6 h-6" />
             <span className="text-lg font-bold text-[#1ea3ab]">

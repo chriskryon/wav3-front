@@ -116,7 +116,7 @@ export const QuoteStep: React.FC = () => {
         </div>
 
         <div className="flex flex-col gap-2">
-          <label htmlFor="from-asset-select" className="text-sm font-semibold text-[#1ea3ab]">From</label>
+          <label htmlFor="from-asset-select" className="text-sm font-semibold text-[#1ea3ab]">You Pay</label>
           <AssetSelect
             value={contextSourceAsset?.symbol}
             onChange={(symbol) => setContextSourceAsset(assets.find((a) => a.symbol === symbol))}
@@ -139,7 +139,7 @@ export const QuoteStep: React.FC = () => {
         </div>
 
         <div className="flex flex-col gap-2">
-          <label htmlFor="to-asset-select" className="text-sm font-semibold text-[#1ea3ab]">To</label>
+          <label htmlFor="to-asset-select" className="text-sm font-semibold text-[#1ea3ab]">You Receive</label>
           <AssetSelect
             value={contextTargetAsset?.symbol}
             onChange={(symbol) => setContextTargetAsset(assets.find((a) => a.symbol === symbol))}

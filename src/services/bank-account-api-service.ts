@@ -1,9 +1,12 @@
 import { api } from "./api-config";
 
 export async function registerBankAccount(payload: {
+  asset: string;
+  name: string;
   bank_name: string;
-  account_number: string;
-  account_type: string;
+  branch: string;
+  account: string;
+  country: string;
   instant_payment: string;
   instant_payment_type: string;
   city: string;
@@ -12,9 +15,12 @@ export async function registerBankAccount(payload: {
   street_line: string;
 }): Promise<{
   id: string;
+  asset: string;
+  name: string;
   bank_name: string;
-  account_number: string;
-  account_type: string;
+  branch: string;
+  account: string;
+  country: string;
   instant_payment: string;
   instant_payment_type: string;
   city: string;
