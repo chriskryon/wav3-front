@@ -17,15 +17,19 @@ interface ProfileViewProps {
     email?: string;
     taxIdNumber?: string;
     taxIdType?: string;
+    tax_id_number?: string;
+    tax_id_type?: string;
     localIdType?: string;
     localIdNumber?: string;
-    accountid?: string; // renomeado
+    local_id_type?: string;
+    local_id_number?: string;
+    accountid?: string;
     country?: string;
     city?: string;
     address?: string;
     post_code?: string;
     phone?: string;
-    id?: string; // para compatibilidade
+    id?: string;
   };
 }
 
@@ -75,11 +79,11 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ local }) => {
             <div className="flex items-center gap-2 mb-1">
               <CreditCard className="text-primary w-5 h-5" />
               <span className="text-xs font-semibold text-primary uppercase tracking-wider">
-                {local.taxIdType || '-'}
+                {local.tax_id_type || '-'}
               </span>
             </div>
             <span className="text-base font-mono font-bold text-main break-all">
-              {local.taxIdNumber || '-'}
+              {local.tax_id_number || '-'}
             </span>
           </div>
           {/* Local ID Card */}
@@ -87,11 +91,11 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ local }) => {
             <div className="flex items-center gap-2 mb-1">
               <IdCard className="text-primary w-5 h-5" />
               <span className="text-xs font-semibold text-primary uppercase tracking-wider">
-                {local.localIdType || '-'}
+                {local.local_id_type || '-'}
               </span>
             </div>
             <span className="text-base font-mono font-bold text-main break-all">
-              {local.localIdNumber || '-'}
+              {local.local_id_number || '-'}
             </span>
           </div>
         </div>
