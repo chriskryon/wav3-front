@@ -152,17 +152,19 @@ export function BankAccountModal({
   const mutation = useMutation({
     mutationFn: async (data: BankAccountForm) => {
       const payload = {
+        asset: data.asset,
+        name: data.name,
         bank_name: data.bank_name,
-        account_number: data.account,
-        account_type: data.asset,
+        branch: data.branch,
+        country: data.country,
+        account: data.account,
         instant_payment: data.instant_payment,
         instant_payment_type: data.instant_payment_type,
         city: data.city,
-        state: data.state,
         postal_code: data.postal_code,
+        state: data.state,
         street_line: data.street_line,
       };
-
       return await registerBankAccount(payload);
     },
 

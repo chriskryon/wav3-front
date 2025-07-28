@@ -5,9 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { AssetSelect } from '../AssetSelect';
 import { RefreshCw } from 'lucide-react';
-import { useRequest } from '@/hooks/useRequest';
 import { ArrowUpDown } from 'lucide-react';
 import { getQuote } from '@/services/exchange-api-service';
+import Wav3Loading from '@/components/loading-wav3';
 
 export const QuoteStep: React.FC = () => {
   const {
@@ -26,7 +26,6 @@ export const QuoteStep: React.FC = () => {
     error: contextError,
   } = useExchangeContext();
 
-  const { executeRequest } = useRequest();
   const [error, setError] = useState<string | null>(contextError || null);
 
   // Update targetAsset dynamically based on sourceAsset changes
@@ -89,11 +88,7 @@ export const QuoteStep: React.FC = () => {
   });
 
   if (!assets || assets.length === 0) {
-    return (
-      <div className="flex justify-center items-center h-full">
-        <p className="text-lg font-semibold text-[#1ea3ab]">Carregando ativos...</p>
-      </div>
-    );
+    return <Wav3Loading />;
   }
 
   return (
@@ -102,8 +97,8 @@ export const QuoteStep: React.FC = () => {
         <h2 className="text-xl font-bold text-[#1ea3ab]">Get a Quote</h2>
       </div>
 
-      <div className="flex flex-col gap-4">
-        <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-2 mb-6">
           <label htmlFor="amount-input" className="text-sm font-semibold text-[#1ea3ab]">Amount</label>
           <Input
             id="amount-input"
@@ -138,7 +133,7 @@ export const QuoteStep: React.FC = () => {
           </Button>
         </div>
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-1">
           <label htmlFor="to-asset-select" className="text-sm font-semibold text-[#1ea3ab]">You Receive</label>
           <AssetSelect
             value={contextTargetAsset?.symbol}
