@@ -1,7 +1,5 @@
 'use client';
 
-import type React from 'react';
-
 import { useState, useEffect } from 'react';
 import { Save, User, MapPin, Phone, CreditCard, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -16,7 +14,6 @@ import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import {
   setUserGlobal,
-  getBetaAccountDetail,
 } from '@/services/api-service';
 import { useForm } from 'react-hook-form';
 import { ProfileView } from '@/components/profile-view';
