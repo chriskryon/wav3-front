@@ -73,6 +73,17 @@ export async function listWallets(params?: {
 }> {
   try {
     const response = await api.get("/wallets", { params });
+    
+    const uniqueAddresses = new Set();
+    
+    const uniqueList = response.data.list.filter((wallet: any) => {
+      if (uniqueAddresses.has(wallet.address)) {
+        return false;
+      }
+      uniqueAddresses.add(wallet.address);
+      return true;
+    });
+    
     return response.data;
   } catch (error: any) {
     if (error.response?.data?.message) {
