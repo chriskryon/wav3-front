@@ -28,7 +28,7 @@ export const PreDepositStep: React.FC<PreDepositStepProps> = ({ onBack, onConfir
       target_asset: quoteResult.target_asset,
       network: networkName,
       source_amount: quoteResult.source_amount,
-      product: 'exchange', // Adicionando a propriedade obrigatória
+      product: 'exchange',
     };
 
     setLoading(true);
@@ -51,17 +51,17 @@ export const PreDepositStep: React.FC<PreDepositStepProps> = ({ onBack, onConfir
   useEffect(() => {
     const interval = setInterval(() => {
       fetchQuote();
-      setTimer(20); // Reinicia o timer após a atualização da cotação
-    }, 20000); // 20 segundos
+      setTimer(20);
+    }, 20000);
 
     const countdown = setInterval(() => {
       setTimer((prev) => (prev > 0 ? prev - 1 : 0));
-    }, 1000); // Atualiza o timer a cada segundo
+    }, 1000);
 
     return () => {
       clearInterval(interval);
       clearInterval(countdown);
-    }; // Limpar intervalos ao desmontar o componente
+    };
   }, [quoteResult, sourceAsset, targetAsset]); // Adicionado dependências para garantir atualização correta
 
   const handleConfirm = async () => {
@@ -104,16 +104,16 @@ export const PreDepositStep: React.FC<PreDepositStepProps> = ({ onBack, onConfir
         },
         date_time: new Date().toISOString(),
         deposit: true,
-        exp_time: Math.floor(Date.now() / 1000) + 1800, // expira em 30 minutos
+        exp_time: Math.floor(Date.now() / 1000) + 1800,
         message: 'Order created successfully.',
-        network: networkName, // mantém o network dinâmico
+        network: networkName,
         tag: '',
         wallet_address: '0x1234567890abcdef1234567890abcdef12345678',
       };
 
       console.log('Mock Order created successfully:', mockResponse);
-      setOrderResult(mockResponse); // Armazena o mockResponse no contexto como orderResult
-      navigateToStep('deposit'); // Navega para o próximo passo
+      setOrderResult(mockResponse);
+      navigateToStep('deposit');
     } catch (error: any) {
       const errorMessage = error.message || 'Failed to create order.';
       setError(errorMessage);

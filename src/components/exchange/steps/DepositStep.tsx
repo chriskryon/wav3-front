@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useExchangeContext } from '@/context/ExchangeContext';
 import { NetworkIcon } from '@/components/ui/network-icon';
 import { ClipboardCopy } from 'lucide-react';
@@ -92,12 +92,14 @@ export const DepositStep: React.FC<DepositStepProps> = ({ data, onBack, onNext }
 
       <div className="flex gap-3 mt-4">
         <button
+          type="button"
           onClick={onBack}
           className="flex-1 bg-gray-200 text-[#1ea3ab] py-2 rounded-lg shadow hover:bg-gray-300"
         >
           Return
         </button>
         <button
+          type="button"
           onClick={onNext}
           disabled={loading}
           className="flex-1 bg-[#1ea3ab] text-white py-2 rounded-lg shadow hover:bg-[#188a91]"
