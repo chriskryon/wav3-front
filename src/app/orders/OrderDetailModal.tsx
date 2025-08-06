@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import type React from 'react';
+import { useState } from 'react';
 import { ICONS_CRYPTO_FIAT } from '@/lib/assetIcons';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
@@ -56,161 +57,273 @@ export const mockOrderDetail = {
 interface OrderDetailModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  order?: any; // Order data from the parent component
 }
 
-export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ open, onOpenChange }) => {
-  const order = mockOrderDetail;
+export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ open, onOpenChange, order }) => {
+  // Use the passed order or fallback to mock data
+  const orderData = order || mockOrderDetail;
   const user = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('user') || '{}') : {};
   const [loading, setLoading] = useState(false);
 
+  // Create a basic timeline if the order doesn't have one
+  const getOrderTimeline = (order: any) => {
+    if (order.timelines) {
+      return order.timelines;
+    }
+
+    // Create basic timeline based on order status
+    const baseTimeline = [
+      {
+        order_step: 'Order Created',
+        executed: true,
+        comments: '',
+        executed_at: order.created_at,
+      },
+      {
+        order_step: 'Payment Processing',
+        executed: ['confirmed', 'processing'].includes(order.status),
+        comments: '',
+        executed_at: order.status === 'confirmed' ? order.created_at : '0001-01-01T00:00:00Z',
+      },
+      {
+        order_step: 'Settlement',
+        executed: order.status === 'confirmed',
+        comments: '',
+        executed_at: order.status === 'confirmed' ? order.created_at : '0001-01-01T00:00:00Z',
+      },
+    ];
+
+    if (order.status === 'failed') {
+      baseTimeline[1] = {
+        ...baseTimeline[1],
+        executed: false,
+        comments: 'Payment failed',
+      };
+    }
+
+    return baseTimeline;
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'confirmed':
+        return 'bg-green-500/20 text-green-500 border-green-500/30';
+      case 'pending':
+        return 'bg-yellow-500/20 text-yellow-500 border-yellow-500/30';
+      case 'canceled':
+      case 'failed':
+        return 'bg-red-500/20 text-red-500 border-red-500/30';
+      default:
+        return 'bg-gray-500/20 text-gray-500 border-gray-500/30';
+    }
+  };
+
+  const renderAssetIcon = (asset: string, size = 'w-6 h-6') => {
+    const key = asset?.toUpperCase() as keyof typeof ICONS_CRYPTO_FIAT;
+    const IconComponent = ICONS_CRYPTO_FIAT[key];
+    
+    if (!IconComponent) {
+      return (
+        <span className={`${size} flex items-center justify-center bg-white/20 rounded text-xs`}>
+          {asset?.[0]}
+        </span>
+      );
+    }
+
+    try {
+      return <IconComponent variant='mono' color='#1ea3ab' className={size} />;
+    } catch {
+      return <IconComponent style={{ width: 24, height: 24 }} />;
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className='glass-card-enhanced max-w-lg max-h-[90vh] overflow-y-auto'>
-        <DialogHeader>
-          <DialogTitle className='text-xl font-bold text-main'>Order Detail</DialogTitle>
-        </DialogHeader>
-        <div className='space-y-4'>
-          <div className='grid grid-cols-2 gap-4'>
-            <div>
-              <Label className='muted-text text-sm'>Order ID</Label>
-              <p className='font-semibold text-main'>{order.id}</p>
+      <DialogContent className='glass-card-enhanced max-w-2xl max-h-[90vh] overflow-hidden p-0'>
+        {/* Header */}
+        <div className="relative bg-gradient-to-r from-primary/10 to-primary/5 p-4 border-b border-gray-100">
+          <DialogHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <DialogTitle className='text-xl font-bold text-gray-900'>Order Details</DialogTitle>
+                <p className="text-sm text-gray-500 mt-1">Complete order information and timeline</p>
+              </div>
+              <Badge className={`text-sm font-semibold px-3 py-1 ${getStatusColor(orderData.status)} shadow-sm`}>
+                {orderData.status}
+              </Badge>
             </div>
-            <div>
-              <Label className='muted-text text-sm'>Status</Label>
-              <Badge className='bg-red-500/20 text-red-500 border-red-500/30'>{order.status}</Badge>
+          </DialogHeader>
+        </div>
+
+        <div className="overflow-y-auto max-h-[calc(90vh-120px)]">
+          <div className='p-4 space-y-4'>
+            {/* Order ID Card */}
+            <div className="bg-gradient-to-r from-gray-50 to-white rounded-xl p-3 border border-gray-100">
+              <Label className='text-xs font-medium text-gray-500 uppercase tracking-wider'>Order ID</Label>
+              <p className='font-mono text-sm font-semibold text-gray-900 mt-1 break-all'>{orderData.id}</p>
             </div>
-          </div>
-          <div className='grid grid-cols-2 gap-4'>
-            <div>
-              <Label className='muted-text text-sm'>From</Label>
-              <span className='flex items-center gap-2 font-semibold text-main'>
-                {(() => {
-                  const key = order.source_asset?.toUpperCase() as keyof typeof ICONS_CRYPTO_FIAT;
-                  const IconSrc = ICONS_CRYPTO_FIAT[key];
-                  if (!IconSrc) return <span className="w-5 h-5 flex items-center justify-center bg-white/20 rounded text-xs">{order.source_asset?.[0]}</span>;
-                  try {
-                    return <IconSrc variant='mono' color='#1ea3ab' className="w-5 h-5" />;
-                  } catch {
-                    return <IconSrc style={{ width: 20, height: 20 }} />;
-                  }
-                })()}
-                {order.source_amount} {order.source_asset}
-              </span>
-            </div>
-            <div>
-              <Label className='muted-text text-sm'>To</Label>
-              <span className='flex items-center gap-2 font-semibold text-main'>
-                {(() => {
-                  const key = order.target_asset?.toUpperCase() as keyof typeof ICONS_CRYPTO_FIAT;
-                  const IconTgt = ICONS_CRYPTO_FIAT[key];
-                  if (!IconTgt) return <span className="w-5 h-5 flex items-center justify-center bg-white/20 rounded text-xs">{order.target_asset?.[0]}</span>;
-                  try {
-                    return <IconTgt variant='mono' color='#1ea3ab' className="w-5 h-5" />;
-                  } catch {
-                    return <IconTgt style={{ width: 20, height: 20 }} />;
-                  }
-                })()}
-                {order.target_amount} {order.target_asset}
-              </span>
-            </div>
-          </div>
-          <div>
-            <Label className='muted-text text-sm'>Recipient Email</Label>
-            <p className='font-semibold text-main'>{order.recipient_email}</p>
-          </div>
-          <div>
-            <Label className='muted-text text-sm'>Description</Label>
-            <p className='font-semibold text-main'>{order.description}</p>
-          </div>
-          <div>
-            <Label className='muted-text text-sm'>Created At</Label>
-            <p className='font-semibold text-main'>{new Date(order.created_at).toLocaleString()}</p>
-          </div>
-          <div>
-            <Label className='muted-text text-sm'>Timeline</Label>
-            <div className="relative flex flex-col items-stretch mt-2 py-2">
-              {/* Vertical line connecting steps */}
-              <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-transparent via-slate-300 to-transparent z-0" style={{minHeight: '100%'}} />
-              {order.timelines.map((step, idx) => {
-                const isCurrent = !step.executed && (idx === 0 || order.timelines[idx - 1].executed);
-                // Icon color logic
-                // Use site palette: main = #1ea3ab, secondary = #e6f7f8, gray = #94a3b8
-                const iconBg = step.executed
-                  ? 'bg-[#1ea3ab] text-white'
-                  : isCurrent
-                  ? 'bg-white border-[#1ea3ab] text-[#1ea3ab]'
-                  : 'bg-[#e6f7f8] text-[#94a3b8]';
-                const iconBorder = step.executed || isCurrent ? 'border-[#1ea3ab]' : 'border-white';
-                // Card color logic
-                const cardShadow = step.executed
-                  ? 'shadow border-[#b6e6ea]'
-                  : isCurrent
-                  ? 'shadow border-[#1ea3ab]'
-                  : 'shadow border-[#e6f7f8]';
-                // Use a unique key based on order_step and executed_at
-                const timelineKey = `${step.order_step}-${step.executed_at}`;
-                return (
-                  <div key={timelineKey} className="relative flex items-center gap-2 mb-2 min-h-[48px]">
-                    {/* Step icon circle */}
-                    <div className={`flex items-center justify-center w-8 h-8 rounded-full border ${iconBorder} ${iconBg} shadow z-10 shrink-0`}>
-                      {step.executed ? (
-                        <svg className="fill-current" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24">
-                          <title>Executed</title>
-                          <polyline points="20 6 10 18 4 12" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                      ) : isCurrent ? (
-                        <svg className="fill-current animate-pulse" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24">
-                          <title>Current</title>
-                          <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="2.2" />
-                          <circle cx="12" cy="12" r="6" fill="#1ea3ab" opacity="0.2" className="animate-ping" />
-                        </svg>
-                      ) : (
-                        <svg className="fill-current" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24">
-                          <title>Title</title>
-                          <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="2.2" />
-                        </svg>
-                      )}
+
+            {/* Asset Exchange Visual */}
+            <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm">
+              <div className="text-center mb-4">
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">Asset Exchange</h3>
+                <div className="flex items-center justify-center gap-6">
+                  {/* Source Asset */}
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="relative">
+                      <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-red-500/20 to-red-500/10 flex items-center justify-center shadow-lg">
+                        {renderAssetIcon(orderData.source_asset, 'w-6 h-6')}
+                      </div>
+                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center shadow-md">
+                        <span className="text-xs text-white font-bold">-</span>
+                      </div>
                     </div>
-                    {/* Card */}
-                    <div className={`flex-1 bg-white px-3 py-2 rounded border ${cardShadow} min-w-0`}> 
-                      <div className="flex items-center justify-between mb-0.5">
-                        <span className="font-semibold text-xs text-main truncate">{step.order_step}</span>
-                        <time className={`font-mono font-medium text-[0.7rem] ${step.executed ? 'text-main' : isCurrent ? 'text-main' : 'text-[#94a3b8]'}`}>
-                          {step.executed && step.executed_at !== '0001-01-01T00:00:00Z'
-                            ? new Date(step.executed_at).toLocaleDateString()
-                            : isCurrent
-                            ? ''
-                            : ''}
-                        </time>
-                      </div>
-                      <div className="text-[#94a3b8] text-xs truncate">
-                        {step.comments || (step.executed && step.executed_at !== '0001-01-01T00:00:00Z'
-                          ? new Date(step.executed_at).toLocaleTimeString()
-                          : isCurrent
-                          ? 'Aguardando próxima etapa.'
-                          : '')}
-                      </div>
+                    <div className="text-center">
+                      <div className="text-sm font-bold text-gray-900">{orderData.source_amount}</div>
+                      <div className="text-xs text-gray-500 font-medium">{orderData.source_asset}</div>
                     </div>
                   </div>
-                );
-              })}
+
+                  {/* Arrow */}
+                  <div className="flex flex-col items-center gap-1">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-primary to-primary/80 flex items-center justify-center shadow-lg">
+                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <title>Exchange Arrow</title>
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                      </svg>
+                    </div>
+                    <span className="text-xs text-gray-400 font-semibold uppercase tracking-wide">Exchange</span>
+                  </div>
+
+                  {/* Target Asset */}
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="relative">
+                      <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-green-500/20 to-green-500/10 flex items-center justify-center shadow-lg">
+                        {renderAssetIcon(orderData.target_asset, 'w-6 h-6')}
+                      </div>
+                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-green-500 rounded-full flex items-center justify-center shadow-md">
+                        <span className="text-xs text-white font-bold">+</span>
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-sm font-bold text-gray-900">{orderData.target_amount}</div>
+                      <div className="text-xs text-gray-500 font-medium">{orderData.target_asset}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Order Information Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="space-y-3">
+                <div className="bg-gray-50 rounded-xl p-3">
+                  <Label className='text-xs font-medium text-gray-500 uppercase tracking-wider'>Recipient Email</Label>
+                  <p className='font-semibold text-gray-900 mt-1'>{orderData.recipient_email}</p>
+                </div>
+                <div className="bg-gray-50 rounded-xl p-3">
+                  <Label className='text-xs font-medium text-gray-500 uppercase tracking-wider'>Description</Label>
+                  <p className='font-semibold text-gray-900 mt-1'>{orderData.description || 'No description provided'}</p>
+                </div>
+              </div>
+              <div className="space-y-3">
+                <div className="bg-gray-50 rounded-xl p-3">
+                  <Label className='text-xs font-medium text-gray-500 uppercase tracking-wider'>Created At</Label>
+                  <p className='font-semibold text-gray-900 mt-1'>{new Date(orderData.created_at).toLocaleString()}</p>
+                </div>
+                <div className="bg-gray-50 rounded-xl p-3">
+                  <Label className='text-xs font-medium text-gray-500 uppercase tracking-wider'>Settlement Status</Label>
+                  <p className='font-semibold text-gray-900 mt-1'>{orderData.settlement_status || 'Pending'}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Timeline Section */}
+            <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Order Timeline</h3>
+              <div className="relative">
+                {/* Vertical line */}
+                <div className="absolute left-5 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary/30 via-gray-200 to-gray-100" />
+                
+                <div className="space-y-3">
+                  {getOrderTimeline(orderData).map((step: { executed: any; order_step: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; executed_at: string | number | Date; comments: any; }, idx: number) => {
+                    const timeline = getOrderTimeline(orderData);
+                    const isCurrent = !step.executed && (idx === 0 || timeline[idx - 1]?.executed);
+                    const timelineKey = `${step.order_step}-${step.executed_at}`;
+                    
+                    return (
+                      <div key={timelineKey} className="relative flex items-start gap-3">
+                        {/* Step icon */}
+                        <div className={`
+                          relative z-10 flex items-center justify-center w-10 h-10 rounded-xl shadow-md
+                          ${step.executed 
+                            ? 'bg-gradient-to-br from-primary to-primary/80 text-white' 
+                            : isCurrent 
+                            ? 'bg-white border-2 border-primary text-primary shadow-lg' 
+                            : 'bg-gray-100 text-gray-400'
+                          }
+                        `}>
+                          {step.executed ? (
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <title>Completed</title>
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                            </svg>
+                          ) : isCurrent ? (
+                            <div className="w-2.5 h-2.5 bg-primary rounded-full animate-pulse" />
+                          ) : (
+                            <div className="w-2.5 h-2.5 bg-gray-400 rounded-full" />
+                          )}
+                        </div>
+
+                        {/* Step content */}
+                        <div className={`
+                          flex-1 min-w-0 pb-3
+                          ${step.executed ? 'opacity-100' : isCurrent ? 'opacity-90' : 'opacity-60'}
+                        `}>
+                          <div className="bg-white rounded-xl p-3 border border-gray-100 shadow-sm">
+                            <div className="flex items-center justify-between mb-1">
+                              <h4 className="font-semibold text-gray-900 text-sm">{step.order_step}</h4>
+                              {step.executed && step.executed_at !== '0001-01-01T00:00:00Z' && (
+                                <time className="text-xs font-medium text-gray-500">
+                                  {new Date(step.executed_at).toLocaleString()}
+                                </time>
+                              )}
+                            </div>
+                            <p className="text-xs text-gray-500">
+                              {step.comments || 
+                                (step.executed ? 'Completed successfully' : 
+                                 isCurrent ? 'Currently in progress...' : 'Pending execution')}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
           </div>
-          <div className='flex justify-end mt-4'>
+        </div>
+
+        {/* Footer */}
+        <div className="border-t border-gray-100 p-4 bg-gray-50/50">
+          <div className='flex justify-end'>
             <button
               type="button"
               onClick={async () => {
                 setLoading(true);
-                const blob = await pdf(<OrderDetailPDF order={order} user={user} />).toBlob();
+                const blob = await pdf(<OrderDetailPDF order={orderData} user={user} />).toBlob();
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement('a');
                 link.href = url;
-                link.download = `wav3_order_${order.id}.pdf`;
+                link.download = `wav3_order_${orderData.id}.pdf`;
                 link.click();
                 URL.revokeObjectURL(url);
                 setLoading(false);
               }}
-              className='flex items-center gap-2 bg-primary text-white px-4 py-2 rounded shadow hover:bg-primary/90 transition-all'
+              disabled={loading}
+              className='flex items-center gap-2 bg-gradient-to-r from-primary to-primary/90 text-white px-4 py-2 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-sm'
             >
               <Download className='w-4 h-4' />
               {loading ? 'Generating PDF...' : 'Download PDF'}
