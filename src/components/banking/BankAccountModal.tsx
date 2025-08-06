@@ -13,6 +13,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { Controller } from 'react-hook-form';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
+import { registerBankAccount } from '@/services/bank-account-api-service';
 
 // Regras FIAT para filtro dinâmico
 const fiatRules = [
@@ -59,18 +63,14 @@ const VisuallyHidden: React.FC<{ children: React.ReactNode }> = ({
     {children}
   </span>
 );
-import { Controller } from 'react-hook-form';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'sonner';
-import { registerBankAccount } from '@/services/bank-account-api-service';
 
 // ISO 3166-1 alpha-2 codes
 const countries = [
-  { value: 'BR', label: 'Brasil', paymentMethod: 'PIX', symbol: 'BRL' },
-  { value: 'MX', label: 'México', paymentMethod: 'SPEI', symbol: 'MXN' },
+  { value: 'BR', label: 'Brazil', paymentMethod: 'PIX', symbol: 'BRL' },
+  { value: 'MX', label: 'Mexico', paymentMethod: 'SPEI', symbol: 'MXN' },
   {
     value: 'US',
-    label: 'Estados Unidos',
+    label: 'United States',
     paymentMethod: 'FedNow',
     symbol: 'USD',
   },
@@ -105,7 +105,6 @@ export function BankAccountModal({
   initialData,
   onSuccess,
 }: BankAccountModalProps) {
-  // Estado para país selecionado
   const queryClient = useQueryClient();
   const {
     control,
@@ -214,13 +213,14 @@ export function BankAccountModal({
         : icon}
     </span>
   );
+
   // Steps como componentes independentes para inputs isolados
   const StepFiat = () => {
     return (
       <>
-        {/* País */}
+        {/* Country */}
         <div className='relative'>
-          <Label className='text-sm font-medium muted-text'>País *</Label>
+          <Label className='text-sm font-medium muted-text'>Country *</Label>
           <Controller
             name='country'
             control={control}
@@ -232,7 +232,7 @@ export function BankAccountModal({
                   className='glass-input w-full pl-3 pr-8 py-2 rounded-lg border border-primary/20 focus:ring-2 focus:ring-primary/30 focus:border-primary/60 transition-all duration-200 shadow-sm appearance-none bg-white/80 text-main'
                   required
                 >
-                  <option value=''>Selecione</option>
+                  <option value=''>Select</option>
                   {countries.map((c) => (
                     <option key={c.value} value={c.value}>
                       {c.label}
@@ -246,7 +246,7 @@ export function BankAccountModal({
             )}
           />
         </div>
-        {/* Symbol (asset) - preenchido automaticamente */}
+        {/* Symbol (asset) - auto-filled */}
         <div className='relative mt-4'>
           <Label className='text-sm font-medium muted-text'>Symbol *</Label>
           <Controller
@@ -288,10 +288,10 @@ export function BankAccountModal({
   const StepAccountDetails = () => {
     return (
       <>
-        {/* Apelido/Nome da conta */}
+        {/* Account Nickname */}
         <div className='relative'>
           <Label className='text-sm font-medium muted-text'>
-            Nome da Conta
+            Account Name
           </Label>
           <Controller
             name='name'
@@ -300,20 +300,20 @@ export function BankAccountModal({
             render={({ field }) => (
               <Input
                 {...field}
-                placeholder='Ex: Main Account, Investments Account, etc'
+                placeholder='E.g.: Main Account, Investments Account, etc'
                 className='glass-input mt-1 pl-3 focus:ring-2 focus:ring-primary/40 focus:border-primary/60 transition-all duration-200 shadow-sm'
                 required
               />
             )}
           />
         </div>
-        {/* Chave de Pagamento Instantâneo */}
+        {/* Instant Payment Key */}
         <div className='relative mt-4'>
           <Label className='text-sm font-medium muted-text'>
             {(() => {
               const country = getValues('country');
-              if (country === 'BR') return 'Chave PIX *';
-              if (country === 'MX') return 'Cuenta SPEI *';
+              if (country === 'BR') return 'PIX Key *';
+              if (country === 'MX') return 'SPEI Account *';
               if (country === 'US') return 'FedNow Routing Number *';
               return 'Instant Payment Number *';
             })()}
@@ -325,10 +325,10 @@ export function BankAccountModal({
             render={({ field }) => {
               const country = getValues('country');
               let placeholder = '';
-              if (country === 'BR') placeholder = 'Ex: 11999999999, CPF, e-mail, CNPJ...';
-              else if (country === 'MX') placeholder = 'Ex: 123456789012345678';
-              else if (country === 'US') placeholder = 'Ex: 021000021';
-              else placeholder = 'Digite o identificador do pagamento instantâneo';
+                if (country === 'BR') placeholder = 'E.g.: 11999999999, CPF, email, CNPJ...';
+                else if (country === 'MX') placeholder = 'E.g.: 123456789012345678';
+                else if (country === 'US') placeholder = 'E.g.: 021000021';
+                else placeholder = 'Enter the instant payment identifier';
               return (
           <Input
             {...field}
@@ -340,9 +340,9 @@ export function BankAccountModal({
             }}
           />
         </div>
-        {/* Banco */}
+        {/* Bank */}
         <div className='relative mt-4'>
-          <Label className='text-sm font-medium muted-text'>Banco *</Label>
+          <Label className='text-sm font-medium muted-text'>Bank *</Label>
           <Controller
             name='bank_name'
             control={control}
@@ -350,31 +350,31 @@ export function BankAccountModal({
             render={({ field }) => (
               <Input
                 {...field}
-                placeholder='Nome do banco'
+                placeholder='Bank name'
                 className='glass-input mt-1 pl-3 focus:ring-2 focus:ring-primary/40 focus:border-primary/60 transition-all duration-200 shadow-sm'
                 required
               />
             )}
           />
         </div>
-        {/* Agência e Conta */}
+        {/* Branch and Account */}
         <div className='flex flex-col sm:flex-row gap-3 mt-4'>
           <div className='flex-1'>
-            <Label className='text-sm font-medium muted-text'>Agência</Label>
+            <Label className='text-sm font-medium muted-text'>Branch</Label>
             <Controller
               name='branch'
               control={control}
               render={({ field }) => (
                 <Input
                   {...field}
-                  placeholder='Agência'
+                placeholder='Branch'
                   className='glass-input mt-1 pl-3 focus:ring-2 focus:ring-primary/40 focus:border-primary/60 transition-all duration-200 shadow-sm'
                 />
               )}
             />
           </div>
           <div className='flex-1'>
-            <Label className='text-sm font-medium muted-text'>Conta *</Label>
+            <Label className='text-sm font-medium muted-text'>Account Number *</Label>
             <Controller
               name='account'
               control={control}
@@ -382,7 +382,7 @@ export function BankAccountModal({
               render={({ field }) => (
                 <Input
                   {...field}
-                  placeholder='Número da conta'
+                placeholder='Account number'
                   className='glass-input mt-1 pl-3 focus:ring-2 focus:ring-primary/40 focus:border-primary/60 transition-all duration-200 shadow-sm'
                   required
                 />
@@ -397,24 +397,24 @@ export function BankAccountModal({
   const StepAddress = () => {
     return (
       <>
-        {/* Endereço */}
+        {/* Address */}
         <div className='flex flex-col sm:flex-row gap-3 mt-4'>
           <div className='flex-1'>
-            <Label className='text-sm font-medium muted-text'>Cidade</Label>
+            <Label className='text-sm font-medium muted-text'>City</Label>
             <Controller
               name='city'
               control={control}
               render={({ field }) => (
                 <Input
                   {...field}
-                  placeholder='Cidade'
+                placeholder='City'
                   className='glass-input mt-1 pl-3 focus:ring-2 focus:ring-primary/40 focus:border-primary/60 transition-all duration-200 shadow-sm'
                 />
               )}
             />
           </div>
           <div className='flex-1'>
-            <Label className='text-sm font-medium muted-text'>Estado</Label>
+            <Label className='text-sm font-medium muted-text'>State</Label>
             <Controller
               name='state'
               control={control}
@@ -502,7 +502,7 @@ export function BankAccountModal({
                 return (
                   <Input
                     {...field}
-                    placeholder='Estado'
+                placeholder='State'
                     className='glass-input mt-1 pl-3 focus:ring-2 focus:ring-primary/40 focus:border-primary/60 transition-all duration-200 shadow-sm'
                   />
                 );
@@ -510,14 +510,14 @@ export function BankAccountModal({
             />
           </div>
           <div className='flex-1'>
-            <Label className='text-sm font-medium muted-text'>CEP</Label>
+            <Label className='text-sm font-medium muted-text'>Postal Code</Label>
             <Controller
               name='postal_code'
               control={control}
               render={({ field }) => (
                 <Input
                   {...field}
-                  placeholder='CEP'
+                placeholder='Postal code'
                   className='glass-input mt-1 pl-3 focus:ring-2 focus:ring-primary/40 focus:border-primary/60 transition-all duration-200 shadow-sm'
                 />
               )}
@@ -525,14 +525,14 @@ export function BankAccountModal({
           </div>
         </div>
         <div className='relative mt-3'>
-          <Label className='text-sm font-medium muted-text'>Endereço</Label>
+          <Label className='text-sm font-medium muted-text'>Address</Label>
           <Controller
             name='street_line'
             control={control}
             render={({ field }) => (
               <Input
                 {...field}
-                placeholder='Rua, número, complemento'
+                placeholder='Street, number, complement'
                 className='glass-input mt-1 pl-3 focus:ring-2 focus:ring-primary/40 focus:border-primary/60 transition-all duration-200 shadow-sm'
               />
             )}
@@ -550,7 +550,7 @@ export function BankAccountModal({
       : getValues('instant_payment_type');
     return (
       <div className='flex flex-col gap-4'>
-        {/* Card FIAT */}
+        {/* FIAT Card */}
         <div className='rounded-xl bg-gradient-to-br from-[#e6f7f8] via-white to-[#f0fafd] border border-[#1ea3ab]/10 shadow p-4 flex flex-col gap-1'>
           <div className='flex items-center gap-2 mb-2'>
             <Landmark className='w-5 h-5 text-[#1ea3ab]' />
@@ -558,7 +558,7 @@ export function BankAccountModal({
           </div>
           <div className='flex flex-wrap gap-x-6 gap-y-1 text-xs text-main'>
             <div>
-              <b>País:</b> {getValues('country')}
+              <b>Country:</b> {getValues('country')}
             </div>
             <div>
               <b>Symbol:</b> {getValues('asset')}
@@ -568,7 +568,7 @@ export function BankAccountModal({
             </div>
           </div>
         </div>
-        {/* Card Account Details */}
+        {/* Account Details Card */}
         <div className='rounded-xl bg-gradient-to-br from-[#e6f7f8] via-white to-[#f0fafd] border border-[#1ea3ab]/10 shadow p-4 flex flex-col gap-1'>
           <div className='flex items-center gap-2 mb-2'>
             <Banknote className='w-5 h-5 text-[#1ea3ab]' />
@@ -595,50 +595,32 @@ export function BankAccountModal({
             </div>
           </div>
         </div>
-        {/* Card Address */}
+        {/* Address Card */}
         <div className='rounded-xl bg-gradient-to-br from-[#e6f7f8] via-white to-[#f0fafd] border border-[#1ea3ab]/10 shadow p-4 flex flex-col gap-1'>
           <div className='flex items-center gap-2 mb-2'>
             <MapPin className='w-5 h-5 text-[#1ea3ab]' />
             <span className='font-semibold text-[#1ea3ab] text-sm'>
-              Endereço
+              Address
             </span>
           </div>
           <div className='flex flex-wrap gap-x-6 gap-y-1 text-xs text-main'>
             <div>
-              <b>Cidade:</b> {getValues('city')}
+              <b>City:</b> {getValues('city')}
             </div>
             <div>
-              <b>Estado:</b> {getValues('state')}
+              <b>State:</b> {getValues('state')}
             </div>
             <div>
-              <b>CEP:</b> {getValues('postal_code')}
+              <b>Postal Code:</b> {getValues('postal_code')}
             </div>
             <div>
-              <b>Endereço:</b> {getValues('street_line')}
+              <b>Address:</b> {getValues('street_line')}
             </div>
           </div>
         </div>
       </div>
     );
   };
-
-  // Função para converter o form para o payload correto
-  function toRegisterBankAccountPayload(data: BankAccountForm) {
-    return {
-      asset: data.asset,
-      name: data.name,
-      bank_name: data.bank_name,
-      branch: data.branch,
-      country: data.country, // já está ISO
-      account: data.account,
-      instant_payment: data.instant_payment,
-      instant_payment_type: data.instant_payment_type,
-      city: data.city,
-      postal_code: data.postal_code,
-      state: data.state,
-      street_line: data.street_line,
-    };
-  }
 
   const onSubmit = (data: BankAccountForm) => {
     mutation.mutate(data);
@@ -734,14 +716,14 @@ export function BankAccountModal({
               className='flex-1 min-w-0 border border-[#1ea3ab]/30 bg-white/80 text-[#1ea3ab] hover:bg-[#1ea3ab]/10 hover:text-[#1ea3ab] shadow-sm'
               disabled={isSubmitting || mutation.isPending}
             >
-              {step === 0 ? 'Cancelar' : 'Voltar'}
+              {step === 0 ? 'Cancel' : 'Back'}
             </Button>
             {step < 3 ? (
               <Button
                 type='button'
                 className='flex-1 bg-[#1ea3ab] hover:bg-[#1ea3ab]/90 text-white font-semibold min-w-0 shadow-md'
                 onClick={async () => {
-                  // Validação dos campos do step atual
+                  // Validate required fields for the current step
                   let requiredFields: (keyof BankAccountForm)[] = [];
                   if (step === 0)
                     requiredFields = [
@@ -768,14 +750,14 @@ export function BankAccountModal({
                   );
                   if (!allFilled) {
                     toast.error(
-                      'Preencha todos os campos obrigatórios antes de avançar.',
+                      'Please fill in all required fields before proceeding.',
                     );
                     return;
                   }
 
-                  // Corrige bug: limpa campos automáticos ao avançar
+                  // Fix bug: clear automatic fields when advancing
                   if (step === 0) {
-                    // Ao sair do step FIAT, limpa apenas os campos do próximo step (Account Details) e Address
+                    // When leaving the FIAT step, clear only the next step (Account Details) and Address fields
                     setValue('instant_payment', '');
                     setValue('bank_name', '');
                     setValue('branch', '');
@@ -788,17 +770,17 @@ export function BankAccountModal({
                     setValue('instant_payment', '');
                   }
                   if (step === 1) {
-                    // Ao sair do step Account Details, limpa apenas os campos do próximo step (Address)
+                    // When leaving the Account Details step, clear only the next step (Address) fields
                     setValue('city', '');
                     setValue('state', '');
-                        setValue('postal_code', '');
-                        setValue('street_line', '');
-                      }
+                    setValue('postal_code', '');
+                    setValue('street_line', '');
+                  }
                   setStep(step + 1);
                 }}
                 disabled={isSubmitting || mutation.isPending}
               >
-                Avançar
+                Next
               </Button>
             ) : (
               <Button
@@ -813,10 +795,10 @@ export function BankAccountModal({
                 {isSubmitting || mutation.isPending ? (
                   <>
                     <div className='w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2' />
-                    Confirmando...
+                    Confirming...
                   </>
                 ) : (
-                  'CONFIRMAR'
+                  'CONFIRM'
                 )}
               </Button>
             )}
