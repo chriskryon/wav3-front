@@ -74,3 +74,15 @@ export async function getAccountDetails(): Promise<any> {
     throw new Error("Unexpected error occurred.");
   }
 }
+
+export async function getAccountBalances(): Promise<any> {
+  try {
+    const response = await api.get(`/accounts/balances`);
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      throw new Error(error.response.data?.message || "Failed to fetch account balances.");
+    }
+    throw new Error("Unexpected error occurred.");
+  }
+}

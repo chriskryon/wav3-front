@@ -3,6 +3,7 @@
 
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { getAccountBalances } from '@/services/account-api-service';
 import {
   ArrowDown,
   ArrowUp,
@@ -24,12 +25,25 @@ import Image from 'next/image';
 
 export default function OverviewPage() {
 
-  // Mock de balances (até integração com API real)
-  const balances = {
-    crypto: 123456.78,
-    fiat: 654321.12,
-    total: 777777.90,
-  };
+
+  // Fetch balances from API
+  const { data: accountBalances, isLoading: isBalancesLoading } = useQuery({
+    queryKey: ['accountBalances'],
+    queryFn: getAccountBalances,
+    staleTime: 1000 * 60,
+  });
+
+  // Calculate totals
+  const fiat = accountBalances
+    ? accountBalances.filter((b: any) => b.type === 'fiat' && b.balance !== null).reduce((sum: number, b: any) => sum + Number(b.balance), 0)
+    : 0;
+  const crypto = accountBalances
+    ? accountBalances.filter((b: any) => b.type === 'crypto' && b.balance !== null).reduce((sum: number, b: any) => sum + Number(b.balance), 0)
+    : 0;
+  const total = accountBalances
+    ? accountBalances.filter((b: any) => b.balance !== null).reduce((sum: number, b: any) => sum + Number(b.balance), 0)
+    : 0;
+  const balances = { crypto, fiat, total };
 
   // Mock de transações (até integração com API real)
   const recentTransactions = [
@@ -160,73 +174,85 @@ export default function OverviewPage() {
       <div className='max-w-7xl mx-auto space-y-8'>
         <FakeDataAlert />
 
-        {/* Balance Cards (mock) */}
-        <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
+        {/* Crypto and Fiat Balances as asset cards */}
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+          {/* Crypto Balances */}
           <Card className='glass-card-enhanced glass-hover transition-transform transform hover:scale-105'>
-            <CardHeader className='pb-4'>
-              <div className='flex items-center justify-between'>
-                <CardTitle className='text-sm text-muted-foreground font-medium'>
-                  Total Portfolio
-                </CardTitle>
-                <div className='w-10 h-10 rounded-xl bg-gradient-to-br from-yellow-500 to-orange-500 text-white flex items-center justify-center shadow-md'>
-                  <DollarSign className='w-5 h-5' />
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className='text-4xl font-extrabold text-primary'>
-                ${balances.total.toLocaleString()}
-              </div>
-              <div className='flex items-center gap-2 mt-3'>
-                <div className='w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center'>
-                  <TrendingUp className='w-4 h-4 text-green-500' />
-                </div>
-                <span className='text-sm text-green-500 font-medium'>
-                  +12.5% this month
-                </span>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className='glass-card-enhanced glass-hover transition-transform transform hover:scale-105'>
-            <CardHeader className='pb-4'>
-              <div className='flex items-center justify-between'>
-                <CardTitle className='text-sm text-muted-foreground font-medium'>
-                  Crypto Balance
-                </CardTitle>
-                <div className='w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-blue-500 text-white flex items-center justify-center shadow-md'>
+            <CardHeader className='pb-2'>
+              <div className='flex items-center gap-3 mb-2'>
+                <div className='w-9 h-9 rounded-xl bg-gradient-to-br from-purple-500 to-blue-500 text-white flex items-center justify-center shadow-md'>
                   <Wallet className='w-5 h-5' />
                 </div>
+                <CardTitle className='text-base font-bold text-main'>Crypto Balances</CardTitle>
               </div>
             </CardHeader>
             <CardContent>
-              <div className='text-3xl font-bold text-primary'>
-                ${balances.crypto.toLocaleString()}
-              </div>
-              <div className='text-sm text-muted-foreground mt-1'>
-                {((balances.crypto / balances.total) * 100).toFixed(1)}% of total
-              </div>
+              {isBalancesLoading ? (
+                <div className="flex items-center justify-center py-4">
+                  <div className="w-6 h-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin mr-2"></div>
+                  <span className="text-main font-semibold text-sm">Loading...</span>
+                </div>
+              ) : (
+                (accountBalances?.filter((b: any) => b.type === 'crypto' && b.balance !== null) ?? []).length === 0 ? (
+                  <div className="text-center text-muted text-xs">No crypto assets found.</div>
+                ) : (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    {accountBalances
+                      .filter((b: any) => b.type === 'crypto' && b.balance !== null)
+                      .map((b: any) => (
+                        <div key={b.symbol} className="flex flex-col items-center justify-center bg-white/80 border border-gray-100 px-1.5 py-2 rounded-md shadow-none hover:shadow-md transition-shadow duration-150 cursor-pointer min-w-[90px]">
+                          <div className="w-8 h-8 flex items-center justify-center rounded-full bg-white border border-gray-200 mb-1 overflow-hidden">
+                            {renderAssetIcon(b.symbol, b.assetInfo?.icon || '', 'background')}
+                          </div>
+                          <div className="font-bold text-main text-[13px] mb-0.5 tracking-tight truncate">{b.symbol}</div>
+                          <div className="font-semibold text-primary text-[13px] tabular-nums leading-tight">
+                            {Number(b.balance).toLocaleString(undefined, { style: 'currency', currency: b.assetInfo?.currency || 'USD', maximumFractionDigits: 2 })}
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                )
+              )}
             </CardContent>
           </Card>
 
+          {/* Fiat Balances */}
           <Card className='glass-card-enhanced glass-hover transition-transform transform hover:scale-105'>
-            <CardHeader className='pb-4'>
-              <div className='flex items-center justify-between'>
-                <CardTitle className='text-sm text-muted-foreground font-medium'>
-                  Fiat Balance
-                </CardTitle>
-                <div className='w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 text-white flex items-center justify-center shadow-md'>
+            <CardHeader className='pb-2'>
+              <div className='flex items-center gap-3 mb-2'>
+                <div className='w-9 h-9 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 text-white flex items-center justify-center shadow-md'>
                   <DollarSign className='w-5 h-5' />
                 </div>
+                <CardTitle className='text-base font-bold text-main'>Fiat Balances</CardTitle>
               </div>
             </CardHeader>
             <CardContent>
-              <div className='text-3xl font-bold text-primary'>
-                ${balances.fiat.toLocaleString()}
-              </div>
-              <div className='text-sm text-muted-foreground mt-1'>
-                {((balances.fiat / balances.total) * 100).toFixed(1)}% of total
-              </div>
+              {isBalancesLoading ? (
+                <div className="flex items-center justify-center py-4">
+                  <div className="w-6 h-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin mr-2"></div>
+                  <span className="text-main font-semibold text-sm">Loading...</span>
+                </div>
+              ) : (
+                (accountBalances?.filter((b: any) => b.type === 'fiat' && b.balance !== null) ?? []).length === 0 ? (
+                  <div className="text-center text-muted text-xs">No fiat assets found.</div>
+                ) : (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    {accountBalances
+                      .filter((b: any) => b.type === 'fiat' && b.balance !== null)
+                      .map((b: any) => (
+                        <div key={b.symbol} className="flex flex-col items-center justify-center bg-white/80 border border-gray-100 px-1.5 py-2 rounded-md shadow-none hover:shadow-md transition-shadow duration-150 cursor-pointer min-w-[90px]">
+                          <div className="w-8 h-8 flex items-center justify-center rounded-full bg-white border border-gray-200 mb-1 overflow-hidden">
+                            {renderAssetIcon(b.symbol, b.assetInfo?.icon || '', 'background')}
+                          </div>
+                          <div className="font-bold text-main text-[13px] mb-0.5 tracking-tight truncate">{b.symbol}</div>
+                          <div className="font-semibold text-primary text-[13px] tabular-nums leading-tight">
+                            {Number(b.balance).toLocaleString(undefined, { style: 'currency', currency: b.assetInfo?.currency || b.symbol || 'USD', maximumFractionDigits: 2 })}
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                )
+              )}
             </CardContent>
           </Card>
         </div>
