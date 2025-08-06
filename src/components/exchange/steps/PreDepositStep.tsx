@@ -5,6 +5,7 @@ import { useExchangeContext } from '@/context/ExchangeContext';
 import { NetworkIcon } from '@/components/ui/network-icon';
 import { useToast } from '@/hooks/use-toast'; // Importando o hook de toast
 import { getQuote } from '@/services/exchange-api-service';
+import Wav3Loading from '@/components/loading-wav3';
 
 interface PreDepositStepProps {
   onBack: () => void;
@@ -150,9 +151,7 @@ export const PreDepositStep: React.FC<PreDepositStepProps> = ({ onBack, onConfir
 
   if (!quoteResult) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <p className="text-gray-500">Loading quote details...</p>
-      </div>
+      <Wav3Loading />
     );
   }
 

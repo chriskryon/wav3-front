@@ -2,7 +2,7 @@ import Image from 'next/image';
 import logo from '../app/logo.svg';
 
 const Wav3Loading = () => (
-    <div className="flex flex-col items-center justify-center h-screen animate-pulse">
+    <div className="flex flex-col items-center justify-center h-full animate-pulse">
         <Image
             src={logo}
             alt="WAV3 Logo"

@@ -31,6 +31,7 @@ import { ExternalWallet } from '@/components/wallets/ExternalWallet';
 import { SharedWallet } from '@/components/wallets/SharedWallet';
 import { Label } from '@/components/ui/label';
 import { deleteWallet, listWallets, registerExternalWallet, registerSharedWallet } from '@/services/wallet-api-service';
+import Wav3Loading from '@/components/loading-wav3';
 
 export default function WalletsPage() {
   const [showNewWalletModal, setShowNewWalletModal] = useState<
@@ -339,12 +340,7 @@ export default function WalletsPage() {
         ) : (
           <div className='flex flex-col gap-8'>
             {loadingWallets ? (
-              <div className='flex flex-col items-center justify-center py-16 gap-4'>
-                <Loader2 className='w-12 h-12 text-primary animate-spin' />
-                <span className='text-lg text-primary font-bold tracking-wide'>
-                  Loading wallets...
-                </span>
-              </div>
+              <Wav3Loading />
             ) : Object.keys(groupedWallets).length === 0 ? (
               <div className='flex flex-col items-center justify-center py-16 gap-4'>
                 <div className='rounded-full bg-primary/10 p-6 flex items-center justify-center shadow'>

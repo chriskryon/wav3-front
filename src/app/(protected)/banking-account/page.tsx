@@ -18,6 +18,7 @@ import { BankAccountDetailsCard } from '@/components/banking/BankAccountDetailsC
 import { BanknoteArrowUp, PiggyBank, Plus } from 'lucide-react';
 import { deleteBankAccount, listBankAccounts } from '@/services/bank-account-api-service';
 import { NoBankAccountCard } from '@/components/no-banking-account-card';
+import Wav3Loading from '@/components/loading-wav3';
 
 // Gradientes criativos por moeda/país (tons mais leves e "americano" mais marcante)
 const bankGradients: Record<string, string> = {
@@ -125,12 +126,7 @@ export default function BankingAccountPage() {
 
           {/* Cards grid - Dividido por tipo (shared/external) */}
           {isLoading ? (
-            <div className='flex flex-col items-center justify-center py-16 gap-4'>
-              <div className='w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin' />
-              <span className='text-lg text-primary font-bold tracking-wide'>
-                Loading your Banking Accounts...
-              </span>
-            </div>
+            <Wav3Loading />
           ) : bankAccounts.length === 0 ? (
             <div className='flex flex-col items-center justify-center py-16 gap-4'>
               <div className='rounded-full bg-primary/10 p-6 flex items-center justify-center shadow'>
