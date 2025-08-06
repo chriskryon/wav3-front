@@ -20,7 +20,7 @@ export default function CardsPage() {
   const cards = [
     {
       id: 1,
-      name: 'OND4 Platinum Card',
+      name: 'Wav3 Platinum Card',
       type: 'Virtual',
       number: '**** **** **** 1234',
       balance: 2500.0,
@@ -31,7 +31,7 @@ export default function CardsPage() {
     },
     {
       id: 2,
-      name: 'OND4 Black Card',
+      name: 'Wav3 Black Card',
       type: 'Physical',
       number: '**** **** **** 5678',
       balance: 15000.0,
@@ -42,7 +42,7 @@ export default function CardsPage() {
     },
     {
       id: 3,
-      name: 'OND4 Gold Card',
+      name: 'Wav3 Gold Card',
       type: 'Virtual',
       number: '**** **** **** 9012',
       balance: 750.0,
@@ -53,7 +53,7 @@ export default function CardsPage() {
     },
     {
       id: 4,
-      name: 'OND4 Silver Card',
+      name: 'Wav3 Silver Card',
       type: 'Physical',
       number: '**** **** **** 3456',
       balance: 1200.0,
@@ -64,7 +64,7 @@ export default function CardsPage() {
     },
     {
       id: 5,
-      name: 'OND4 Business Card',
+      name: 'Wav3 Business Card',
       type: 'Virtual',
       number: '**** **** **** 7890',
       balance: 5000.0,
@@ -75,7 +75,7 @@ export default function CardsPage() {
     },
     {
       id: 6,
-      name: 'OND4 Student Card',
+      name: 'Wav3 Student Card',
       type: 'Virtual',
       number: '**** **** **** 2468',
       balance: 300.0,
@@ -94,7 +94,7 @@ export default function CardsPage() {
         <div className='flex flex-col md:flex-row md:items-center justify-between gap-4'>
           <div>
             <h1 className='text-3xl font-bold text-main'>Cards</h1>
-            <p className='muted-text text-lg'>Manage your CRIPTO debit cards</p>
+            <p className='muted-text text-lg'>Manage your CRYPTO debit cards</p>
           </div>
           <Button className='bg-primary hover:bg-primary/90 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300'>
             <Plus className='w-4 h-4 mr-2' />
@@ -117,9 +117,9 @@ export default function CardsPage() {
                 >
                   {/* Card Pattern */}
                   <div className='absolute inset-0 opacity-20'>
-                    <div className='absolute top-6 right-6 w-20 h-20 rounded-full bg-white/30'></div>
-                    <div className='absolute bottom-6 left-6 w-16 h-16 rounded-full bg-white/20'></div>
-                    <div className='absolute top-1/2 left-1/2 w-12 h-12 rounded-full bg-white/10 transform -translate-x-1/2 -translate-y-1/2'></div>
+                    <div className='absolute top-6 right-6 w-20 h-20 rounded-full bg-white/30' />
+                    <div className='absolute bottom-6 left-6 w-16 h-16 rounded-full bg-white/20' />
+                    <div className='absolute top-1/2 left-1/2 w-12 h-12 rounded-full bg-white/10 transform -translate-x-1/2 -translate-y-1/2' />
                   </div>
 
                   {/* Card Content */}
@@ -219,7 +219,7 @@ export default function CardsPage() {
         <Card className='glass-card-enhanced'>
           <CardHeader>
             <CardTitle className='text-xl font-bold text-main'>
-              OND4 Card Benefits
+              Wav3 Card Benefits
             </CardTitle>
           </CardHeader>
           <CardContent>
