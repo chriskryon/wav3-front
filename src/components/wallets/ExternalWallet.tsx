@@ -36,52 +36,52 @@ export const ExternalWallet: React.FC<ExternalWalletProps> = ({
   isLoading,
   onCancel,
 }) => (
-  <form className='space-y-6 flex flex-col justify-center' onSubmit={onSubmit}>
+  <form className='space-y-4 flex flex-col justify-center' onSubmit={onSubmit}>
     {/* Wallet Name */}
-    <div className='relative'>
-      <Label className='text-sm font-medium muted-text'>Wallet Name</Label>
-      <div className='relative flex items-center'>
+    <div>
+      <Label className='text-xs font-medium text-gray-500 uppercase tracking-wide'>Wallet Name</Label>
+      <div className='relative flex items-center mt-1'>
         <Input
-          placeholder='Minha carteira Bitcoin'
-          className='glass-input mt-1 pl-11'
+          placeholder='My Bitcoin wallet'
+          className='bg-white border border-gray-300 rounded-lg pl-10 py-2 focus:border-[#1ea3ab] focus:ring-1 focus:ring-[#1ea3ab] transition-colors'
           name='name'
           value={newWallet.name}
           onChange={onChange}
         />
-        <Wallet2 className='absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/80 z-10 pointer-events-none' />
+        <Wallet2 className='absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none' />
       </div>
     </div>
     {/* Asset Select */}
-    <div className='relative'>
-      <Label className='text-sm font-medium muted-text'>Ativo</Label>
-      <div className='relative flex items-center'>
-        <span className='absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 z-10 pointer-events-none'>
-          <HandCoins className='w-5 h-5 text-primary/60' />
+    <div>
+      <Label className='text-xs font-medium text-gray-500 uppercase tracking-wide'>Asset</Label>
+      <div className='relative flex items-center mt-1'>
+        <span className='absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 z-10 pointer-events-none'>
+          <HandCoins className='w-4 h-4 text-gray-400' />
         </span>
         <Select value={newWallet.asset} onValueChange={onAssetChange}>
-          <SelectTrigger className='glass-input mt-1 w-full pl-11'>
-            <SelectValue placeholder='Selecione o ativo' />
+          <SelectTrigger className='bg-white border border-gray-300 rounded-lg pl-10 py-2 focus:border-[#1ea3ab] focus:ring-1 focus:ring-[#1ea3ab] transition-colors'>
+            <SelectValue placeholder='Select asset' />
           </SelectTrigger>
-          <SelectContent className='glass-card-enhanced'>
-            <SelectItem value='BTC' className='hover:bg-primary/10'>
+          <SelectContent className='bg-white border border-gray-200 rounded-lg shadow-lg'>
+            <SelectItem value='BTC' className='hover:bg-gray-50 focus:bg-gray-50'>
               <span className='flex items-center gap-2'>
                 <TokenBTC className='w-4 h-4' />
                 Bitcoin (BTC)
               </span>
             </SelectItem>
-            <SelectItem value='ETH' className='hover:bg-primary/10'>
+            <SelectItem value='ETH' className='hover:bg-gray-50 focus:bg-gray-50'>
               <span className='flex items-center gap-2'>
                 <TokenETH className='w-4 h-4' />
                 Ethereum (ETH)
               </span>
             </SelectItem>
-            <SelectItem value='XRP' className='hover:bg-primary/10'>
+            <SelectItem value='XRP' className='hover:bg-gray-50 focus:bg-gray-50'>
               <span className='flex items-center gap-2'>
                 <TokenXRP className='w-4 h-4 bg-black' />
                 Ripple (XRP)
               </span>
             </SelectItem>
-            <SelectItem value='USDT' className='hover:bg-primary/10'>
+            <SelectItem value='USDT' className='hover:bg-gray-50 focus:bg-gray-50'>
               <span className='flex items-center gap-2'>
                 <TokenUSDT className='w-4 h-4' />
                 Tether (USDT)
@@ -92,17 +92,17 @@ export const ExternalWallet: React.FC<ExternalWalletProps> = ({
       </div>
     </div>
     {/* Wallet Address */}
-    <div className='relative'>
-      <Label className='text-sm font-medium muted-text'>Wallet Address</Label>
-      <div className='relative flex items-center'>
+    <div>
+      <Label className='text-xs font-medium text-gray-500 uppercase tracking-wide'>Wallet Address</Label>
+      <div className='relative flex items-center mt-1'>
         <Input
           placeholder='Enter wallet address'
-          className='glass-input mt-1 pl-11'
+          className='bg-white border border-gray-300 rounded-lg pl-10 py-2 focus:border-[#1ea3ab] focus:ring-1 focus:ring-[#1ea3ab] transition-colors'
           name='address'
           value={newWallet.address}
           onChange={onChange}
         />
-        <Copy className='absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/80 z-10 pointer-events-none' />
+        <Copy className='absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none' />
       </div>
     </div>
     <div className='flex gap-3 pt-4'>
@@ -110,14 +110,14 @@ export const ExternalWallet: React.FC<ExternalWalletProps> = ({
         type='button'
         variant='outline'
         onClick={onCancel}
-        className='flex-1 glass-button'
+        className='flex-1 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-colors font-medium py-2 rounded-lg'
         disabled={isLoading}
       >
-        Cancel...
+        Cancel
       </Button>
       <Button
         type='submit'
-        className='flex-1 bg-primary hover:bg-primary/90 text-white font-semibold'
+        className='flex-1 bg-[#1ea3ab] hover:bg-[#188a91] text-white font-medium py-2 rounded-lg border border-[#1ea3ab] transition-colors'
         disabled={isLoading}
       >
         {isLoading ? (

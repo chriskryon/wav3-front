@@ -1,120 +1,82 @@
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { HandCoins, Loader2, Copy } from 'lucide-react';
+import { Percent, Mail, Loader2 } from 'lucide-react';
 import type React from 'react';
 
 interface SharedWalletProps {
-  sharedWallet: {
-    asset: string;
-    network: string;
+  shareData: {
+    percentage: string;
+    userEmail: string;
   };
-  assetNetworkOptions: Record<string, string[]>;
-  sharedResult: any;
-  isRegisteringShared: boolean;
-  onAssetChange: (value: string) => void;
-  onNetworkChange: (value: string) => void;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSubmit: (e: React.FormEvent) => void;
+  isLoading: boolean;
   onCancel: () => void;
-  onCopy: (address: string) => void;
 }
 
 export const SharedWallet: React.FC<SharedWalletProps> = ({
-  sharedWallet,
-  assetNetworkOptions,
-  sharedResult,
-  isRegisteringShared,
-  onAssetChange,
-  onNetworkChange,
+  shareData,
+  onChange,
   onSubmit,
+  isLoading,
   onCancel,
-  onCopy,
 }) => (
-  <form className='space-y-6 flex flex-col justify-center' onSubmit={onSubmit}>
-    {/* Asset Select */}
-    <div className='relative'>
-      <Label className='text-sm font-medium muted-text'>Asset</Label>
-      <div className='relative flex items-center'>
-        <span className='absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 z-10 pointer-events-none'>
-          <HandCoins className='w-5 h-5 text-primary/60' />
-        </span>
-        <Select value={sharedWallet.asset} onValueChange={onAssetChange}>
-          <SelectTrigger className='glass-input mt-1 w-full pl-11'>
-            <SelectValue placeholder='Select asset' />
-          </SelectTrigger>
-          <SelectContent className='glass-card-enhanced'>
-            <SelectItem value='BTC'>Bitcoin (BTC)</SelectItem>
-            <SelectItem value='ETH'>Ethereum (ETH)</SelectItem>
-            <SelectItem value='XRP'>Ripple (XRP)</SelectItem>
-            <SelectItem value='USDT'>Tether (USDT)</SelectItem>
-          </SelectContent>
-        </Select>
+  <form className='space-y-4 flex flex-col justify-center' onSubmit={onSubmit}>
+    {/* Share Percentage */}
+    <div>
+      <Label className='text-xs font-medium text-gray-500 uppercase tracking-wide'>Share Percentage</Label>
+      <div className='relative flex items-center mt-1'>
+        <Input
+          type='number'
+          placeholder='e.g., 25'
+          className='bg-white border border-gray-300 rounded-lg pl-10 py-2 focus:border-[#1ea3ab] focus:ring-1 focus:ring-[#1ea3ab] transition-colors'
+          name='percentage'
+          value={shareData.percentage}
+          onChange={onChange}
+          min='1'
+          max='100'
+        />
+        <Percent className='absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none' />
       </div>
     </div>
-    {/* Network Select */}
-    <div className='relative'>
-      <Label className='text-sm font-medium muted-text'>Network</Label>
-      <div className='relative flex items-center'>
-        <Select value={sharedWallet.network} onValueChange={onNetworkChange}>
-          <SelectTrigger className='glass-input mt-1 w-full'>
-            <SelectValue placeholder='Select network' />
-          </SelectTrigger>
-          <SelectContent className='glass-card-enhanced'>
-            {assetNetworkOptions[sharedWallet.asset]?.map((net) => (
-              <SelectItem key={net} value={net}>
-                {net}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+    {/* User Email */}
+    <div>
+      <Label className='text-xs font-medium text-gray-500 uppercase tracking-wide'>User Email</Label>
+      <div className='relative flex items-center mt-1'>
+        <Input
+          type='email'
+          placeholder='user@example.com'
+          className='bg-white border border-gray-300 rounded-lg pl-10 py-2 focus:border-[#1ea3ab] focus:ring-1 focus:ring-[#1ea3ab] transition-colors'
+          name='userEmail'
+          value={shareData.userEmail}
+          onChange={onChange}
+        />
+        <Mail className='absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none' />
       </div>
     </div>
-    {/* Resultado: endereço compartilhado */}
-    {sharedResult?.address && (
-      <div className='flex flex-col items-center gap-2'>
-        <Label className='muted-text text-sm'>Shared Address</Label>
-        <code className='p-3 bg-surface rounded-lg text-sm font-mono break-all text-main border border-black/10 select-all'>
-          {sharedResult.address}
-        </code>
-        <Button
-          size='sm'
-          variant='outline'
-          className='glass-button'
-          type='button'
-          onClick={() => onCopy(sharedResult.address)}
-        >
-          <Copy className='w-4 h-4 mr-2' /> Copy Address
-        </Button>
-      </div>
-    )}
     <div className='flex gap-3 pt-4'>
       <Button
         type='button'
         variant='outline'
         onClick={onCancel}
-        className='flex-1 glass-button'
-        disabled={isRegisteringShared}
+        className='flex-1 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-colors font-medium py-2 rounded-lg'
+        disabled={isLoading}
       >
         Cancel
       </Button>
       <Button
         type='submit'
-        className='flex-1 bg-primary hover:bg-primary/90 text-white font-semibold'
-        disabled={isRegisteringShared}
+        className='flex-1 bg-[#1ea3ab] hover:bg-[#188a91] text-white font-medium py-2 rounded-lg border border-[#1ea3ab] transition-colors'
+        disabled={isLoading}
       >
-        {isRegisteringShared ? (
+        {isLoading ? (
           <>
             <Loader2 className='w-4 h-4 animate-spin mr-2' />
-            Registering...
+            Sharing...
           </>
         ) : (
-          'Register Shared Address'
+          'Share Wallet'
         )}
       </Button>
     </div>
