@@ -39,62 +39,66 @@ export const DepositStep: React.FC<DepositStepProps> = ({ data, onBack, onNext }
   };
 
   return (
-    <div className="flex flex-col gap-4 h-full p-6 bg-white/70 rounded-3xl shadow-xl backdrop-blur-md overflow-y-auto">
+    <div className="flex flex-col gap-4 h-full p-4 bg-white rounded-xl border border-gray-200 overflow-y-auto">
       <div className="text-center">
-        <h2 className="text-xl font-bold text-[#1ea3ab]">Deposit Instruction</h2>
-        <p className="text-sm text-gray-500">Follow the instructions below to complete your deposit.</p>
-        <p className="text-sm text-gray-500 mt-1">
-          Time remaining: <span className="font-bold text-[#1ea3ab]">{formatTime(timeLeft)}</span>
+        <h2 className="text-lg font-semibold text-gray-900 mb-1">Deposit Instructions</h2>
+        <p className="text-sm text-gray-600 mb-2">Complete your deposit to continue</p>
+        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 border border-amber-200 rounded-lg">
+          <span className="text-sm font-medium text-amber-700">
+            {formatTime(timeLeft)}
+          </span>
+        </div>
+      </div>
+
+      <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+        <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Order Details</h3>
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-gray-600">Asset</span>
+            <div className="flex items-center gap-1.5">
+              <NetworkIcon symbol={data?.asset?.symbol} className="w-4 h-4" />
+              <span className="font-medium text-gray-900 text-sm">{data?.asset?.name}</span>
+            </div>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-gray-600">Network</span>
+            <span className="font-medium text-gray-900 text-sm">{data?.network}</span>
+          </div>
+          <div className="flex items-center justify-between p-2 bg-[#1ea3ab]/5 rounded border border-[#1ea3ab]/20">
+            <span className="text-sm font-medium text-gray-600">Amount</span>
+            <span className="font-bold text-[#1ea3ab] text-sm">{data?.amount}</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mt-3">
+        <p className="text-xs text-amber-700">
+          Please ensure you deposit the correct amount to the specified address. Incorrect deposits may delay processing.
         </p>
       </div>
 
-      <div className="flex flex-col gap-3 p-3 rounded-lg shadow bg-wav3/10 border border-wav3/30">
-        <div className="flex items-center justify-between">
-          <span className="text-sm font-semibold text-gray-500">Cryptocurrency:</span>
-          <div className="flex items-center gap-2">
-            <NetworkIcon symbol={data?.asset?.symbol} className="w-6 h-6" />
-            <span className="text-lg font-bold text-[#1ea3ab]">{data?.asset?.name}</span>
-          </div>
-        </div>
-        <div className="flex items-center justify-between">
-          <span className="text-sm font-semibold text-gray-500">Network:</span>
-          <span className="text-lg font-bold text-[#1ea3ab]">{data?.network}</span>
-        </div>
-        <div className="flex items-center justify-between">
-          <span className="text-sm font-semibold text-gray-500">Amount:</span>
-          <span className="text-lg font-bold text-[#1ea3ab]">{data?.amount}</span>
-        </div>
-      </div>
-
-      <p className="text-sm text-gray-500 mt-3 text-center">
-        Please make sure to deposit the right amount to the right address. Otherwise, your payment may take longer to be processed.
-      </p>
-
-      <div className="flex flex-col items-center mt-4">
-        <div className="w-full max-w-md bg-white rounded-xl border border-gray-200 p-2 flex items-center gap-2">
-          <NetworkIcon symbol={data?.asset?.symbol} className="w-6 h-6" />
-          <span
-            className="text-base font-mono font-semibold text-[#1ea3ab] break-all truncate flex-1 select-all"
-            title={data?.wallet_address}
-          >
-            {data?.wallet_address}
-          </span>
+      <div className="bg-white rounded-lg p-3 border border-gray-200">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Wallet Address</span>
           <button
             type="button"
             onClick={handleCopyAddress}
-            className="ml-2 p-2 rounded-full hover:bg-[#e6f7f8] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1ea3ab] transition"
-            aria-label="Copy wallet address"
+            className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-gray-600 hover:text-[#1ea3ab] hover:bg-gray-50 rounded transition-colors"
           >
-            <ClipboardCopy className="w-5 h-5 text-[#1ea3ab]" />
+            <ClipboardCopy className="w-3 h-3" />
+            Copy
           </button>
+        </div>
+        <div className="bg-gray-50 rounded border border-gray-200 p-2 break-all">
+          <span className="text-sm font-mono text-gray-900">{data?.wallet_address}</span>
         </div>
       </div>
 
-      <div className="flex gap-3 mt-4">
+      <div className="flex gap-2 mt-4">
         <button
           type="button"
           onClick={onBack}
-          className="flex-1 bg-gray-200 text-[#1ea3ab] py-2 rounded-lg shadow hover:bg-gray-300"
+          className="flex-1 px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-colors"
         >
           Return
         </button>
@@ -102,7 +106,7 @@ export const DepositStep: React.FC<DepositStepProps> = ({ data, onBack, onNext }
           type="button"
           onClick={onNext}
           disabled={loading}
-          className="flex-1 bg-[#1ea3ab] text-white py-2 rounded-lg shadow hover:bg-[#188a91]"
+          className="flex-1 px-3 py-2 text-sm font-medium text-white bg-[#1ea3ab] border border-[#1ea3ab] rounded-lg hover:bg-[#188a91] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           {loading ? 'Loading...' : 'Deposit Made'}
         </button>

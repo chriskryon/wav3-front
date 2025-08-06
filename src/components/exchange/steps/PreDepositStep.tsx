@@ -156,64 +156,115 @@ export const PreDepositStep: React.FC<PreDepositStepProps> = ({ onBack, onConfir
   }
 
   return (
-    <div className="flex flex-col gap-6 h-full p-6 bg-white/70 rounded-3xl shadow-xl backdrop-blur-md overflow-y-auto">
+    <div className="flex flex-col gap-4 h-full p-2 bg-white rounded-xl border border-gray-200 overflow-y-auto">
+      {/* Header */}
       <div className="text-center">
-        <h2 className="text-xl font-bold text-[#1ea3ab]">Quote Summary</h2>
-        <p className="text-sm text-gray-500">Review the details before proceeding.</p>
-        <p className="text-sm text-gray-500 mt-2">
-          Next update in: <span className="font-bold text-[#1ea3ab]">{timer}s</span>
-        </p>
+        <div className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-[#1ea3ab]/10 mb-1">
+          <svg className="w-4 h-4 text-[#1ea3ab]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <title>Quote Summary</title>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+        </div>
+        <h2 className="text-lg font-semibold text-gray-900 mb-.3">Quote Summary</h2>
+        <p className="text-sm text-gray-600">Review the details before proceeding</p>
+        
+        {/* Timer Badge */}
+        <div className="inline-flex items-center gap-1 bg-gray-50 text-gray-700 px-3 py-1 rounded-lg mt-3 border border-gray-200">
+          <div className="w-1.5 h-1.5 bg-[#1ea3ab] rounded-full"></div>
+          <span className="text-xs font-medium">Updates in {timer}s</span>
+        </div>
       </div>
 
-      <div className="flex flex-col gap-4 p-4 rounded-lg shadow bg-wav3/10 border border-wav3/30">
-        <div className="flex items-center justify-between">
-          <span className="text-sm font-semibold text-gray-500">You Pay:</span>
-          <div className="flex items-center gap-2">
-            <NetworkIcon symbol={sourceAsset.symbol} className="w-6 h-6" />
-            <span className="text-lg font-bold text-[#1ea3ab]">
-              {formatCurrency(quoteResult.source_amount || 0, sourceAsset.symbol)}
-            </span>
+      {/* Quote Details Card */}
+      <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 space-y-4">
+        {/* Exchange Visual */}
+        <div className="text-center">
+          <h3 className="text-sm font-medium text-gray-600 mb-1">Exchange Details</h3>
+          <div className="flex items-center justify-center gap-4">
+            {/* You Pay */}
+            <div className="flex flex-col items-center gap-2">
+              <div className="w-12 h-12 rounded-xl bg-white border border-gray-200 flex items-center justify-center shadow-sm">
+                <NetworkIcon symbol={sourceAsset.symbol} className="w-6 h-6" />
+              </div>
+              <div className="text-center">
+                <div className="text-xs text-gray-500 font-medium">You Pay</div>
+                <div className="text-sm font-semibold text-gray-900">
+                  {formatCurrency(quoteResult.source_amount || 0, sourceAsset.symbol)}
+                </div>
+              </div>
+            </div>
+
+            {/* Arrow */}
+            <div className="flex flex-col items-center gap-1">
+              <div className="w-8 h-8 rounded-lg bg-[#1ea3ab] flex items-center justify-center shadow-sm">
+                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <title>Exchange Arrow</title>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </div>
+              <span className="text-xs text-gray-400 font-medium uppercase tracking-wide">Swap</span>
+            </div>
+
+            {/* You Receive */}
+            <div className="flex flex-col items-center gap-2">
+              <div className="w-12 h-12 rounded-xl bg-white border border-gray-200 flex items-center justify-center shadow-sm">
+                <NetworkIcon symbol={targetAsset.symbol} className="w-6 h-6" />
+              </div>
+              <div className="text-center">
+                <div className="text-xs text-gray-500 font-medium">You Receive</div>
+                <div className="text-sm font-semibold text-gray-900">
+                  {formatCurrency(quoteResult.target_amount_estimate || 0, targetAsset.symbol)}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <div className="flex items-center justify-between">
-          <span className="text-sm font-semibold text-gray-500">You Receive:</span>
-          <div className="flex items-center gap-2">
-            <NetworkIcon symbol={targetAsset.symbol} className="w-6 h-6" />
-            <span className="text-lg font-bold text-[#1ea3ab]">
-              {formatCurrency(quoteResult.target_amount_estimate || 0, targetAsset.symbol)}
-            </span>
-          </div>
-        </div>
+
+        {/* Rate Information */}
         {quoteResult.price_reference && (
-          <div className="flex items-center justify-between border-t pt-2 mt-2">
-            <span className="text-sm font-semibold text-gray-500">Rate:</span>
-            <span className="text-sm text-gray-500">
-              1 {sourceAsset.symbol} ≈ {formatCurrency(quoteResult.price_reference || 0, targetAsset.symbol)}
-            </span>
+          <div className="bg-white rounded-lg p-3 border border-gray-200">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-medium text-gray-500">Exchange Rate</span>
+              <div className="text-right">
+                <div className="text-sm font-medium text-gray-900">
+                  1 {sourceAsset.symbol} ≈ {formatCurrency(quoteResult.price_reference || 0, targetAsset.symbol)}
+                </div>
+                <div className="text-xs text-gray-500">Live market rate</div>
+              </div>
+            </div>
           </div>
         )}
       </div>
 
-      <div className="flex flex-col gap-4">
-        {error && (
-          <div className="p-3 bg-red-50 border border-red-200 text-red-600 rounded-md text-center">
-            <p className="text-sm">{error}</p>
-          </div>
-        )}
-      </div>
+      {/* Error Display */}
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+          <p className="text-red-700 text-sm">{error}</p>
+        </div>
+      )}
 
-      <div className="flex gap-4">
+      {/* Action Buttons */}
+      <div className="flex gap-2 mt-auto pt-3">
         <Button
+          type="button"
           onClick={onBack}
-          className="flex-1 bg-gray-200 text-[#1ea3ab] py-2 rounded-lg shadow hover:bg-gray-300"
+          variant="outline"
+          className="flex-1 bg-white border-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-colors font-medium"
         >
           Back
         </Button>
         <Button
+          type="button"
           onClick={handleConfirm}
-          className="flex-1 bg-[#1ea3ab] text-white py-2 rounded-lg shadow hover:bg-[#188a91]"
+          className="flex-1 bg-[#1ea3ab] text-white py-2 px-4 rounded-lg border border-[#1ea3ab] hover:bg-[#188a91] transition-colors font-medium"
         >
-          Create Order
+          <span className="flex items-center justify-center gap-1">
+            Create Order
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <title>Create</title>
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </span>
         </Button>
       </div>
     </div>
