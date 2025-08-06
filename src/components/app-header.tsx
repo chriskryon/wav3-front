@@ -23,7 +23,7 @@ export function AppHeader() {
   }, []);
 
   return (
-    <header className='header-height backdrop-blur-md bg-white/90 border-b border-black/10 flex items-center justify-between px-4 sm:px-8 shadow-sm gap-3 sm:gap-0'>
+    <header className='header-height backdrop-blur-md bg-white/90 border-b border-black/10 flex items-center justify-between px-2 sm:px-4 shadow-sm gap-3 sm:gap-0'>
       {/* Botão hamburguer mobile */}
       {isMobile && (
         <Button
