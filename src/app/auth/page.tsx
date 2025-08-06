@@ -76,7 +76,7 @@ export default function AuthPage() {
     }
     setIsLoading(true);
     try {
-      const result = await registerUser({
+      await registerUser({
         ...registerForm,
         hasBetaAccount: false,
       });
