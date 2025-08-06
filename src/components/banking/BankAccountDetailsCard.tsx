@@ -41,17 +41,29 @@ export const BankAccountDetailsCard: React.FC<BankAccountDetailsCardProps> = ({
 }) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [copiedField, setCopiedField] = useState<string | null>(null);
+  
   const flagIcon = countryIcons[account.country] || (
-    <Building2 className='w-7 h-7 text-[#1ea3ab]' />
+    <Building2 className='w-5 h-5 text-[#1ea3ab]' />
   );
 
-  // Handler de exclusão real
+  const handleCopy = async (text: string, fieldName: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedField(fieldName);
+      toast.success(`${fieldName} copied!`);
+      setTimeout(() => setCopiedField(null), 1500);
+    } catch (_err) {
+      toast.error('Failed to copy');
+    }
+  };
+
   const handleDelete = async () => {
     setIsDeleting(true);
     try {
       const result = await deleteBankAccount(account.id);
       if (result.success) {
-        toast.success('Bank account deleted!');
+        toast.success('Bank account deleted successfully!');
         setShowDeleteConfirm(false);
         onDelete?.(account);
       } else {
@@ -65,37 +77,32 @@ export const BankAccountDetailsCard: React.FC<BankAccountDetailsCardProps> = ({
   };
 
   return (
-    <Card
-      className='overflow-hidden w-full max-w-2xl sm:max-w-3xl lg:max-w-[650px] mx-auto border border-[#1ea3ab]/30 bg-white/60 backdrop-blur-2xl rounded-3xl animate-fade-in-up'
-      style={{
-        background: 'linear-gradient(120deg,rgba(255,255,255,0.80) 60%,rgba(30,163,171,0.08) 100%)',
-        border: '1.5px solid rgba(30,163,171,0.30)',
-        backdropFilter: 'blur(24px)',
-        minHeight: 420,
-        padding: 0,
-      }}
-    >
-      <CardContent className='p-0'>
-        <div className='relative min-h-[18rem] p-0 flex flex-col justify-between rounded-3xl'>
-          {/* Top: Bank logo, name, and actions */}
-          <div className='flex items-center gap-4 px-16 pt-8 pb-4 border-b border-transparent bg-white/70 rounded-t-3xl'>
-            <div className='rounded-2xl bg-white/90 p-4 flex items-center justify-center shadow-sm'>
-              {flagIcon}
+    <>
+      <Card className='w-full max-w-2xl mx-auto bg-white border border-gray-200 rounded-2xl shadow-sm'>
+        <CardContent className='p-6'>
+          {/* Header */}
+          <div className='flex items-center justify-between mb-6'>
+            <div className='flex items-center gap-4'>
+              <div className='w-12 h-12 bg-gray-50 rounded-xl flex items-center justify-center border border-gray-100'>
+                {flagIcon}
+              </div>
+              <div>
+                <h3 className='font-semibold text-lg text-[#1ea3ab]'>{account.bank_name}</h3>
+                <div className='flex items-center gap-2 text-sm text-gray-600'>
+                  <span>{account.asset}</span>
+                  <span>•</span>
+                  <span>{account.bank_type === 'shared' ? 'Shared' : 'Personal'}</span>
+                </div>
+              </div>
             </div>
-            <div className='flex flex-col flex-1 min-w-0'>
-              <span className='font-bold text-2xl text-[#1ea3ab] leading-tight truncate drop-shadow-sm'>
-                {account.bank_name}
-              </span>
-              <span className='text-sm text-[#1ea3ab]/80 font-semibold uppercase tracking-wider truncate'>
-                {account.asset}
-              </span>
-            </div>
+
+            {/* Actions */}
             {(onEdit || (onDelete && account.bank_type !== 'shared')) && (
-              <div className='flex gap-2 ml-auto'>
+              <div className='flex gap-2'>
                 {onEdit && (
                   <button
                     type='button'
-                    className='rounded-lg p-2 bg-white/90 hover:bg-[#1ea3ab]/10 border border-[#e0e0e0] text-[#1ea3ab] transition shadow-sm'
+                    className='p-2 text-gray-500 hover:text-[#1ea3ab] hover:bg-gray-50 rounded-lg transition-colors'
                     title='Edit account'
                     onClick={(e) => {
                       e.stopPropagation();
@@ -108,7 +115,7 @@ export const BankAccountDetailsCard: React.FC<BankAccountDetailsCardProps> = ({
                 {onDelete && account.bank_type !== 'shared' && (
                   <button
                     type='button'
-                    className='rounded-lg p-2 bg-white/90 hover:bg-red-100 border border-red-200 text-red-700 transition shadow-sm'
+                    className='p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors'
                     title='Delete account'
                     onClick={(e) => {
                       e.stopPropagation();
@@ -121,176 +128,210 @@ export const BankAccountDetailsCard: React.FC<BankAccountDetailsCardProps> = ({
               </div>
             )}
           </div>
-          {/* Account Info */}
-          <div className='px-6 pb-3 pt-2 flex flex-col gap-3'>
-            <div className='flex-1'>
-              <Label className='text-xs text-[#1ea3ab] font-semibold mb-0.5 block'>ID:</Label>
-              <div className='font-mono text-base text-[#1ea3ab] bg-white/95 rounded px-2 py-1 break-all shadow-inner border border-[#1ea3ab]/20'>{account.id || '-'}</div>
-            </div>
-            <div className='flex flex-col sm:flex-row gap-2 sm:gap-6'>
-              <div className='flex-1'>
-                <Label className='text-xs text-[#1ea3ab] font-semibold mb-0.5 block'>Account</Label>
-                <div className='font-mono text-base text-[#1ea3ab] bg-white/95 rounded px-2 py-1 break-all shadow-inner border border-[#1ea3ab]/20'>{account.account}</div>
+          {/* Account Details */}
+          <div className='space-y-4'>
+            {/* Account ID */}
+            <div className='group/field'>
+              <Label className='text-xs font-medium text-gray-500 uppercase tracking-wide mb-1 block'>
+                Account ID
+              </Label>
+              <div className='relative'>
+                <div className='text-sm font-mono bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-700'>
+                  {account.id || '-'}
+                </div>
+                <button
+                  type='button'
+                  className='absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-[#1ea3ab] hover:bg-white rounded transition-colors opacity-0 group-hover/field:opacity-100'
+                  title='Copy Account ID'
+                  onClick={() => handleCopy(account.id || '', 'Account ID')}
+                >
+                  <Copy className='w-3.5 h-3.5' />
+                </button>
               </div>
-              <div className='flex-1'>
-                <Label className='text-xs text-[#1ea3ab] font-semibold mb-0.5 block'>Branch</Label>
-                <div className='font-mono text-base text-[#1ea3ab] bg-white/95 rounded px-2 py-1 break-all shadow-inner border border-[#1ea3ab]/20'>{account.branch || '-'}</div>
-              </div>
             </div>
-            {/* Name on its own line */}
-            <div className='flex-1'>
-              <Label className='text-xs text-[#1ea3ab] font-semibold mb-0.5 block'>Name</Label>
-              <div className='font-mono text-base text-[#1ea3ab] bg-white/95 rounded px-2 py-1 break-all shadow-inner border border-[#1ea3ab]/20'>{account.name || account.bank_name}</div>
-            </div>
-            <div className='flex-1'>
-              <Label className='text-xs text-[#1ea3ab] font-semibold mb-0.5 block'>Country</Label>
-              <div className='font-mono text-base text-[#1ea3ab] bg-white/95 rounded px-2 py-1 break-all shadow-inner border border-[#1ea3ab]/20'>{account.country}</div>
-            </div>
-            {account.instant_payment && (
-              <div className='flex flex-col sm:flex-row gap-2 sm:gap-6 mt-2'>
-                <div className='flex-1'>
-                  <Label className='text-xs text-[#1ea3ab] font-semibold'>
-                    Instant Payment{' '}
-                    {account.instant_payment_type
-                      ? `(${account.instant_payment_type})`
-                      : ''}
-                  </Label>
-                  <div className='flex w-full items-center gap-2 mt-1'>
-                    <div className='flex-1 flex w-full'>
-                      <div className='font-mono text-base text-[#1ea3ab] bg-white/95 rounded-l px-2 py-1 break-all shadow-inner w-full'>{truncateMiddle(account.instant_payment, 36)}</div>
-                      <button
-                        type='button'
-                        className='rounded-r px-2 py-1 bg-white/95 hover:bg-[#1ea3ab]/10 text-[#1ea3ab] transition shadow h-full'
-                        title='Copy'
-                        onClick={() => {
-                          if (account.instant_payment) {
-                            navigator.clipboard.writeText(
-                              account.instant_payment,
-                            );
-                        toast.success('Copied!');
-                          }
-                        }}
-                      >
-                        <Copy className='w-4 h-4' />
-                      </button>
-                    </div>
+
+            {/* Account & Branch */}
+            <div className='grid grid-cols-2 gap-4'>
+              <div className='group/field'>
+                <Label className='text-xs font-medium text-gray-500 uppercase tracking-wide mb-1 block'>
+                  Account
+                </Label>
+                <div className='relative'>
+                  <div className='text-sm font-mono bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-700'>
+                    {account.account}
                   </div>
-                  {/* Show QR code if PIX */}
-                  {account.instant_payment_type === 'PIX' && account.instant_payment && (
-                    <div className="mt-4 flex justify-center">
+                  <button
+                    type='button'
+                    className='absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-[#1ea3ab] hover:bg-white rounded transition-colors opacity-0 group-hover/field:opacity-100'
+                    title='Copy Account'
+                    onClick={() => handleCopy(account.account, 'Account')}
+                  >
+                    <Copy className='w-3.5 h-3.5' />
+                  </button>
+                </div>
+              </div>
+
+              <div className='group/field'>
+                <Label className='text-xs font-medium text-gray-500 uppercase tracking-wide mb-1 block'>
+                  Branch
+                </Label>
+                <div className='relative'>
+                  <div className='text-sm font-mono bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-700'>
+                    {account.branch || '-'}
+                  </div>
+                  {account.branch && (
+                    <button
+                      type='button'
+                      className='absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-[#1ea3ab] hover:bg-white rounded transition-colors opacity-0 group-hover/field:opacity-100'
+                      title='Copy Branch'
+                      onClick={() => handleCopy(account.branch || '', 'Branch')}
+                    >
+                      <Copy className='w-3.5 h-3.5' />
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Name */}
+            <div className='group/field'>
+              <Label className='text-xs font-medium text-gray-500 uppercase tracking-wide mb-1 block'>
+                Account Holder
+              </Label>
+              <div className='relative'>
+                <div className='text-sm bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-gray-700'>
+                  {account.name || account.bank_name}
+                </div>
+                <button
+                  type='button'
+                  className='absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-[#1ea3ab] hover:bg-white rounded transition-colors opacity-0 group-hover/field:opacity-100'
+                  title='Copy Name'
+                  onClick={() => handleCopy(account.name || account.bank_name, 'Name')}
+                >
+                  <Copy className='w-3.5 h-3.5' />
+                </button>
+              </div>
+            </div>
+
+            {/* Country */}
+            <div>
+              <Label className='text-xs font-medium text-gray-500 uppercase tracking-wide mb-1 block'>
+                Country
+              </Label>
+              <div className='flex items-center gap-2 text-sm bg-gray-50 border border-gray-200 rounded-lg px-3 py-2'>
+                {countryIcons[account.country] || <Globe2 className='w-4 h-4 text-gray-500' />}
+                <span className='text-gray-700'>{account.country}</span>
+              </div>
+            </div>
+
+            {/* Instant Payment */}
+            {account.instant_payment && (
+              <div>
+                <Label className='text-xs font-medium text-gray-500 uppercase tracking-wide mb-1 block'>
+                  Instant Payment {account.instant_payment_type && `(${account.instant_payment_type})`}
+                </Label>
+                <div className='flex items-center bg-gray-50 border border-gray-200 rounded-lg overflow-hidden'>
+                  <div className='flex-1 text-sm font-mono px-3 py-2 text-gray-700'>
+                    {truncateMiddle(account.instant_payment, 32)}
+                  </div>
+                  <button
+                    type='button'
+                    className='px-3 py-2 text-gray-400 hover:text-[#1ea3ab] hover:bg-white border-l border-gray-200 transition-colors'
+                    title='Copy'
+                    onClick={() => handleCopy(account.instant_payment || '', 'Instant Payment')}
+                  >
+                    <Copy className='w-4 h-4' />
+                  </button>
+                </div>
+                
+                {/* PIX QR Code */}
+                {account.instant_payment_type === 'PIX' && account.instant_payment && (
+                  <div className="mt-3 flex justify-center">
+                    <div className="bg-white border border-gray-200 rounded-lg p-3">
                       <PixQRCode value={account.instant_payment} />
                     </div>
-                  )}
-                </div>
-              </div>
-            )}
-            {/* Address information grouping */}
-            {(account.city ||
-              account.state ||
-              account.postal_code ||
-              account.street_line) && (
-              <div className='flex flex-col gap-1 mt-2 bg-white/95 rounded-2xl p-4 shadow-inner'>
-                <div className='flex flex-wrap gap-3'>
-                  {account.city && (
-                    <div>
-                      <Label className='text-xs text-[#1ea3ab] font-semibold'>
-                        City
-                      </Label>
-                      <div className='font-mono text-base text-[#1ea3ab] bg-white rounded px-2 py-1 break-all shadow-inner'>{account.city}</div>
-                    </div>
-                  )}
-                  {account.state && (
-                    <div>
-                      <Label className='text-xs text-[#1ea3ab] font-semibold'>
-                        State
-                      </Label>
-                      <div className='font-mono text-base text-[#1ea3ab] bg-white rounded px-2 py-1 break-all shadow-inner'>{account.state}</div>
-                    </div>
-                  )}
-                  {account.postal_code && (
-                    <div>
-                      <Label className='text-xs text-[#1ea3ab] font-semibold'>
-                        Postal Code
-                      </Label>
-                      <div className='font-mono text-base text-[#1ea3ab] bg-white rounded px-2 py-1 break-all shadow-inner'>{account.postal_code}</div>
-                    </div>
-                  )}
-                </div>
-                {account.street_line && (
-                  <div className='mt-2'>
-                    <Label className='text-xs text-[#1ea3ab] font-semibold'>
-                      Address
-                    </Label>
-                    <div className='font-mono text-base text-[#1ea3ab] bg-white rounded px-2 py-1 break-all shadow-inner'>{account.street_line}</div>
                   </div>
                 )}
               </div>
             )}
+
+            {/* Address */}
+            {(account.city || account.state || account.postal_code || account.street_line) && (
+              <div>
+                <Label className='text-xs font-medium text-gray-500 uppercase tracking-wide mb-2 block'>
+                  Address
+                </Label>
+                <div className='bg-gray-50 border border-gray-200 rounded-lg p-3 space-y-2'>
+                  {account.street_line && (
+                    <div className='text-sm text-gray-700'>{account.street_line}</div>
+                  )}
+                  <div className='flex gap-4 text-sm text-gray-600'>
+                    {account.city && <span>{account.city}</span>}
+                    {account.state && <span>{account.state}</span>}
+                    {account.postal_code && <span>{account.postal_code}</span>}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
-          {/* Footer: Data + Excluir */}
-          <div className='flex items-center justify-between px-16 pb-4 pt-2 mt-auto'>
-            <span className='text-xs opacity-80 font-mono flex items-center gap-1 text-[#1ea3ab]'>
-              <span className='w-2 h-2 rounded-full bg-[#1ea3ab]/60 animate-pulse mr-1' />
-              {account.created_at
-                ? new Date(account.created_at).toLocaleDateString()
-                : ''}
+
+          {/* Footer */}
+          <div className='flex items-center justify-between pt-4 mt-6 border-t border-gray-100'>
+            <span className='text-xs text-gray-500'>
+              Added {account.created_at ? new Date(account.created_at).toLocaleDateString() : 'Unknown'}
             </span>
+            
             {onDelete && account.bank_type !== 'shared' && (
               <button
                 type='button'
-                className='ml-2 flex items-center gap-1 px-4 py-2 rounded-xl bg-[#1ea3ab]/10 hover:bg-red-100 text-[#1ea3ab] hover:text-red-700 font-semibold text-sm transition shadow'
-                title='Delete account'
+                className='text-xs text-red-600 hover:text-red-700 font-medium transition-colors'
                 onClick={(e) => {
                   e.stopPropagation();
                   setShowDeleteConfirm(true);
                 }}
                 disabled={isDeleting}
               >
-                <Trash2 className='w-4 h-4' /> Delete
+                Delete Account
               </button>
             )}
           </div>
-          {/* Delete confirmation modal */}
-          {showDeleteConfirm && account.bank_type !== 'shared' && (
-            <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm'>
-              <div className='bg-white rounded-xl shadow-xl p-6 max-w-xs w-full flex flex-col items-center'>
-                <div className='text-red-600 text-lg font-bold mb-2'>
-                  Delete Bank Account?
-                </div>
-                <div className='text-main text-sm mb-4 text-center'>
-                  Are you sure you want to delete this bank account? This action
-                  cannot be undone.
-                </div>
-                <div className='flex gap-2 w-full'>
-                  <button
-                    type='button'
-                    className='flex-1 border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 rounded-lg px-3 py-2 font-semibold'
-                    onClick={() => setShowDeleteConfirm(false)}
-                    disabled={isDeleting}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type='button'
-                    className='flex-1 bg-red-500 hover:bg-red-600 text-white rounded-lg px-3 py-2 font-semibold'
-                    onClick={handleDelete}
-                    disabled={isDeleting}
-                  >
-                    {isDeleting ? (
-                      <span className='flex items-center justify-center'>
-                        <div className='w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2' />
-                        Deleting...
-                      </span>
-                    ) : (
-                      'Delete'
-                    )}
-                  </button>
-                </div>
+        </CardContent>
+      </Card>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && account.bank_type !== 'shared' && (
+        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm'>
+          <div className='bg-white rounded-xl shadow-lg p-6 max-w-sm w-full mx-4'>
+            <div className='text-center'>
+              <div className='w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3'>
+                <Trash2 className='w-6 h-6 text-red-600' />
+              </div>
+              <h3 className='text-lg font-semibold text-gray-900 mb-2'>Delete Account?</h3>
+              <p className='text-sm text-gray-600 mb-4'>
+                This action cannot be undone. The bank account will be permanently removed.
+              </p>
+              <div className='flex gap-3'>
+                <button
+                  type='button'
+                  className='flex-1 px-3 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors'
+                  onClick={() => setShowDeleteConfirm(false)}
+                  disabled={isDeleting}
+                >
+                  Cancel
+                </button>
+                <button
+                  type='button'
+                  className='flex-1 px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50'
+                  onClick={handleDelete}
+                  disabled={isDeleting}
+                >
+                  {isDeleting ? 'Deleting...' : 'Delete'}
+                </button>
               </div>
             </div>
-          )}
+          </div>
         </div>
-      </CardContent>
-    </Card>
+      )}
+    </>
   );
 };

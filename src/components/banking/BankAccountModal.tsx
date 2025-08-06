@@ -195,104 +195,104 @@ export function BankAccountModal({
   // For validation on last step
   const { trigger, formState } = useForm<BankAccountForm>();
 
-  // Stepper icon color logic
-  const getStepIcon = (
-    icon: React.ReactNode,
-    active: boolean,
-    future: boolean,
-  ) => (
-    <span
-      className={`flex items-center justify-center rounded-full border-2 transition-all duration-200 shadow-md ${active ? 'bg-primary text-white border-primary scale-110' : 'bg-white/80 text-primary border-primary/30'} ${future ? 'opacity-40' : ''}`}
-      style={{ width: 36, height: 36 }}
-    >
-      {React.isValidElement(icon)
-        ? React.cloneElement(icon as React.ReactElement<any>, {
-            className: `w-6 h-6 transition-all duration-200 ${active ? 'text-white' : 'text-primary'}`,
-            fill: active ? 'currentColor' : 'none',
-          })
-        : icon}
-    </span>
-  );
-
   // Steps como componentes independentes para inputs isolados
   const StepFiat = () => {
     return (
-      <>
+      <div className="space-y-4">
         {/* Country */}
         <div className='relative'>
-          <Label className='text-sm font-medium muted-text'>Country *</Label>
+          <Label className='text-sm font-semibold text-gray-700 mb-2 block'>Country *</Label>
           <Controller
             name='country'
             control={control}
             rules={{ required: true }}
             render={({ field }) => (
-              <div className='relative mt-1'>
+              <div className='relative'>
                 <select
                   {...field}
-                  className='glass-input w-full pl-3 pr-8 py-2 rounded-lg border border-primary/20 focus:ring-2 focus:ring-primary/30 focus:border-primary/60 transition-all duration-200 shadow-sm appearance-none bg-white/80 text-main'
+                  className='w-full pl-4 pr-10 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/30 focus:border-primary/60 transition-all duration-300 shadow-sm appearance-none bg-white text-gray-900 font-medium hover:border-gray-300'
                   required
                 >
-                  <option value=''>Select</option>
+                  <option value=''>Select your country</option>
                   {countries.map((c) => (
                     <option key={c.value} value={c.value}>
                       {c.label}
                     </option>
                   ))}
                 </select>
-                <span className='pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-primary/60'>
-                  ▼
-                </span>
+                <div className='pointer-events-none absolute right-3 top-1/2 -translate-y-1/2'>
+                  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <title>Dropdown</title>
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
               </div>
             )}
           />
         </div>
+        
         {/* Symbol (asset) - auto-filled */}
-        <div className='relative mt-4'>
-          <Label className='text-sm font-medium muted-text'>Symbol *</Label>
+        <div className='relative'>
+          <Label className='text-sm font-semibold text-gray-700 mb-2 block'>Currency Symbol *</Label>
           <Controller
             name='asset'
             control={control}
             rules={{ required: true }}
             render={({ field }) => (
-              <Input
-                {...field}
-                className='glass-input mt-1 pl-3 bg-white/80 text-main'
-                required
-                disabled
-              />
+              <div className="relative">
+                <Input
+                  {...field}
+                  className='w-full pl-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-900 font-medium cursor-not-allowed'
+                  required
+                  disabled
+                  placeholder="Auto-filled based on country"
+                />
+                <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <title>Auto-filled</title>
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+              </div>
             )}
           />
         </div>
-        <div className='relative mt-4'>
-          <Label className='text-sm font-medium muted-text'>
-            Payment Method *
-          </Label>
+        
+        <div className='relative'>
+          <Label className='text-sm font-semibold text-gray-700 mb-2 block'>Payment Method *</Label>
           <Controller
             name='instant_payment_type'
             control={control}
             rules={{ required: true }}
             render={({ field }) => (
-              <Input
-                {...field}
-                className='glass-input mt-1 pl-3 bg-white/80 text-main'
-                required
-                disabled
-              />
+              <div className="relative">
+                <Input
+                  {...field}
+                  className='w-full pl-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-900 font-medium cursor-not-allowed'
+                  required
+                  disabled
+                  placeholder="Auto-filled based on country"
+                />
+                <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <title>Auto-filled</title>
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+              </div>
             )}
           />
         </div>
-      </>
+      </div>
     );
   };
 
   const StepAccountDetails = () => {
     return (
-      <>
+      <div className="space-y-4">
         {/* Account Nickname */}
         <div className='relative'>
-          <Label className='text-sm font-medium muted-text'>
-            Account Name
-          </Label>
+          <Label className='text-sm font-semibold text-gray-700 mb-2 block'>Account Name *</Label>
           <Controller
             name='name'
             control={control}
@@ -301,15 +301,16 @@ export function BankAccountModal({
               <Input
                 {...field}
                 placeholder='E.g.: Main Account, Investments Account, etc'
-                className='glass-input mt-1 pl-3 focus:ring-2 focus:ring-primary/40 focus:border-primary/60 transition-all duration-200 shadow-sm'
+                className='w-full pl-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/30 focus:border-primary/60 transition-all duration-300 shadow-sm bg-white'
                 required
               />
             )}
           />
         </div>
+        
         {/* Instant Payment Key */}
-        <div className='relative mt-4'>
-          <Label className='text-sm font-medium muted-text'>
+        <div className='relative'>
+          <Label className='text-sm font-semibold text-gray-700 mb-2 block'>
             {(() => {
               const country = getValues('country');
               if (country === 'BR') return 'PIX Key *';
@@ -325,24 +326,25 @@ export function BankAccountModal({
             render={({ field }) => {
               const country = getValues('country');
               let placeholder = '';
-                if (country === 'BR') placeholder = 'E.g.: 11999999999, CPF, email, CNPJ...';
-                else if (country === 'MX') placeholder = 'E.g.: 123456789012345678';
-                else if (country === 'US') placeholder = 'E.g.: 021000021';
-                else placeholder = 'Enter the instant payment identifier';
+              if (country === 'BR') placeholder = 'E.g.: 11999999999, CPF, email, CNPJ...';
+              else if (country === 'MX') placeholder = 'E.g.: 123456789012345678';
+              else if (country === 'US') placeholder = 'E.g.: 021000021';
+              else placeholder = 'Enter the instant payment identifier';
               return (
-          <Input
-            {...field}
-            placeholder={placeholder}
-            className='glass-input mt-1 pl-3 focus:ring-2 focus:ring-primary/40 focus:border-primary/60 transition-all duration-200 shadow-sm'
-            required
-          />
+                <Input
+                  {...field}
+                  placeholder={placeholder}
+                  className='w-full pl-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/30 focus:border-primary/60 transition-all duration-300 shadow-sm bg-white'
+                  required
+                />
               );
             }}
           />
         </div>
+        
         {/* Bank */}
-        <div className='relative mt-4'>
-          <Label className='text-sm font-medium muted-text'>Bank *</Label>
+        <div className='relative'>
+          <Label className='text-sm font-semibold text-gray-700 mb-2 block'>Bank *</Label>
           <Controller
             name='bank_name'
             control={control}
@@ -351,30 +353,31 @@ export function BankAccountModal({
               <Input
                 {...field}
                 placeholder='Bank name'
-                className='glass-input mt-1 pl-3 focus:ring-2 focus:ring-primary/40 focus:border-primary/60 transition-all duration-200 shadow-sm'
+                className='w-full pl-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/30 focus:border-primary/60 transition-all duration-300 shadow-sm bg-white'
                 required
               />
             )}
           />
         </div>
+        
         {/* Branch and Account */}
-        <div className='flex flex-col sm:flex-row gap-3 mt-4'>
+        <div className='flex flex-col sm:flex-row gap-4'>
           <div className='flex-1'>
-            <Label className='text-sm font-medium muted-text'>Branch</Label>
+            <Label className='text-sm font-semibold text-gray-700 mb-2 block'>Branch</Label>
             <Controller
               name='branch'
               control={control}
               render={({ field }) => (
                 <Input
                   {...field}
-                placeholder='Branch'
-                  className='glass-input mt-1 pl-3 focus:ring-2 focus:ring-primary/40 focus:border-primary/60 transition-all duration-200 shadow-sm'
+                  placeholder='Branch'
+                  className='w-full pl-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/30 focus:border-primary/60 transition-all duration-300 shadow-sm bg-white'
                 />
               )}
             />
           </div>
           <div className='flex-1'>
-            <Label className='text-sm font-medium muted-text'>Account Number *</Label>
+            <Label className='text-sm font-semibold text-gray-700 mb-2 block'>Account Number *</Label>
             <Controller
               name='account'
               control={control}
@@ -382,42 +385,45 @@ export function BankAccountModal({
               render={({ field }) => (
                 <Input
                   {...field}
-                placeholder='Account number'
-                  className='glass-input mt-1 pl-3 focus:ring-2 focus:ring-primary/40 focus:border-primary/60 transition-all duration-200 shadow-sm'
+                  placeholder='Account number'
+                  className='w-full pl-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/30 focus:border-primary/60 transition-all duration-300 shadow-sm bg-white'
                   required
                 />
               )}
             />
           </div>
         </div>
-      </>
+      </div>
     );
   };
 
   const StepAddress = () => {
     return (
-      <>
-        {/* Address */}
-        <div className='flex flex-col sm:flex-row gap-3 mt-4'>
+      <div className="space-y-4">
+        {/* Address Row 1 */}
+        <div className='flex flex-col sm:flex-row gap-4'>
           <div className='flex-1'>
-            <Label className='text-sm font-medium muted-text'>City</Label>
+            <Label className='text-sm font-semibold text-gray-700 mb-2 block'>City *</Label>
             <Controller
               name='city'
               control={control}
+              rules={{ required: true }}
               render={({ field }) => (
                 <Input
                   {...field}
-                placeholder='City'
-                  className='glass-input mt-1 pl-3 focus:ring-2 focus:ring-primary/40 focus:border-primary/60 transition-all duration-200 shadow-sm'
+                  placeholder='City'
+                  className='w-full pl-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/30 focus:border-primary/60 transition-all duration-300 shadow-sm bg-white'
+                  required
                 />
               )}
             />
           </div>
           <div className='flex-1'>
-            <Label className='text-sm font-medium muted-text'>State</Label>
+            <Label className='text-sm font-semibold text-gray-700 mb-2 block'>State *</Label>
             <Controller
               name='state'
               control={control}
+              rules={{ required: true }}
               render={({ field }) => {
                 const country = getValues('country');
                 if (country === 'US') {
@@ -477,144 +483,162 @@ export function BankAccountModal({
                     { code: 'GU', name: 'Guam' },
                     { code: 'MP', name: 'Northern Mariana Islands' },
                     { code: 'PR', name: 'Puerto Rico' },
-                    {
-                      code: 'UM',
-                      name: 'United States Minor Outlying Islands',
-                    },
+                    { code: 'UM', name: 'United States Minor Outlying Islands' },
                     { code: 'VI', name: 'Virgin Islands, U.S.' },
                   ];
                   return (
-                    <select
-                      {...field}
-                      className='glass-input w-full pl-3 pr-8 py-2 rounded-lg border border-primary/20 focus:ring-2 focus:ring-primary/30 focus:border-primary/60 transition-all duration-200 shadow-sm appearance-none bg-white/80 text-main'
-                      required
-                    >
-                      <option value=''>Selecione</option>
-                      {subdivisions.map((opt) => (
-                        <option key={opt.code} value={opt.code}>
-                          {opt.name}
-                        </option>
-                      ))}
-                    </select>
+                    <div className='relative'>
+                      <select
+                        {...field}
+                        className='w-full pl-4 pr-10 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/30 focus:border-primary/60 transition-all duration-300 shadow-sm appearance-none bg-white text-gray-900 font-medium hover:border-gray-300'
+                        required
+                      >
+                        <option value=''>Select state</option>
+                        {subdivisions.map((opt) => (
+                          <option key={opt.code} value={opt.code}>
+                            {opt.name}
+                          </option>
+                        ))}
+                      </select>
+                      <div className='pointer-events-none absolute right-3 top-1/2 -translate-y-1/2'>
+                        <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <title>Dropdown</title>
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </div>
+                    </div>
                   );
                 }
                 // Para outros países, campo texto
                 return (
                   <Input
                     {...field}
-                placeholder='State'
-                    className='glass-input mt-1 pl-3 focus:ring-2 focus:ring-primary/40 focus:border-primary/60 transition-all duration-200 shadow-sm'
+                    placeholder='State'
+                    className='w-full pl-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/30 focus:border-primary/60 transition-all duration-300 shadow-sm bg-white'
+                    required
                   />
                 );
               }}
             />
           </div>
+        </div>
+        
+        {/* Address Row 2 */}
+        <div className='flex flex-col sm:flex-row gap-4'>
           <div className='flex-1'>
-            <Label className='text-sm font-medium muted-text'>Postal Code</Label>
+            <Label className='text-sm font-semibold text-gray-700 mb-2 block'>Postal Code *</Label>
             <Controller
               name='postal_code'
               control={control}
+              rules={{ required: true }}
               render={({ field }) => (
                 <Input
                   {...field}
-                placeholder='Postal code'
-                  className='glass-input mt-1 pl-3 focus:ring-2 focus:ring-primary/40 focus:border-primary/60 transition-all duration-200 shadow-sm'
+                  placeholder='Postal code'
+                  className='w-full pl-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/30 focus:border-primary/60 transition-all duration-300 shadow-sm bg-white'
+                  required
+                />
+              )}
+            />
+          </div>
+          <div className='flex-1'>
+            <Label className='text-sm font-semibold text-gray-700 mb-2 block'>Street Address *</Label>
+            <Controller
+              name='street_line'
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  placeholder='Street, number, complement'
+                  className='w-full pl-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/30 focus:border-primary/60 transition-all duration-300 shadow-sm bg-white'
+                  required
                 />
               )}
             />
           </div>
         </div>
-        <div className='relative mt-3'>
-          <Label className='text-sm font-medium muted-text'>Address</Label>
-          <Controller
-            name='street_line'
-            control={control}
-            render={({ field }) => (
-              <Input
-                {...field}
-                placeholder='Street, number, complement'
-                className='glass-input mt-1 pl-3 focus:ring-2 focus:ring-primary/40 focus:border-primary/60 transition-all duration-200 shadow-sm'
-              />
-            )}
-          />
-        </div>
-      </>
+      </div>
     );
   };
 
   const StepOverview = () => {
-    // Descobre o payment method pelo país selecionado
-    const countryObj = countries.find((c) => c.value === getValues('country'));
-    const paymentMethod = countryObj
-      ? countryObj.paymentMethod
-      : getValues('instant_payment_type');
     return (
-      <div className='flex flex-col gap-4'>
+      <div className='space-y-4'>
         {/* FIAT Card */}
-        <div className='rounded-xl bg-gradient-to-br from-[#e6f7f8] via-white to-[#f0fafd] border border-[#1ea3ab]/10 shadow p-4 flex flex-col gap-1'>
-          <div className='flex items-center gap-2 mb-2'>
-            <Landmark className='w-5 h-5 text-[#1ea3ab]' />
-            <span className='font-semibold text-[#1ea3ab] text-sm'>FIAT</span>
+        <div className='rounded-xl bg-gradient-to-br from-primary/5 via-white to-primary/10 border border-primary/20 shadow-md p-4'>
+          <div className='flex items-center gap-2 mb-3'>
+            <Landmark className='w-5 h-5 text-primary' />
+            <span className='font-bold text-primary'>FIAT Setup</span>
           </div>
-          <div className='flex flex-wrap gap-x-6 gap-y-1 text-xs text-main'>
+          <div className='grid grid-cols-2 gap-3 text-sm'>
             <div>
-              <b>Country:</b> {getValues('country')}
+              <span className="text-gray-600 font-medium">Country:</span>
+              <div className="font-bold text-gray-900">{getValues('country')}</div>
             </div>
             <div>
-              <b>Symbol:</b> {getValues('asset')}
+              <span className="text-gray-600 font-medium">Currency:</span>
+              <div className="font-bold text-gray-900">{getValues('asset')}</div>
             </div>
-            <div>
-              <b>Payment Method:</b> {getValues('instant_payment_type')}
+            <div className="col-span-2">
+              <span className="text-gray-600 font-medium">Payment Method:</span>
+              <div className="font-bold text-gray-900">{getValues('instant_payment_type')}</div>
             </div>
           </div>
         </div>
+        
         {/* Account Details Card */}
-        <div className='rounded-xl bg-gradient-to-br from-[#e6f7f8] via-white to-[#f0fafd] border border-[#1ea3ab]/10 shadow p-4 flex flex-col gap-1'>
-          <div className='flex items-center gap-2 mb-2'>
-            <Banknote className='w-5 h-5 text-[#1ea3ab]' />
-            <span className='font-semibold text-[#1ea3ab] text-sm'>
-              Account Details
-            </span>
+        <div className='rounded-xl bg-gradient-to-br from-blue-500/5 via-white to-blue-600/10 border border-blue-500/20 shadow-md p-4'>
+          <div className='flex items-center gap-2 mb-3'>
+            <Banknote className='w-5 h-5 text-blue-600' />
+            <span className='font-bold text-blue-600'>Account Details</span>
           </div>
-          <div className='flex flex-wrap gap-x-6 gap-y-1 text-xs text-main'>
+          <div className='grid grid-cols-2 gap-3 text-sm'>
             <div>
-              <b>Nickname:</b> {getValues('name')}
+              <span className="text-gray-600 font-medium">Name:</span>
+              <div className="font-bold text-gray-900">{getValues('name')}</div>
             </div>
             <div>
-              <b>Bank:</b> {getValues('bank_name')}
+              <span className="text-gray-600 font-medium">Bank:</span>
+              <div className="font-bold text-gray-900">{getValues('bank_name')}</div>
             </div>
             <div>
-              <b>Branch:</b> {getValues('branch')}
+              <span className="text-gray-600 font-medium">Branch:</span>
+              <div className="font-bold text-gray-900">{getValues('branch') || 'N/A'}</div>
             </div>
             <div>
-              <b>Account:</b> {getValues('account')}
+              <span className="text-gray-600 font-medium">Account:</span>
+              <div className="font-bold text-gray-900">{getValues('account')}</div>
             </div>
-            <div>
-              <b>Instant Payment:</b> {getValues('instant_payment_type')}: {' '}
-              {getValues('instant_payment')}
+            <div className="col-span-2">
+              <span className="text-gray-600 font-medium">Instant Payment:</span>
+              <div className="font-bold text-gray-900">{getValues('instant_payment')}</div>
             </div>
           </div>
         </div>
+        
         {/* Address Card */}
-        <div className='rounded-xl bg-gradient-to-br from-[#e6f7f8] via-white to-[#f0fafd] border border-[#1ea3ab]/10 shadow p-4 flex flex-col gap-1'>
-          <div className='flex items-center gap-2 mb-2'>
-            <MapPin className='w-5 h-5 text-[#1ea3ab]' />
-            <span className='font-semibold text-[#1ea3ab] text-sm'>
-              Address
-            </span>
+        <div className='rounded-xl bg-gradient-to-br from-purple-500/5 via-white to-purple-600/10 border border-purple-500/20 shadow-md p-4'>
+          <div className='flex items-center gap-2 mb-3'>
+            <MapPin className='w-5 h-5 text-purple-600' />
+            <span className='font-bold text-purple-600'>Address</span>
           </div>
-          <div className='flex flex-wrap gap-x-6 gap-y-1 text-xs text-main'>
+          <div className='grid grid-cols-2 gap-3 text-sm'>
             <div>
-              <b>City:</b> {getValues('city')}
+              <span className="text-gray-600 font-medium">City:</span>
+              <div className="font-bold text-gray-900">{getValues('city')}</div>
             </div>
             <div>
-              <b>State:</b> {getValues('state')}
+              <span className="text-gray-600 font-medium">State:</span>
+              <div className="font-bold text-gray-900">{getValues('state')}</div>
             </div>
             <div>
-              <b>Postal Code:</b> {getValues('postal_code')}
+              <span className="text-gray-600 font-medium">Postal Code:</span>
+              <div className="font-bold text-gray-900">{getValues('postal_code')}</div>
             </div>
             <div>
-              <b>Address:</b> {getValues('street_line')}
+              <span className="text-gray-600 font-medium">Street:</span>
+              <div className="font-bold text-gray-900">{getValues('street_line')}</div>
             </div>
           </div>
         </div>
@@ -629,16 +653,26 @@ export function BankAccountModal({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className='w-full max-w-md min-w-[320px] md:min-w-[380px] max-h-[90vh] min-h-[420px] flex flex-col justify-between p-0 border-0 shadow-xl bg-white'
+        className='w-full max-w-lg min-w-[320px] md:min-w-[480px] max-h-[90vh] min-h-[500px] flex flex-col justify-between p-0 border-0 shadow-2xl bg-gradient-to-br from-white/95 to-white/90 backdrop-blur-xl rounded-3xl'
         style={{
           boxSizing: 'border-box',
-          borderRadius: 18,
-          background: '#fff',
-          backdropFilter: 'blur(8px)',
-          backgroundColor: 'rgba(255,255,255,0.95)',
+          border: '1px solid rgba(30, 163, 171, 0.1)',
         }}
       >
-        <DialogHeader className='px-6 pt-6 pb-2'>
+        <DialogHeader className='px-8 pt-8 pb-4'>
+          {/* Modern Header - only show when not on review step */}
+          {step < 3 && (
+            <div className="text-center">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 mb-4">
+                <Landmark className="w-8 h-8 text-primary" />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                {initialData ? 'Edit Bank Account' : 'Add Bank Account'}
+              </h2>
+              <p className="text-gray-600">Complete your banking information step by step</p>
+            </div>
+          )}
+          
           {/* Accessible DialogTitle, visually hidden for screen readers (Radix recommended) */}
           <VisuallyHidden>
             <DialogTitle asChild>
@@ -651,69 +685,94 @@ export function BankAccountModal({
           </VisuallyHidden>
         </DialogHeader>
         <form
-          className='flex flex-col gap-6 px-4 sm:px-6 pb-6 w-full flex-1 min-h-[320px]'
+          className='flex flex-col gap-8 px-8 pb-8 w-full flex-1 min-h-[360px]'
           onSubmit={handleSubmit(onSubmit)}
         >
-          {/* Stepper */}
-          <div className='flex items-center justify-center gap-0 mb-4 w-full'>
-            {/* Stepper manual, já que steps[] não existe mais */}
-            {/* Stepper moderno, sem linhas, com destaque de cor e animação */}
-            <div className='flex items-center justify-center gap-2 w-full'>
-              {[0, 1, 2, 3].map((i) => {
-                const icons = [Landmark, Banknote, MapPin, CreditCard];
-                const labels = [
-                  'FIAT',
-                  'Account Details',
-                  'Address',
-                  'Overview',
-                ];
-                const Icon = icons[i];
-                const isActive = i === step;
-                return (
-                  <div
-                    key={labels[i]}
-                    className={`flex flex-col items-center justify-center w-16 h-16 rounded-xl relative select-none transition-all duration-200 ${isActive ? 'scale-110 bg-[#e6f7f8] shadow-lg border border-[#1ea3ab]/60' : 'bg-white/80 border border-[#1ea3ab]/10'}`}
-                    style={{
-                      minWidth: 56,
-                      minHeight: 56,
-                      maxWidth: 64,
-                      maxHeight: 64,
-                      cursor: 'default',
-                    }}
-                  >
-                    <div className='flex items-center justify-center mb-1'>
-                      <Icon
-                        className={`w-7 h-7 transition-all duration-200 ${isActive ? 'text-[#1ea3ab]' : 'text-[#3d8887]/60'}`}
-                      />
+          {/* Modern Stepper - only show when not on review step */}
+          {step < 3 && (
+            <div className='flex items-center justify-center gap-4 mb-6 w-full'>
+              <div className='flex items-center justify-center gap-3 w-full max-w-md'>
+                {[0, 1, 2, 3].map((i) => {
+                  const icons = [Landmark, Banknote, MapPin, CreditCard];
+                  const labels = [
+                    'Setup',
+                    'Details',
+                    'Address',
+                    'Review',
+                  ];
+                  const Icon = icons[i];
+                  const isActive = i === step;
+                  const isPast = i < step;
+                  
+                  return (
+                    <div key={i} className="flex flex-col items-center">
+                      <div
+                        className={`relative flex items-center justify-center w-12 h-12 rounded-2xl transition-all duration-300 ${
+                          isActive
+                            ? 'bg-gradient-to-br from-primary to-primary/90 text-white shadow-lg scale-110'
+                            : isPast
+                            ? 'bg-gradient-to-br from-green-500 to-green-600 text-white shadow-md'
+                            : 'bg-white/80 border-2 border-gray-200 text-gray-400'
+                        }`}
+                      >
+                        {isPast ? (
+                          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <title>Completed</title>
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                        ) : (
+                          <Icon className="w-6 h-6" />
+                        )}
+                        
+                        {/* Step number indicator */}
+                        <div className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full text-xs font-bold flex items-center justify-center transition-all duration-300 ${
+                          isActive ? 'bg-white text-primary shadow-sm' : 'bg-gray-100 text-gray-500'
+                        }`}>
+                          {i + 1}
+                        </div>
+                      </div>
+                      
+                      <span className={`text-xs font-semibold mt-2 transition-all duration-300 ${
+                        isActive ? 'text-primary' : isPast ? 'text-green-600' : 'text-gray-400'
+                      }`}>
+                        {labels[i]}
+                      </span>
+                      
+                      {/* Progress line */}
+                      {i < 3 && (
+                        <div className={`absolute top-6 left-[calc(50%+24px)] w-8 h-0.5 transition-all duration-500 ${
+                          isPast ? 'bg-green-500' : 'bg-gray-200'
+                        }`} style={{ zIndex: -1 }} />
+                      )}
                     </div>
-                    <span
-                      className={`text-[10px] font-bold text-center leading-tight break-words w-full mt-1 ${isActive ? 'text-[#1ea3ab]' : 'text-gray-500'}`}
-                    >
-                      {labels[i]}
-                    </span>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
-          </div>
-          {/* Step fields - renderiza apenas o step atual, inputs totalmente independentes */}
-          <div className='w-full max-w-full flex-1 min-h-[120px] flex flex-col justify-center bg-white/70 rounded-xl shadow-inner p-3 border border-[#1ea3ab]/10'>
-            <div className='flex flex-col gap-3 w-full max-w-full'>
-              {step === 0 && <StepFiat />}
-              {step === 1 && <StepAccountDetails />}
-              {step === 2 && <StepAddress />}
-              {step === 3 && <StepOverview />}
+          )}
+          {/* Step Content */}
+          {step < 3 ? (
+            <div className='w-full max-w-full flex-1 min-h-[180px] flex flex-col justify-center bg-white/60 rounded-xl shadow-sm border border-primary/10 p-4 backdrop-blur-sm'>
+              <div className='flex flex-col w-full max-w-full'>
+                {step === 0 && <StepFiat />}
+                {step === 1 && <StepAccountDetails />}
+                {step === 2 && <StepAddress />}
+              </div>
             </div>
-          </div>
-          {/* Actions */}
-          <div className='flex gap-2 pt-3 w-full flex-col sm:flex-row'>
+          ) : (
+            <div className='w-full max-w-full flex-1 min-h-[180px] flex flex-col justify-center bg-white/60 rounded-xl shadow-sm border border-primary/10 p-4 backdrop-blur-sm'>
+              <StepOverview />
+            </div>
+          )}
+          {/* Modern Action Buttons */}
+          <div className='flex gap-4 pt-6 w-full flex-col sm:flex-row'>
             <Button
               type='button'
               variant='outline'
               onClick={() =>
                 step === 0 ? onOpenChange(false) : setStep(step - 1)
               }
-              className='flex-1 min-w-0 border border-[#1ea3ab]/30 bg-white/80 text-[#1ea3ab] hover:bg-[#1ea3ab]/10 hover:text-[#1ea3ab] shadow-sm'
+              className='flex-1 min-w-0 bg-white/80 border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-gray-900 shadow-sm py-3 px-6 rounded-2xl font-semibold transition-all duration-300'
               disabled={isSubmitting || mutation.isPending}
             >
               {step === 0 ? 'Cancel' : 'Back'}
@@ -721,7 +780,7 @@ export function BankAccountModal({
             {step < 3 ? (
               <Button
                 type='button'
-                className='flex-1 bg-[#1ea3ab] hover:bg-[#1ea3ab]/90 text-white font-semibold min-w-0 shadow-md'
+                className='flex-1 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white font-semibold min-w-0 shadow-lg hover:shadow-xl py-3 px-6 rounded-2xl transition-all duration-300 group'
                 onClick={async () => {
                   // Validate required fields for the current step
                   let requiredFields: (keyof BankAccountForm)[] = [];
@@ -780,12 +839,18 @@ export function BankAccountModal({
                 }}
                 disabled={isSubmitting || mutation.isPending}
               >
-                Next
+                <span className="flex items-center justify-center gap-2">
+                  Next Step
+                  <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <title>Next</title>
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </span>
               </Button>
             ) : (
               <Button
                 type='button'
-                className='flex-1 bg-[#1ea3ab] hover:bg-[#1ea3ab]/90 text-white font-semibold min-w-0 shadow-md'
+                className='flex-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold min-w-0 shadow-lg hover:shadow-xl py-3 px-6 rounded-2xl transition-all duration-300 group'
                 disabled={isSubmitting || mutation.isPending}
                 onClick={async () => {
                   const valid = await trigger();
@@ -793,12 +858,18 @@ export function BankAccountModal({
                 }}
               >
                 {isSubmitting || mutation.isPending ? (
-                  <>
-                    <div className='w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2' />
+                  <span className="flex items-center justify-center gap-2">
+                    <div className='w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin' />
                     Confirming...
-                  </>
+                  </span>
                 ) : (
-                  'CONFIRM'
+                  <span className="flex items-center justify-center gap-2">
+                    <svg className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <title>Confirm</title>
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Confirm Account
+                  </span>
                 )}
               </Button>
             )}
