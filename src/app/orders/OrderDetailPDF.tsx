@@ -1,6 +1,6 @@
 /** biome-ignore-all lint/suspicious/noArrayIndexKey: <explanation> */
 import { Document, Page, Text, View, Image, StyleSheet } from '@react-pdf/renderer';
-import { mockOrderDetail } from './OrderDetailModal';
+import type { mockOrderDetail } from './OrderDetailModal';
 
 // Estilos refinados para o PDF estilo invoice moderno e compacto
 const pdfStyles = StyleSheet.create({
