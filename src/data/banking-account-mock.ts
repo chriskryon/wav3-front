@@ -1,6 +1,4 @@
-
 const allGradients = [
-  // Mais agressivos e saturados
   'from-green-400 via-yellow-300 to-blue-600',
   'from-green-500 via-red-300 to-red-600',
   'from-blue-500 via-white to-red-500',
@@ -10,10 +8,6 @@ const allGradients = [
   'from-emerald-400 via-lime-400 to-green-600',
   'from-gray-400 via-slate-400 to-blue-400',
 ];
-
-function randomGradient() {
-  return allGradients[Math.floor(Math.random() * allGradients.length)];
-}
 
 export const mockBankAccounts = [
   // SHARED (Recebimento)

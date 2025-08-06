@@ -142,9 +142,9 @@ export default function AssetsPage() {
 
             <TabsContent value='all' className='flex-1'>
               <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 scroll-area h-full'>
-                {filteredAssets.map((asset, index) => (
+                {filteredAssets.map((asset, _index) => (
                   <Card
-                    key={index}
+                    key={asset.symbol}
                     className='glass-card-enhanced glass-hover cursor-pointer h-fit'
                   >
                     <CardHeader className='pb-4'>
@@ -226,9 +226,9 @@ export default function AssetsPage() {
               <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 scroll-area h-full'>
                 {filteredAssets
                   .filter((asset) => asset.type === 'Crypto')
-                  .map((asset, index) => (
+                  .map((asset) => (
                     <Card
-                      key={index}
+                      key={asset.symbol}
                       className='glass-card-enhanced glass-hover cursor-pointer h-fit'
                     >
                       <CardHeader className='pb-4'>
@@ -293,9 +293,9 @@ export default function AssetsPage() {
               <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 scroll-area h-full'>
                 {filteredAssets
                   .filter((asset) => asset.type === 'Fiat')
-                  .map((asset, index) => (
+                  .map((asset) => (
                     <Card
-                      key={index}
+                      key={asset.symbol}
                       className='glass-card-enhanced glass-hover cursor-pointer h-fit'
                     >
                       <CardHeader className='pb-4'>

@@ -11,7 +11,6 @@ import {
   ProfileSelectItem,
 } from '@/components/ui/profile-select';
 import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
 import {
   setUserGlobal,
 } from '@/services/api-service';
@@ -40,7 +39,6 @@ function KycTestWarningCard() {
 }
 
 export default function ProfilePage() {
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const { user: userData } = useUser();
 
@@ -49,7 +47,6 @@ export default function ProfilePage() {
     handleSubmit,
     setValue,
     watch,
-    reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -152,7 +149,6 @@ export default function ProfilePage() {
   };
 
   const countries = [
-    // Placeholder for select
     { code: '', name: 'Select Country' },
     { code: 'BR', name: 'Brazil' },
     { code: 'MX', name: 'Mexico' },
@@ -162,7 +158,6 @@ export default function ProfilePage() {
     { code: 'CA', name: 'Canada' },
   ];
 
-  // Tax ID types for each country
   const taxIdTypes = {
     BR: [
       { value: 'CPF', label: 'CPF' },
@@ -199,7 +194,6 @@ export default function ProfilePage() {
     <div className="content-height p-2 md:p-4 scroll-area bg-gradient-to-br from-[#e6f2f2] via-[#f8fafc] to-[#e6f2f2]">
       <div className="max-w-xl mx-auto space-y-4">
         <KycTestWarningCard />
-        {/* Header */}
         <div className="text-center mb-1">
           <div className="w-12 h-12 rounded-xl bg-primary/80 text-white flex items-center justify-center mx-auto mb-1 shadow-lg backdrop-blur-md">
             <User className="w-6 h-6" />
@@ -252,7 +246,6 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              {/* Country and Tax Information */}
               <div className='space-y-4'>
                 <div className="flex items-center gap-2 mb-2">
                   <Globe className="w-4 h-4 text-primary" />
