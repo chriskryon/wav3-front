@@ -23,14 +23,14 @@ export interface BankAccount {
   state?: string;
   street_line?: string;
   created_at?: string;
-  gradient?: string; // cor personalizada para o card
+  gradient?: string;
   type?:
     | 'shared'
     | 'recebimento'
     | 'deposit'
     | 'external'
     | 'envio'
-    | 'withdrawal'; // para diferenciar tipo
+    | 'withdrawal';
   bank_type?: 'shared' | 'external';
 }
 
@@ -153,7 +153,7 @@ export function BankAccountCard({
               <div className='flex flex-col'>
                 <span className='font-bold text-base leading-tight text-[#1ea3ab]'>
                     {account.bank_name.length > 15
-                    ? account.bank_name.slice(0, 20) + '...'
+                    ? `${account.bank_name.slice(0, 20)}...`
                     : account.bank_name}
                 </span>
                 <span className='text-xs text-gray-500 font-semibold uppercase tracking-wider'>
@@ -176,7 +176,7 @@ export function BankAccountCard({
                   >
                     {account.instant_payment
                       ? account.instant_payment.length > 24
-                        ? account.instant_payment.slice(0, 24) + '...'
+                        ? `${account.instant_payment.slice(0, 24)}...`
                         : account.instant_payment
                       : '-'}
                   </div>
