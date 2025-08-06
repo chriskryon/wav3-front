@@ -1,4 +1,4 @@
-/** biome-ignore-all lint/suspicious/noArrayIndexKey: <explanation> */
+/** biome-ignore-all lint/suspicious/noArrayIndexKey: <-> */
 'use client';
 
 import { useState } from 'react';
@@ -6,7 +6,6 @@ import { useQuery } from '@tanstack/react-query';
 import {
   ArrowDown,
   ArrowUp,
-  Plus,
   RefreshCw,
   Send,
   TrendingUp,
@@ -140,7 +139,7 @@ export default function OverviewPage() {
   }
 
   // Monta objeto para mapear symbol -> { name, icon }
-  let assetIconMap: Record<string, { name: string; icon: string }> = {};
+  const assetIconMap: Record<string, { name: string; icon: string }> = {};
   if (allAssets.length > 0) {
     allAssets.forEach((asset: any) => {
       assetIconMap[asset.symbol] = {
