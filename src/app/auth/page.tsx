@@ -1,4 +1,4 @@
-/** biome-ignore-all lint/a11y/useValidAnchor: <explanation> */
+/** biome-ignore-all lint/a11y/useValidAnchor: <-> */
 'use client';
 
 import type React from 'react';
