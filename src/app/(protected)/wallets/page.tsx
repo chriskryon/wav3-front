@@ -306,7 +306,7 @@ export default function WalletsPage() {
             style={{ minHeight: 80 }}
           >
             <Plus className='w-7 h-7 mb-1' />
-            <span className='text-base font-semibold'>Payments</span>
+            <span className='text-base font-semibold'>Withdrawals</span>
           </Button>
           <Button
             variant='outline'
@@ -409,11 +409,11 @@ export default function WalletsPage() {
           open={!!showNewWalletModal}
           onOpenChange={() => setShowNewWalletModal(false)}
         >
-          <DialogContent className='glass-card-enhanced max-w-md'>
-            <DialogHeader>
-              <DialogTitle className='text-xl font-bold text-main'>
+          <DialogContent className='max-w-md bg-white border border-gray-200 rounded-xl p-6'>
+            <DialogHeader className="mb-4">
+              <DialogTitle className='text-lg font-semibold text-gray-900'>
                 {showNewWalletModal === 'external'
-                  ? 'Add Wallet for Payments'
+                  ? 'Add Wallet for Withdrawals'
                   : 'Receive Cryptocurrency'}
               </DialogTitle>
             </DialogHeader>
@@ -454,51 +454,51 @@ export default function WalletsPage() {
           open={!!selectedWallet}
           onOpenChange={() => setSelectedWallet(null)}
         >
-          <DialogContent className='glass-card-enhanced max-w-md'>
-            <DialogHeader>
-              <DialogTitle className='text-xl font-bold text-main'>
+          <DialogContent className='max-w-md bg-white border border-gray-200 rounded-xl p-6'>
+            <DialogHeader className="mb-4">
+              <DialogTitle className='text-lg font-semibold text-gray-900'>
                 Wallet Details
               </DialogTitle>
             </DialogHeader>
             {selectedWallet && (
-              <div className='space-y-6'>
+              <div className='space-y-4'>
                 {/* Wallet Card in Modal */}
                 <div
-                  className={`relative h-60 bg-linear-to-br ${selectedWallet.gradient || assetGradients[selectedWallet.asset] || 'from-gray-400 to-gray-600'} p-6 rounded-xl overflow-hidden`}
+                  className={`relative h-48 bg-gradient-to-br ${selectedWallet.gradient || assetGradients[selectedWallet.asset] || 'from-gray-400 to-gray-600'} p-4 rounded-xl overflow-hidden`}
                 >
                   <div className='absolute inset-0 opacity-20'>
-                    <div className='absolute top-4 right-4 w-12 h-12 rounded-full bg-white/30'></div>
-                    <div className='absolute bottom-4 left-4 w-8 h-8 rounded-full bg-white/20'></div>
+                    <div className='absolute top-3 right-3 w-8 h-8 rounded-full bg-white/30'></div>
+                    <div className='absolute bottom-3 left-3 w-6 h-6 rounded-full bg-white/20'></div>
                   </div>
                   <div className='relative z-10 h-full flex flex-col justify-between text-white'>
                     <div className='flex items-center justify-between'>
                       <div>
-                        <h3 className='font-bold text-lg'>
+                        <h3 className='font-semibold text-base'>
                           {selectedWallet.name ||
                             selectedWallet.asset + ' Wallet'}
                         </h3>
                         <p className='text-sm opacity-90 capitalize'>
                           {selectedWallet.network} Network
                         </p>
-                        <span className='inline-block text-xs bg-black/30 rounded px-2 py-0.5 mt-1 font-semibold uppercase tracking-wider'>
+                        <span className='inline-block text-xs bg-black/30 rounded px-2 py-1 mt-1 font-medium uppercase tracking-wide'>
                           {selectedWallet.wallet_type === 'external'
                             ? 'Withdraw'
                             : 'Deposit'}
                         </span>
                       </div>
-                      <Wallet2 className='w-8 h-8 opacity-80' />
+                      <Wallet2 className='w-6 h-6 opacity-80' />
                     </div>
                     <div className='space-y-1'>
                       <div className='flex items-center justify-between'>
                         <span className='text-sm opacity-80'>Asset</span>
-                        <span className='font-bold text-lg flex items-center gap-2'>
+                        <span className='font-semibold text-base flex items-center gap-2'>
                           {assetIcons[selectedWallet.asset] && (
                             <span className='inline-flex items-center'>
                               <span className='mr-1'>
                                 {(() => {
                                   const Icon = assetIcons[selectedWallet.asset];
                                   return Icon ? (
-                                    <Icon className='w-5 h-5' />
+                                    <Icon className='w-4 h-4' />
                                   ) : null;
                                 })()}
                               </span>
@@ -514,47 +514,47 @@ export default function WalletsPage() {
                         </span>
                       </div>
                       <div className='flex items-center justify-between'>
-                        <span className='text-sm opacity-80'>Created at</span>
+                        <span className='text-sm opacity-80'>Created</span>
                         <span className='font-mono text-xs'>
-                          {new Date(selectedWallet.created_at).toLocaleString()}
+                          {new Date(selectedWallet.created_at).toLocaleDateString()}
                         </span>
                       </div>
                     </div>
                   </div>
                 </div>
                 {/* Full Address */}
-                <div className='glass-item p-4'>
-                  <Label className='muted-text text-sm'>Address</Label>
+                <div className='bg-gray-50 rounded-lg p-4 border border-gray-200'>
+                  <Label className='text-xs font-medium text-gray-500 uppercase tracking-wide'>Address</Label>
                   <div className='flex items-center gap-2 mt-2'>
-                    <code className='flex-1 p-3 bg-surface rounded-lg text-sm font-mono break-all text-main border border-black/10'>
+                    <code className='flex-1 p-2 bg-white rounded border border-gray-200 text-sm font-mono break-all text-gray-900'>
                       {selectedWallet.address}
                     </code>
                     <Button
                       size='sm'
                       onClick={() => copyToClipboard(selectedWallet.address)}
-                      className='bg-primary hover:bg-primary/90 text-white'
+                      className='bg-[#1ea3ab] hover:bg-[#188a91] text-white px-3 py-2 rounded border border-[#1ea3ab] transition-colors'
                     >
                       <Copy className='w-4 h-4' />
                     </Button>
                   </div>
                   {selectedWallet.address_tag &&
                     selectedWallet.address_tag.length > 0 && (
-                      <div className='mt-2'>
-                        <Label className='muted-text text-xs'>
+                      <div className='mt-3'>
+                        <Label className='text-xs font-medium text-gray-500 uppercase tracking-wide'>
                           Address Tag
                         </Label>
-                        <code className='ml-2 p-1 bg-surface rounded text-xs font-mono border border-black/10'>
+                        <code className='block mt-1 p-2 bg-white rounded border border-gray-200 text-sm font-mono text-gray-900'>
                           {selectedWallet.address_tag}
                         </code>
                       </div>
                     )}
                 </div>
                 {/* Action Buttons */}
-                <div className='flex justify-end'>
+                <div className='flex justify-end pt-2'>
                   {selectedWallet.wallet_type === 'external' && (
                     <Button
                       variant='destructive'
-                      className='bg-red-600 hover:bg-red-700 text-white font-semibold px-6'
+                      className='bg-red-600 hover:bg-red-700 text-white font-medium px-4 py-2 rounded-lg border border-red-600 transition-colors'
                       onClick={() => setShowDeleteConfirm(true)}
                     >
                       Delete
@@ -568,19 +568,19 @@ export default function WalletsPage() {
 
         {/* Modal de confirmação de deleção */}
         <Dialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
-          <DialogContent className='glass-card-enhanced max-w-sm'>
-            <DialogHeader>
-              <DialogTitle className='text-lg font-bold text-main'>
-                Confirm delete
+          <DialogContent className='max-w-sm bg-white border border-gray-200 rounded-xl p-6'>
+            <DialogHeader className="mb-4">
+              <DialogTitle className='text-lg font-semibold text-gray-900'>
+                Confirm Delete
               </DialogTitle>
             </DialogHeader>
-            <div className='py-4 text-main text-center'>
+            <div className='py-2 text-gray-700 text-center'>
               Are you sure you want to delete this wallet? This action cannot be undone.
             </div>
-            <div className='flex gap-3 justify-end pt-2'>
+            <div className='flex gap-3 justify-end pt-4'>
               <Button
                 variant='outline'
-                className='glass-button flex-1'
+                className='flex-1 bg-white border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-colors font-medium px-4 py-2 rounded-lg'
                 onClick={() => setShowDeleteConfirm(false)}
                 disabled={deleting}
               >
@@ -588,7 +588,7 @@ export default function WalletsPage() {
               </Button>
               <Button
                 variant='destructive'
-                className='bg-red-600 hover:bg-red-700 text-white font-semibold flex-1'
+                className='bg-red-600 hover:bg-red-700 text-white font-medium flex-1 px-4 py-2 rounded-lg border border-red-600 transition-colors'
                 onClick={handleDeleteWallet}
                 disabled={deleting}
               >

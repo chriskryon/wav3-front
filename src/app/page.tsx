@@ -9,59 +9,75 @@ import { QuickActionsSection } from '@/components/dashboard/QuickActionsSection'
 import { RecentOrdersSection } from '@/components/dashboard/RecentOrdersSection';
 import { AssetsSection } from '@/components/dashboard/AssetsSection';
 import { ActionModal } from '@/components/action-modal';
-import { FakeDataAlert } from '@/components/FakeDataAlert';
 import { ICONS_CRYPTO_FIAT as icons } from '@/lib/icon-utils';
 import { listAssets } from '@/services/asset-api-service';
 import Image from 'next/image';
 
 export default function OverviewPage() {
    // Mock de transações (até integração com API real)
-  const recentTransactions = [
+
+  // Mock de orders no formato da API
+  const orders = [
     {
-      id: 1,
-      type: 'Buy',
-      asset: 'BTC',
-      amount: 0.5,
-      value: 22500,
-      date: '2024-01-15',
-      status: 'Completed',
+      id: "782966f4-229e-4300-a4c9-0f137db68796",
+      account_id: "a9349280-db0e-4c04-b861-ebfd9b31f427",
+      sub_account_id: "28e50178-3675-43b6-a393-5f8f4426aeb5",
+      recipient_email: "testing@wav3.com",
+      description: "",
+      status: "confirmed",
+      source_asset: "BRL",
+      source_amount: 0.5,
+      target_asset: "BRL",
+      target_amount: 0.5,
+      total_fee: 0,
+      valid_until: "2025-08-07T15:20:10.187073Z",
+      created_at: "2025-08-06T15:20:10.187073Z"
     },
     {
-      id: 2,
-      type: 'Sell',
-      asset: 'ETH',
-      amount: 2.5,
-      value: 5750,
-      date: '2024-01-14',
-      status: 'Completed',
+      id: "a8e0495a-4375-4e38-ba7d-fa5fc16109bc",
+      account_id: "a9349280-db0e-4c04-b861-ebfd9b31f427",
+      sub_account_id: "28e50178-3675-43b6-a393-5f8f4426aeb5",
+      recipient_email: "",
+      description: "",
+      status: "confirmed",
+      source_asset: "USD",
+      source_amount: 10.92,
+      target_asset: "BRL",
+      target_amount: 10.8509901802,
+      total_fee: 0.071,
+      valid_until: "2025-08-09T15:06:39.73174Z",
+      created_at: "2025-08-06T15:06:39.73174Z"
     },
     {
-      id: 3,
-      type: 'Send',
-      asset: 'USDT',
-      amount: 1000,
-      value: 1000,
-      date: '2024-01-13',
-      status: 'Pending',
+      id: "7ca97f3e-f36b-491a-9982-8f3eb3182e37",
+      account_id: "a9349280-db0e-4c04-b861-ebfd9b31f427",
+      sub_account_id: "28e50178-3675-43b6-a393-5f8f4426aeb5",
+      recipient_email: "testing@wav3.com",
+      description: "Deposit (SubAccount)",
+      status: "confirmed",
+      source_asset: "BRL",
+      source_amount: 0.52,
+      target_asset: "BRL",
+      target_amount: 0.52,
+      total_fee: 0,
+      valid_until: "2025-08-08T19:29:59.125302Z",
+      created_at: "2025-08-05T19:29:59.125302Z"
     },
     {
-      id: 4,
-      type: 'Buy',
-      asset: 'BNB',
-      amount: 25,
-      value: 7500,
-      date: '2024-01-12',
-      status: 'Completed',
-    },
-    {
-      id: 5,
-      type: 'Exchange',
-      asset: 'ADA',
-      amount: 1000,
-      value: 450,
-      date: '2024-01-11',
-      status: 'Pending',
-    },
+      id: "2aea5257-f718-4074-bbb6-d19e894c70dc",
+      account_id: "a9349280-db0e-4c04-b861-ebfd9b31f427",
+      sub_account_id: "28e50178-3675-43b6-a393-5f8f4426aeb5",
+      recipient_email: "",
+      description: "",
+      status: "confirmed",
+      source_asset: "USDT",
+      source_amount: 11,
+      target_asset: "USD",
+      target_amount: 10.9387,
+      total_fee: 0.0715,
+      valid_until: "2025-07-19T12:12:18.247837Z",
+      created_at: "2025-07-16T12:12:18.247837Z"
+    }
   ];
 
 
@@ -164,13 +180,12 @@ export default function OverviewPage() {
   return (
     <div className='min-h-screen p-8 bg-background'>
       <div className='max-w-7xl mx-auto space-y-8'>
-        <FakeDataAlert />
         <BalancesSection accountBalances={accountBalances} isBalancesLoading={isBalancesLoading} renderAssetIcon={renderAssetIcon} />
 
         <QuickActionsSection setActiveModal={setActiveModal} />
 
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
-          <RecentOrdersSection recentTransactions={recentTransactions} />
+          <RecentOrdersSection recentTransactions={orders} />
           <AssetsSection
             assetsTab={assetsTab}
             setAssetsTab={setAssetsTab}
