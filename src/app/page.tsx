@@ -12,75 +12,9 @@ import { ActionModal } from '@/components/action-modal';
 import { ICONS_CRYPTO_FIAT as icons } from '@/lib/icon-utils';
 import { listAssets } from '@/services/asset-api-service';
 import Image from 'next/image';
+import { orders } from './orders/mock';
 
 export default function OverviewPage() {
-   // Mock de transações (até integração com API real)
-
-  // Mock de orders no formato da API
-  const orders = [
-    {
-      id: "782966f4-229e-4300-a4c9-0f137db68796",
-      account_id: "a9349280-db0e-4c04-b861-ebfd9b31f427",
-      sub_account_id: "28e50178-3675-43b6-a393-5f8f4426aeb5",
-      recipient_email: "testing@wav3.com",
-      description: "",
-      status: "confirmed",
-      source_asset: "BRL",
-      source_amount: 0.5,
-      target_asset: "BRL",
-      target_amount: 0.5,
-      total_fee: 0,
-      valid_until: "2025-08-07T15:20:10.187073Z",
-      created_at: "2025-08-06T15:20:10.187073Z"
-    },
-    {
-      id: "a8e0495a-4375-4e38-ba7d-fa5fc16109bc",
-      account_id: "a9349280-db0e-4c04-b861-ebfd9b31f427",
-      sub_account_id: "28e50178-3675-43b6-a393-5f8f4426aeb5",
-      recipient_email: "",
-      description: "",
-      status: "confirmed",
-      source_asset: "USD",
-      source_amount: 10.92,
-      target_asset: "BRL",
-      target_amount: 10.8509901802,
-      total_fee: 0.071,
-      valid_until: "2025-08-09T15:06:39.73174Z",
-      created_at: "2025-08-06T15:06:39.73174Z"
-    },
-    {
-      id: "7ca97f3e-f36b-491a-9982-8f3eb3182e37",
-      account_id: "a9349280-db0e-4c04-b861-ebfd9b31f427",
-      sub_account_id: "28e50178-3675-43b6-a393-5f8f4426aeb5",
-      recipient_email: "testing@wav3.com",
-      description: "Deposit (SubAccount)",
-      status: "confirmed",
-      source_asset: "BRL",
-      source_amount: 0.52,
-      target_asset: "BRL",
-      target_amount: 0.52,
-      total_fee: 0,
-      valid_until: "2025-08-08T19:29:59.125302Z",
-      created_at: "2025-08-05T19:29:59.125302Z"
-    },
-    {
-      id: "2aea5257-f718-4074-bbb6-d19e894c70dc",
-      account_id: "a9349280-db0e-4c04-b861-ebfd9b31f427",
-      sub_account_id: "28e50178-3675-43b6-a393-5f8f4426aeb5",
-      recipient_email: "",
-      description: "",
-      status: "confirmed",
-      source_asset: "USDT",
-      source_amount: 11,
-      target_asset: "USD",
-      target_amount: 10.9387,
-      total_fee: 0.0715,
-      valid_until: "2025-07-19T12:12:18.247837Z",
-      created_at: "2025-07-16T12:12:18.247837Z"
-    }
-  ];
-
-
   // Fetch balances from API
   const { data: accountBalances, isLoading: isBalancesLoading } = useQuery({
     queryKey: ['accountBalances'],
