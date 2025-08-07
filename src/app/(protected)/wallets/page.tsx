@@ -99,6 +99,25 @@ export default function WalletsPage() {
     }));
   };
 
+  // Função para resetar estados e abrir modal
+  const openDepositModal = () => {
+    // Reset dos estados do shared wallet
+    setSharedWallet({ asset: '', network: '' });
+    setSharedResult(null);
+    setIsRegisteringShared(false);
+    // Abre o modal
+    setShowNewWalletModal('deposit');
+  };
+
+  // Função para fechar modal e resetar estados
+  const closeModal = () => {
+    setShowNewWalletModal(false);
+    // Reset dos estados quando fechar
+    setSharedWallet({ asset: '', network: '' });
+    setSharedResult(null);
+    setIsRegisteringShared(false);
+  };
+
   // Busca wallets com React Query
   const {
     data: walletListData = [],
@@ -150,6 +169,17 @@ export default function WalletsPage() {
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     toast.success('Address copied to clipboard!');
+  };
+
+  // Função para retornar o gradiente baseado no asset
+  const getAssetGradient = (asset: string) => {
+    const gradients: Record<string, string> = {
+      BTC: 'from-orange-400 to-yellow-500',
+      ETH: 'from-blue-500 to-purple-600',
+      XRP: 'from-gray-700 to-blue-400',
+      USDT: 'from-green-400 to-emerald-500',
+    };
+    return gradients[asset] || 'from-gray-400 to-gray-600';
   };
 
   const handleAddWallet = async (e: React.FormEvent) => {
@@ -275,7 +305,7 @@ export default function WalletsPage() {
             </Button>
             <Button
               variant='outline'
-              onClick={() => setShowNewWalletModal('deposit')}
+              onClick={openDepositModal}
               className='glass-button border-primary text-primary font-semibold shadow-lg hover:shadow-xl transition-all duration-300'
             >
               <BanknoteArrowDown className='w-4 h-4 mr-2' />
@@ -295,7 +325,7 @@ export default function WalletsPage() {
           </Button>
           <Button
             variant='outline'
-            onClick={() => setShowNewWalletModal('deposit')}
+            onClick={openDepositModal}
             className='glass-button border-primary text-primary font-semibold shadow-lg hover:shadow-xl transition-all duration-300 w-1/2 flex flex-col items-center justify-center py-4 rounded-2xl active:scale-95 focus:ring-2 focus:ring-primary/20'
             style={{ minHeight: 80 }}
           >
@@ -348,7 +378,7 @@ export default function WalletsPage() {
                   <Button
                     variant='outline'
                     onClick={() => {
-                      setShowNewWalletModal('deposit');
+                      openDepositModal();
                       toast.info('Fill the form to add a deposit wallet.');
                     }}
                     className='glass-button border-primary text-primary font-semibold shadow-lg hover:shadow-xl transition-all duration-300'
@@ -392,7 +422,7 @@ export default function WalletsPage() {
         {/* New Wallet Modal */}
         <Dialog
           open={!!showNewWalletModal}
-          onOpenChange={() => setShowNewWalletModal(false)}
+          onOpenChange={closeModal}
         >
           <DialogContent className='max-w-lg bg-white border border-gray-200 rounded-lg shadow-xl'>
             <DialogHeader className="pb-4 border-b border-gray-100">
@@ -429,7 +459,7 @@ export default function WalletsPage() {
                   }}
                   onSubmit={handleAddWallet}
                   isLoading={addWalletMutation.isPending}
-                  onCancel={() => setShowNewWalletModal(false)}
+                  onCancel={closeModal}
                 />
               ) : (
                 <SharedWallet
@@ -442,7 +472,7 @@ export default function WalletsPage() {
                     setSharedWallet((prev) => ({ ...prev, network: v }))
                   }
                   onSubmit={handleRegisterShared}
-                  onCancel={() => setShowNewWalletModal(false)}
+                  onCancel={closeModal}
                   onCopy={copyToClipboard}
                 />
               )}
@@ -455,105 +485,110 @@ export default function WalletsPage() {
           open={!!selectedWallet}
           onOpenChange={() => setSelectedWallet(null)}
         >
-          <DialogContent className='max-w-lg bg-white border border-gray-200 rounded-lg shadow-xl'>
-            <DialogHeader className="pb-4 border-b border-gray-100">
-              <DialogTitle className='text-xl font-semibold text-gray-900 flex items-center gap-2'>
-                <Wallet2 className='w-5 h-5 text-[#1ea3ab]' />
+          <DialogContent className='max-w-md bg-white border border-gray-200 rounded-xl p-6'>
+            <DialogHeader className="mb-4">
+              <DialogTitle className='text-lg font-semibold text-gray-900'>
                 Wallet Details
               </DialogTitle>
-              <p className='text-sm text-gray-600 mt-1'>
-                View and manage your wallet information
-              </p>
             </DialogHeader>
             {selectedWallet && (
-              <div className='pt-4 space-y-4'>
-                {/* Wallet Info Card */}
-                <div className='bg-gray-50 rounded-lg p-4 border border-gray-200'>
-                  <div className='flex items-start justify-between mb-3'>
-                    <div className='flex-1'>
-                      <h3 className='font-semibold text-lg text-gray-900'>
-                        {selectedWallet.name || `${selectedWallet.asset} Wallet`}
-                      </h3>
-                      <div className='flex items-center gap-2 mt-1'>
-                        {assetIcons[selectedWallet.asset] && (
-                          <span className='inline-flex items-center'>
-                            {(() => {
-                              const Icon = assetIcons[selectedWallet.asset];
-                              return Icon ? <Icon className='w-4 h-4' /> : null;
-                            })()}
-                          </span>
-                        )}
-                        <span className='text-sm font-medium text-gray-700'>
-                          {selectedWallet.asset}
+              <div className='space-y-4'>
+                {/* Wallet Card in Modal */}
+                <div
+                  className={`relative h-48 bg-gradient-to-br ${getAssetGradient(selectedWallet.asset)} p-4 rounded-xl overflow-hidden`}
+                >
+                  <div className='absolute inset-0 opacity-20'>
+                    <div className='absolute top-3 right-3 w-8 h-8 rounded-full bg-white/30'></div>
+                    <div className='absolute bottom-3 left-3 w-6 h-6 rounded-full bg-white/20'></div>
+                  </div>
+                  <div className='relative z-10 h-full flex flex-col justify-between text-white'>
+                    <div className='flex items-center justify-between'>
+                      <div>
+                        <h3 className='font-semibold text-base'>
+                          {selectedWallet.name ||
+                            `${selectedWallet.asset} Wallet`}
+                        </h3>
+                        <p className='text-sm opacity-90 capitalize'>
+                          {selectedWallet.network} Network
+                        </p>
+                        <span className='inline-block text-xs bg-black/30 rounded px-2 py-1 mt-1 font-medium uppercase tracking-wide'>
+                          {selectedWallet.wallet_type === 'external'
+                            ? 'Withdraw'
+                            : 'Deposit'}
                         </span>
-                        <span className='text-xs px-2 py-1 bg-white rounded border border-gray-300 text-gray-600'>
+                      </div>
+                      <Wallet2 className='w-6 h-6 opacity-80' />
+                    </div>
+                    <div className='space-y-1'>
+                      <div className='flex items-center justify-between'>
+                        <span className='text-sm opacity-80'>Asset</span>
+                        <span className='font-semibold text-base flex items-center gap-2'>
+                          {assetIcons[selectedWallet.asset] && (
+                            <span className='inline-flex items-center'>
+                              <span className='mr-1'>
+                                {(() => {
+                                  const Icon = assetIcons[selectedWallet.asset];
+                                  return Icon ? (
+                                    <Icon className='w-4 h-4' />
+                                  ) : null;
+                                })()}
+                              </span>
+                              {selectedWallet.asset}
+                            </span>
+                          )}
+                        </span>
+                      </div>
+                      <div className='flex items-center justify-between'>
+                        <span className='text-sm opacity-80'>Network</span>
+                        <span className='font-mono text-xs'>
                           {selectedWallet.network}
                         </span>
                       </div>
-                    </div>
-                    <div className='text-right'>
-                      <span className={`inline-block text-xs px-2 py-1 rounded font-medium uppercase tracking-wide ${
-                        selectedWallet.wallet_type === 'external'
-                          ? 'bg-blue-100 text-blue-700'
-                          : 'bg-green-100 text-green-700'
-                      }`}>
-                        {selectedWallet.wallet_type === 'external' ? 'Withdraw' : 'Deposit'}
-                      </span>
-                      <p className='text-xs text-gray-500 mt-1'>
-                        {new Date(selectedWallet.created_at).toLocaleDateString()}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Address Section */}
-                <div className='space-y-3'>
-                  <div>
-                    <div className='text-xs font-medium text-gray-500 uppercase tracking-wide block mb-2'>
-                      Wallet Address
-                    </div>
-                    <div className='flex items-center gap-2'>
-                      <code className='flex-1 p-3 bg-gray-50 rounded-lg border border-gray-200 text-sm font-mono text-gray-900 break-all'>
-                        {selectedWallet.address}
-                      </code>
-                      <Button
-                        size='sm'
-                        onClick={() => copyToClipboard(selectedWallet.address)}
-                        className='bg-[#1ea3ab] hover:bg-[#188a91] text-white p-2 rounded-lg border border-[#1ea3ab] transition-colors shrink-0'
-                      >
-                        <Copy className='w-4 h-4' />
-                      </Button>
-                    </div>
-                  </div>
-
-                  {selectedWallet.address_tag && selectedWallet.address_tag.length > 0 && (
-                    <div>
-                      <div className='text-xs font-medium text-gray-500 uppercase tracking-wide block mb-2'>
-                        Address Tag / Memo
+                      <div className='flex items-center justify-between'>
+                        <span className='text-sm opacity-80'>Created</span>
+                        <span className='font-mono text-xs'>
+                          {new Date(selectedWallet.created_at).toLocaleDateString()}
+                        </span>
                       </div>
-                      <code className='block p-3 bg-gray-50 rounded-lg border border-gray-200 text-sm font-mono text-gray-900'>
-                        {selectedWallet.address_tag}
-                      </code>
                     </div>
-                  )}
+                  </div>
                 </div>
-
-                {/* Actions */}
-                <div className='flex justify-between items-center pt-4 border-t border-gray-100'>
-                  <Button
-                    variant='outline'
-                    onClick={() => setSelectedWallet(null)}
-                    className='bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-colors px-4 py-2 rounded-lg'
-                  >
-                    Close
-                  </Button>
+                {/* Full Address */}
+                <div className='bg-gray-50 rounded-lg p-4 border border-gray-200'>
+                  <div className='text-xs font-medium text-gray-500 uppercase tracking-wide'>Address</div>
+                  <div className='flex items-center gap-2 mt-2'>
+                    <code className='flex-1 p-2 bg-white rounded border border-gray-200 text-sm font-mono break-all text-gray-900'>
+                      {selectedWallet.address}
+                    </code>
+                    <Button
+                      size='sm'
+                      onClick={() => copyToClipboard(selectedWallet.address)}
+                      className='bg-[#1ea3ab] hover:bg-[#188a91] text-white px-3 py-2 rounded border border-[#1ea3ab] transition-colors'
+                    >
+                      <Copy className='w-4 h-4' />
+                    </Button>
+                  </div>
+                  {selectedWallet.address_tag &&
+                    selectedWallet.address_tag.length > 0 && (
+                      <div className='mt-3'>
+                        <div className='text-xs font-medium text-gray-500 uppercase tracking-wide'>
+                          Address Tag
+                        </div>
+                        <code className='block mt-1 p-2 bg-white rounded border border-gray-200 text-sm font-mono text-gray-900'>
+                          {selectedWallet.address_tag}
+                        </code>
+                      </div>
+                    )}
+                </div>
+                {/* Action Buttons */}
+                <div className='flex justify-end pt-2'>
                   {selectedWallet.wallet_type === 'external' && (
                     <Button
                       variant='destructive'
-                      className='bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg border border-red-600 transition-colors'
+                      className='bg-red-600 hover:bg-red-700 text-white font-medium px-4 py-2 rounded-lg border border-red-600 transition-colors'
                       onClick={() => setShowDeleteConfirm(true)}
                     >
-                      Delete Wallet
+                      Delete
                     </Button>
                   )}
                 </div>
