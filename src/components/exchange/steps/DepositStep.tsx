@@ -4,7 +4,6 @@ import { NetworkIcon } from '@/components/ui/network-icon';
 import { ClipboardCopy } from 'lucide-react';
 import { toast } from 'sonner';
 
-
 interface DepositStepProps {
   data: any;
   onBack: () => void;
@@ -34,7 +33,7 @@ export const DepositStep: React.FC<DepositStepProps> = ({ data, onBack, onNext }
   const handleCopyAddress = () => {
     if (data?.wallet_address) {
       navigator.clipboard.writeText(data.wallet_address);
-      toast.success('Wallet address copied to clipboard!');
+      toast.success('Copied to clipboard!');
     }
   };
 
