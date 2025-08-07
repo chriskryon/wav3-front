@@ -3,6 +3,50 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import Wav3Loading from '../loading-wav3';
 
 export function BalancesSection({ accountBalances, isBalancesLoading, renderAssetIcon }: any) {
+
+  // Mock de alguns balances de crypto para testes
+  const mockCryptoBalances = [
+    {
+      symbol: 'BTC',
+      type: 'crypto',
+      balance: 0.12345678,
+      assetInfo: { icon: 'https://cryptologos.cc/logos/bitcoin-btc-logo.png', name: 'Bitcoin', networks: ['bitcoin'] }
+    },
+    {
+      symbol: 'ETH',
+      type: 'crypto',
+      balance: 2.98765432,
+      assetInfo: { icon: 'https://cryptologos.cc/logos/ethereum-eth-logo.png', name: 'Ethereum', networks: ['erc-20'] }
+    },
+    {
+      symbol: 'XRP',
+      type: 'crypto',
+      balance: 5000.25,
+      assetInfo: { icon: 'https://cryptologos.cc/logos/xrp-xrp-logo.png', name: 'Ripple', networks: ['ripple'] }
+    },
+    {
+      symbol: 'USDT',
+      type: 'crypto',
+      balance: 1200.50,
+      assetInfo: { icon: 'https://cryptologos.cc/logos/tether-usdt-logo.png', name: 'USD Tether', networks: ['tron', 'bsc'] }
+    },
+    {
+      symbol: 'USDRIF',
+      type: 'crypto',
+      balance: 1000.00,
+      assetInfo: { icon: '', name: 'USDRIF', networks: ['rsk'] }
+    },
+    {
+      symbol: 'USDC',
+      type: 'crypto',
+      balance: 800.00,
+      assetInfo: { icon: 'https://cryptologos.cc/logos/usd-coin-usdc-logo.png', name: 'USDC', networks: ['ethereum', 'polygon', 'solana'] }
+    }
+  ];
+
+  // Exemplo de uso:
+  // const accountBalances = mockCryptoBalances;
+
   function renderCryptoBalances() {
     if (isBalancesLoading) {
       return (
@@ -12,7 +56,7 @@ export function BalancesSection({ accountBalances, isBalancesLoading, renderAsse
       );
     }
     const cryptoBalances = (accountBalances?.filter((b: any) => b.type === 'crypto' && b.balance !== null) ?? []);
-    if (cryptoBalances.length === 0) {
+    if (mockCryptoBalances.length === 0) {
       return (
         <div className="flex flex-col items-center justify-center py-6 text-center">
           <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center mb-2">
@@ -24,35 +68,38 @@ export function BalancesSection({ accountBalances, isBalancesLoading, renderAsse
       );
     }
     
-    return (
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-        {cryptoBalances.map((b: any) => (
-          <div 
-            key={b.symbol} 
-            className="group relative bg-white border border-gray-200 rounded-xl p-4 shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer hover:scale-[1.02] hover:border-purple-300"
-          >
-            <div className="flex flex-col items-center text-center space-y-3">
-              {/* Asset Icon */}
-              <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/10 to-blue-500/10 border border-purple-200 group-hover:scale-110 transition-transform duration-300">
-                {renderAssetIcon(b.symbol, b.assetInfo?.icon || '', 'background')}
+    // Verificar se precisa de layout compacto
+      const isCompact = mockCryptoBalances.length > 3;
+      
+      return (
+        <div className={`grid ${isCompact ? 'grid-cols-3 sm:grid-cols-4 gap-2' : 'grid-cols-2 sm:grid-cols-3 gap-3'}`}>
+          {mockCryptoBalances.map((b: any) => (
+            <div 
+              key={b.symbol} 
+              className={`group relative bg-white border border-gray-200 rounded-xl ${isCompact ? 'p-3' : 'p-4'} shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer hover:scale-[1.02] hover:border-green-300`}
+            >
+              <div className={`flex flex-col items-center text-center ${isCompact ? 'space-y-2' : 'space-y-3'}`}>
+                {/* Asset Icon */}
+                <div className={`flex items-center justify-center ${isCompact ? 'w-8 h-8' : 'w-12 h-12'} rounded-xl bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-200 group-hover:scale-110 transition-transform duration-300`}>
+                  {renderAssetIcon(b.symbol, b.assetInfo?.icon || '', 'background')}
+                </div>
+                
+                {/* Asset Symbol */}
+                <div className={`font-bold text-gray-700 ${isCompact ? 'text-xs' : 'text-sm'} tracking-wide uppercase`}>
+                  {b.symbol}
+                </div>
+                
+                {/* Balance Value - DESTACADO */}
+                <div className={`font-bold text-green-600 ${isCompact ? 'text-sm' : 'text-lg'} tabular-nums leading-tight`}>
+                  {Number(b.balance).toLocaleString(undefined, { 
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 8 
+                  })} {b.symbol}
+                </div>
               </div>
-              
-              {/* Asset Symbol */}
-              <div className="font-bold text-gray-700 text-sm tracking-wide uppercase">
-                {b.symbol}
-              </div>
-              
-              {/* Balance Value - DESTACADO */}
-              <div className="font-bold text-purple-600 text-lg tabular-nums leading-tight">
-                {Number(b.balance).toLocaleString(undefined, { 
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 8 
-                })} {b.symbol}
-              </div>
-            </div>
 
-            {/* Hover Effect */}
-            <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-purple-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              {/* Hover Effect */}
+              <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-green-500/5 to-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </div>
         ))}
       </div>
@@ -79,26 +126,29 @@ export function BalancesSection({ accountBalances, isBalancesLoading, renderAsse
         </div>
       );
     }
+    // Verificar se precisa de layout compacto
+    const isCompact = fiatBalances.length > 3;
+    
     return (
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+      <div className={`grid ${isCompact ? 'grid-cols-3 sm:grid-cols-4 gap-2' : 'grid-cols-2 sm:grid-cols-3 gap-3'}`}>
         {fiatBalances.map((b: any) => (
           <div 
             key={b.symbol} 
-            className="group relative bg-white border border-gray-200 rounded-xl p-4 shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer hover:scale-[1.02] hover:border-green-300"
+            className={`group relative bg-white border border-gray-200 rounded-xl ${isCompact ? 'p-3' : 'p-4'} shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer hover:scale-[1.02] hover:border-green-300`}
           >
-            <div className="flex flex-col items-center text-center space-y-3">
+            <div className={`flex flex-col items-center text-center ${isCompact ? 'space-y-2' : 'space-y-3'}`}>
               {/* Asset Icon */}
-              <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-200 group-hover:scale-110 transition-transform duration-300">
+              <div className={`flex items-center justify-center ${isCompact ? 'w-8 h-8' : 'w-12 h-12'} rounded-xl bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-200 group-hover:scale-110 transition-transform duration-300`}>
                 {renderAssetIcon(b.symbol, b.assetInfo?.icon || '', 'background')}
               </div>
               
               {/* Asset Symbol */}
-              <div className="font-bold text-gray-700 text-sm tracking-wide uppercase">
+              <div className={`font-bold text-gray-700 ${isCompact ? 'text-xs' : 'text-sm'} tracking-wide uppercase`}>
                 {b.symbol}
               </div>
               
               {/* Balance Value - DESTACADO */}
-              <div className="font-bold text-green-600 text-lg tabular-nums leading-tight">
+              <div className={`font-bold text-green-600 ${isCompact ? 'text-sm' : 'text-lg'} tabular-nums leading-tight`}>
                 {(() => {
                   const value = Number(b.balance);
                   const symbol = b.symbol;
@@ -153,7 +203,7 @@ export function BalancesSection({ accountBalances, isBalancesLoading, renderAsse
       <Card className='bg-white/90 border border-gray-100 rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden'>
         <CardHeader className='pb-4'>
           <div className='flex items-center gap-4'>
-            <div className='w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-blue-500 text-white flex items-center justify-center shadow-lg'>
+            <div className='w-12 h-12 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-500 text-white flex items-center justify-center shadow-lg'>
               <Wallet className='w-6 h-6' />
             </div>
             <div>

@@ -66,45 +66,27 @@ function getStatusMeta(status: string) {
   }
 }
 
-// Helper: asset icon (mock, replace with real icon logic if needed)
-function renderAssetIcon2(symbol: string) {
-  // You can replace this with your real icon logic or assetIconMap
-  return (
-    <span className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs uppercase border border-primary/20">
-      {symbol.slice(0, 4)}
-    </span>
-  );
-}
-
+// Helper: asset icon com fallback simples
 function renderAssetIcon(symbol: string, fallbackUrl: string, variant: 'background' | 'default' = 'default') {
   const IconComponent = (icons as Record<string, any>)[symbol];
   if (IconComponent) {
-    const isReactComponent =
-      typeof IconComponent === 'function' ||
-      (typeof IconComponent === 'object' && IconComponent !== null);
+    const isReactComponent = typeof IconComponent === 'function' || (typeof IconComponent === 'object' && IconComponent !== null);
     if (isReactComponent) {
       return <IconComponent className="w-6 h-6 shadow" variant={variant} />;
     } else if (typeof IconComponent === 'string') {
-      return (
-        <Image
-          src={IconComponent}
-          alt={symbol}
-          width={24}
-          height={24}
-          className="rounded-full border shadow bg-white"
-        />
-      );
+      return <Image src={IconComponent} alt={symbol} width={24} height={24} className="rounded-full border shadow bg-white" />;
     }
   }
-  // Fallback para o ícone da API se não estiver no objeto icons
+  // Fallback para o ícone da API se não estiver no objeto icons e se a URL for válida
+  if (fallbackUrl && fallbackUrl.trim() !== '') {
+    return <Image src={fallbackUrl} alt={symbol} width={24} height={24} className="rounded-full border shadow bg-white" />;
+  }
+  
+  // Fallback final com iniciais se não houver ícone disponível
   return (
-    <Image
-      src={fallbackUrl}
-      alt={symbol}
-      width={24}
-      height={24}
-      className="rounded-full border shadow bg-white"
-    />
+    <span className="w-6 h-6 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center text-gray-600 font-bold text-xs uppercase border border-gray-300 shadow">
+      {symbol.slice(0, 2)}
+    </span>
   );
 }
 
@@ -160,7 +142,7 @@ export function RecentOrdersSection({ recentTransactions }: any) {
                     {/* Source */}
                     <div className="flex items-center gap-2 min-w-0">
                       <div className="flex-shrink-0">
-                        {renderAssetIcon(order.source_asset, '', 'background')}
+                        {renderAssetIcon(order.source_asset, order.source_asset_icon || '', 'background')}
                       </div>
                       <span className="font-semibold text-gray-900 text-sm truncate">
                         {formatAssetValue(order.source_amount, order.source_asset, true)}
@@ -175,7 +157,7 @@ export function RecentOrdersSection({ recentTransactions }: any) {
                     {/* Target */}
                     <div className="flex items-center gap-2 min-w-0">
                       <div className="flex-shrink-0">
-                        {renderAssetIcon(order.target_asset, '', 'default')}
+                        {renderAssetIcon(order.target_asset, order.target_asset_icon || '', 'background')}
                       </div>
                       <span className="font-semibold text-gray-900 text-sm truncate">
                         {formatAssetValue(order.target_amount, order.target_asset, false)}
