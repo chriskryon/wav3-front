@@ -25,37 +25,34 @@ export function BalancesSection({ accountBalances, isBalancesLoading, renderAsse
     }
     
     return (
-      <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {cryptoBalances.map((b: any) => (
           <div 
             key={b.symbol} 
-            className="group relative bg-white/90 border border-gray-100 rounded-lg p-1.5 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer hover:scale-105 hover:border-gray-200 h-16"
+            className="group relative bg-white border border-gray-200 rounded-xl p-4 shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer hover:scale-[1.02] hover:border-purple-300"
           >
-            <div className="flex h-full items-center">
-              {/* Left Column: Flag */}
-              <div className="flex items-center justify-center w-10">
-                <div className="flex items-center justify-center w-8 h-8 rounded-md bg-gradient-to-br from-purple-500/20 to-blue-500/20 border border-purple-500/30 group-hover:scale-110 transition-transform duration-300">
-                  {renderAssetIcon(b.symbol, b.assetInfo?.icon || '', 'background')}
-                </div>
+            <div className="flex flex-col items-center text-center space-y-3">
+              {/* Asset Icon */}
+              <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/10 to-blue-500/10 border border-purple-200 group-hover:scale-110 transition-transform duration-300">
+                {renderAssetIcon(b.symbol, b.assetInfo?.icon || '', 'background')}
               </div>
               
-              {/* Right Column: Symbol + Value */}
-              <div className="flex-1 flex flex-col justify-center items-center min-w-0">
-                <div className="font-bold text-gray-900 text-xs tracking-tight truncate">
-                  {b.symbol}
-                </div>
-                <div className="font-semibold text-purple-600 text-xs tabular-nums truncate">
-                  {Number(b.balance).toLocaleString(undefined, { 
-                    style: 'currency', 
-                    currency: b.assetInfo?.currency || 'USD', 
-                    maximumFractionDigits: 0 
-                  })}
-                </div>
+              {/* Asset Symbol */}
+              <div className="font-bold text-gray-700 text-sm tracking-wide uppercase">
+                {b.symbol}
+              </div>
+              
+              {/* Balance Value - DESTACADO */}
+              <div className="font-bold text-purple-600 text-lg tabular-nums leading-tight">
+                {Number(b.balance).toLocaleString(undefined, { 
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 8 
+                })} {b.symbol}
               </div>
             </div>
 
-            {/* Hover Gradient */}
-            <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-purple-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            {/* Hover Effect */}
+            <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-purple-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </div>
         ))}
       </div>
@@ -83,37 +80,67 @@ export function BalancesSection({ accountBalances, isBalancesLoading, renderAsse
       );
     }
     return (
-      <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {fiatBalances.map((b: any) => (
           <div 
             key={b.symbol} 
-            className="group relative bg-white/90 border border-gray-100 rounded-lg p-1.5 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer hover:scale-105 hover:border-gray-200 h-16"
+            className="group relative bg-white border border-gray-200 rounded-xl p-4 shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer hover:scale-[1.02] hover:border-green-300"
           >
-            <div className="flex h-full items-center">
-              {/* Left Column: Flag */}
-              <div className="flex items-center justify-center w-10">
-                <div className="flex items-center justify-center w-8 h-8 rounded-md bg-gradient-to-br from-green-500/20 to-emerald-500/20 border border-green-500/30 group-hover:scale-110 transition-transform duration-300">
-                  {renderAssetIcon(b.symbol, b.assetInfo?.icon || '', 'background')}
-                </div>
+            <div className="flex flex-col items-center text-center space-y-3">
+              {/* Asset Icon */}
+              <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-200 group-hover:scale-110 transition-transform duration-300">
+                {renderAssetIcon(b.symbol, b.assetInfo?.icon || '', 'background')}
               </div>
               
-              {/* Right Column: Symbol + Value */}
-              <div className="flex-1 flex flex-col justify-center items-center min-w-0">
-                <div className="font-bold text-gray-900 text-xs tracking-tight truncate">
-                  {b.symbol}
-                </div>
-                <div className="font-semibold text-green-600 text-xs tabular-nums truncate">
-                  {Number(b.balance).toLocaleString(undefined, { 
-                    style: 'currency', 
-                    currency: b.assetInfo?.currency || b.symbol || 'USD', 
-                    maximumFractionDigits: 0 
-                  })}
-                </div>
+              {/* Asset Symbol */}
+              <div className="font-bold text-gray-700 text-sm tracking-wide uppercase">
+                {b.symbol}
+              </div>
+              
+              {/* Balance Value - DESTACADO */}
+              <div className="font-bold text-green-600 text-lg tabular-nums leading-tight">
+                {(() => {
+                  const value = Number(b.balance);
+                  const symbol = b.symbol;
+                  
+                  // Formatação específica por moeda
+                  switch(symbol) {
+                    case 'BRL':
+                      return value.toLocaleString('pt-BR', { 
+                        style: 'currency', 
+                        currency: 'BRL',
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                      });
+                    case 'USD':
+                      return value.toLocaleString('en-US', { 
+                        style: 'currency', 
+                        currency: 'USD',
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                      });
+                    case 'EUR':
+                      return value.toLocaleString('de-DE', { 
+                        style: 'currency', 
+                        currency: 'EUR',
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                      });
+                    default:
+                      // Para outras moedas, usar formatação genérica
+                      return value.toLocaleString(undefined, { 
+                        style: 'currency', 
+                        currency: symbol,
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                      });
+                  }
+                })()}
               </div>
             </div>
 
-            {/* Hover Gradient */}
-            <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-green-500/5 to-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            {/* Hover Effect */}
+            <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-green-500/5 to-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </div>
         ))}
       </div>
