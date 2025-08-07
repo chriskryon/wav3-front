@@ -4,8 +4,7 @@ import { useExchangeContext } from '@/context/ExchangeContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { AssetSelect } from '../AssetSelect';
-import { RefreshCw } from 'lucide-react';
-import { ArrowUpDown } from 'lucide-react';
+import { RefreshCw, ArrowUpDown, ToggleLeft, ToggleRight } from 'lucide-react';
 import { getQuote } from '@/services/exchange-api-service';
 import Wav3Loading from '@/components/loading-wav3';
 
@@ -27,6 +26,8 @@ export const QuoteStep: React.FC = () => {
   } = useExchangeContext();
 
   const [error, setError] = useState<string | null>(contextError || null);
+  const [amountType, setAmountType] = useState<'source' | 'target'>('source'); // Novo estado para tipo de amount
+  const [targetAmount, setTargetAmount] = useState<string>(''); // Novo estado para target amount
 
   // Update targetAsset dynamically based on sourceAsset changes
   // biome-ignore lint/correctness/useExhaustiveDependencies: <->
@@ -61,7 +62,11 @@ export const QuoteStep: React.FC = () => {
           target_asset: contextTargetAsset.symbol,
           network: networkName,
           product: 'exchange',
-          source_amount: Number(sourceAmount),
+          // Enviar apenas o campo correto baseado no tipo selecionado
+          ...(amountType === 'source' 
+            ? { source_amount: Number(sourceAmount), target_amount: 0 }
+            : { source_amount: 0, target_amount: Number(targetAmount) }
+          ),
         };
         
         const response = await getQuote(payload);
@@ -77,14 +82,9 @@ export const QuoteStep: React.FC = () => {
     );
   };
 
-  // Filtrar ativos para o campo "To" com base no tipo do ativo selecionado no campo "From"
+  // Filtrar apenas para não mostrar o mesmo asset selecionado no source
   const filteredTargetAssets = assets.filter((asset) => {
-    if (contextSourceAsset?.type === 'crypto') {
-      return asset.type === 'fiat';
-    } else if (contextSourceAsset?.type === 'fiat') {
-      return asset.type === 'crypto';
-    }
-    return true;
+    return asset.symbol !== contextSourceAsset?.symbol;
   });
 
   if (!assets || assets.length === 0) {
@@ -103,26 +103,72 @@ export const QuoteStep: React.FC = () => {
       </div>
 
       <div className="space-y-4">
+        {/* Amount Type Toggle */}
+        <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-gray-700">
+              {amountType === 'source' ? 'Specify how much you want to pay' : 'Specify how much you want to receive'}
+            </span>
+            <Button
+              type="button"
+              onClick={() => {
+                setAmountType(amountType === 'source' ? 'target' : 'source');
+                // Limpar ambos os campos ao trocar
+                setSourceAmount('');
+                setTargetAmount('');
+              }}
+              className="flex items-center gap-2 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 px-3 py-1.5 rounded-md transition-colors"
+            >
+              {amountType === 'source' ? (
+                <>
+                  <ToggleLeft className="w-4 h-4 text-[#1ea3ab]" />
+                  <span className="text-xs">Pay Amount</span>
+                </>
+              ) : (
+                <>
+                  <ToggleRight className="w-4 h-4 text-[#1ea3ab]" />
+                  <span className="text-xs">Receive Amount</span>
+                </>
+              )}
+            </Button>
+          </div>
+        </div>
+
         {/* Amount Section */}
         <div className="space-y-2">
           <label htmlFor="amount-input" className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-            Amount to Exchange
+            {amountType === 'source' ? 'Amount You Want to Pay' : 'Amount You Want to Receive'}
           </label>
           <div className="relative">
             <Input
               id="amount-input"
               type="number"
               placeholder="0.00"
-              value={sourceAmount}
-              onChange={(e) => setSourceAmount(e.target.value)}
+              value={amountType === 'source' ? sourceAmount : targetAmount}
+              onChange={(e) => {
+                if (amountType === 'source') {
+                  setSourceAmount(e.target.value);
+                  setTargetAmount(''); // Limpar o outro campo
+                } else {
+                  setTargetAmount(e.target.value);
+                  setSourceAmount(''); // Limpar o outro campo
+                }
+              }}
               className="text-lg font-mono bg-white p-3 rounded-lg border border-gray-300 focus:border-[#1ea3ab] focus:ring-1 focus:ring-[#1ea3ab] transition-colors placeholder:text-gray-400"
             />
-            {contextSourceAsset && (
-              <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm">
-                {contextSourceAsset.symbol}
-              </div>
-            )}
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm">
+              {amountType === 'source' 
+                ? contextSourceAsset?.symbol 
+                : contextTargetAsset?.symbol
+              }
+            </div>
           </div>
+          <p className="text-xs text-gray-500">
+            {amountType === 'source' 
+              ? `Enter the ${contextSourceAsset?.symbol || 'source'} amount you want to exchange`
+              : `Enter the ${contextTargetAsset?.symbol || 'target'} amount you want to receive`
+            }
+          </p>
         </div>
 
         {/* Exchange Pair Section */}
@@ -175,7 +221,11 @@ export const QuoteStep: React.FC = () => {
         <Button
           type="button"
           onClick={handleGetQuote}
-          disabled={loading || !sourceAmount || contextSourceAsset?.symbol === contextTargetAsset?.symbol}
+          disabled={
+            loading || 
+            (amountType === 'source' ? !sourceAmount : !targetAmount) || 
+            contextSourceAsset?.symbol === contextTargetAsset?.symbol
+          }
           className="w-full bg-[#1ea3ab] text-white py-3 px-4 rounded-lg border border-[#1ea3ab] hover:bg-[#188a91] transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading ? (

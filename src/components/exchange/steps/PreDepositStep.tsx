@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { useExchangeContext } from '@/context/ExchangeContext';
 import { NetworkIcon } from '@/components/ui/network-icon';
 import { useToast } from '@/hooks/use-toast'; // Importando o hook de toast
-import { getQuote } from '@/services/exchange-api-service';
+import { getQuote, createExchangeOrder } from '@/services/exchange-api-service';
 import Wav3Loading from '@/components/loading-wav3';
 
 interface PreDepositStepProps {
@@ -18,6 +18,10 @@ export const PreDepositStep: React.FC<PreDepositStepProps> = ({ onBack, onConfir
   const [error, setLocalError] = useState<string | null>(null);
   const { toast } = useToast();
 
+  // Determinar qual tipo de amount foi usado baseado no quoteResult
+  const isSourceAmountSpecified = (quoteResult?.source_amount || 0) > 0;
+  const isTargetAmountSpecified = (quoteResult?.target_amount || 0) > 0;
+
   const fetchQuote = async () => {
     if (!quoteResult) return;
 
@@ -28,15 +32,25 @@ export const PreDepositStep: React.FC<PreDepositStepProps> = ({ onBack, onConfir
       source_asset: quoteResult.source_asset,
       target_asset: quoteResult.target_asset,
       network: networkName,
-      source_amount: quoteResult.source_amount,
       product: 'exchange',
+      // Enviar APENAS o campo que foi especificado originalmente (igual ao handleConfirm)
+      ...(isSourceAmountSpecified 
+        ? { 
+            source_amount: quoteResult.source_amount,
+            // Não enviar target_amount 
+          }
+        : { 
+            target_amount: quoteResult.target_amount,
+            // Não enviar source_amount
+          }
+      ),
     };
 
     setLoading(true);
     setError(null);
 
     try {
-        console.log('Fetching updated quote with payload:', payload);
+      console.log('Fetching updated quote with payload:', payload);
       const updatedQuote = await getQuote(payload);
       setQuoteResult(updatedQuote as any);
       console.log('Updated Quote:', updatedQuote);
@@ -80,8 +94,18 @@ export const PreDepositStep: React.FC<PreDepositStepProps> = ({ onBack, onConfir
       source_asset: quoteResult.source_asset,
       target_asset: quoteResult.target_asset,
       network: networkName,
-      source_amount: quoteResult.source_amount,
-      target_amount: quoteResult.target_amount_estimate,
+      product: 'exchange',
+      // Enviar APENAS o campo que foi especificado originalmente
+      ...(isSourceAmountSpecified 
+        ? { 
+            source_amount: quoteResult.source_amount,
+            // Não enviar target_amount 
+          }
+        : { 
+            target_amount: quoteResult.target_amount,
+            // Não enviar source_amount
+          }
+      ),
     };
 
     console.log('Payload:', payload);
@@ -91,29 +115,13 @@ export const PreDepositStep: React.FC<PreDepositStepProps> = ({ onBack, onConfir
     setLocalError(null);
 
     try {
+      console.log('Creating exchange order with payload:', payload);
       
-      // Mock response condizente para ETH
-      const mockResponse = {
-        amount: quoteResult.source_amount,
-        asset: {
-          large_image_url: 'https://cryptologos.cc/logos/ethereum-eth-logo.png',
-          medium_image_url: 'https://cryptologos.cc/logos/ethereum-eth-logo.png',
-          name: 'Ethereum',
-          small_image_url: 'https://cryptologos.cc/logos/ethereum-eth-logo.png',
-          symbol: 'ETH',
-          type: 'crypto',
-        },
-        date_time: new Date().toISOString(),
-        deposit: true,
-        exp_time: Math.floor(Date.now() / 1000) + 1800,
-        message: 'Order created successfully.',
-        network: networkName,
-        tag: '',
-        wallet_address: '0x1234567890abcdef1234567890abcdef12345678',
-      };
-
-      console.log('Mock Order created successfully:', mockResponse);
-      setOrderResult(mockResponse);
+      // Usar a função original que já existe
+      const orderResponse = await createExchangeOrder(payload);
+      
+      console.log('Order created successfully:', orderResponse);
+      setOrderResult(orderResponse);
       navigateToStep('deposit');
     } catch (error: any) {
       const errorMessage = error.message || 'Failed to create order.';
@@ -189,8 +197,14 @@ export const PreDepositStep: React.FC<PreDepositStepProps> = ({ onBack, onConfir
               <div className="text-center">
                 <div className="text-xs text-gray-500 font-medium">You Pay</div>
                 <div className="text-sm font-semibold text-gray-900">
-                  {formatCurrency(quoteResult.source_amount || 0, sourceAsset.symbol)}
+                  {isSourceAmountSpecified 
+                    ? formatCurrency(quoteResult.source_amount || 0, sourceAsset.symbol)
+                    : formatCurrency(quoteResult.source_amount_estimate || 0, sourceAsset.symbol)
+                  }
                 </div>
+                {!isSourceAmountSpecified && (
+                  <div className="text-xs text-gray-400">≈ estimate</div>
+                )}
               </div>
             </div>
 
@@ -213,8 +227,14 @@ export const PreDepositStep: React.FC<PreDepositStepProps> = ({ onBack, onConfir
               <div className="text-center">
                 <div className="text-xs text-gray-500 font-medium">You Receive</div>
                 <div className="text-sm font-semibold text-gray-900">
-                  {formatCurrency(quoteResult.target_amount_estimate || 0, targetAsset.symbol)}
+                  {isTargetAmountSpecified 
+                    ? formatCurrency(quoteResult.target_amount || 0, targetAsset.symbol)
+                    : formatCurrency(quoteResult.target_amount_estimate || 0, targetAsset.symbol)
+                  }
                 </div>
+                {!isTargetAmountSpecified && (
+                  <div className="text-xs text-gray-400">≈ estimate</div>
+                )}
               </div>
             </div>
           </div>
@@ -227,7 +247,11 @@ export const PreDepositStep: React.FC<PreDepositStepProps> = ({ onBack, onConfir
               <span className="text-xs font-medium text-gray-500">Exchange Rate</span>
               <div className="text-right">
                 <div className="text-sm font-medium text-gray-900">
-                  1 {sourceAsset.symbol} ≈ {formatCurrency(quoteResult.price_reference || 0, targetAsset.symbol)}
+                  {isSourceAmountSpecified ? (
+                    <>1 {sourceAsset.symbol} ≈ {formatCurrency(quoteResult.price_reference || 0, targetAsset.symbol)}</>
+                  ) : (
+                    <>1 {targetAsset.symbol} ≈ {formatCurrency(1 / (quoteResult.price_reference || 1), sourceAsset.symbol)}</>
+                  )}
                 </div>
                 <div className="text-xs text-gray-500">Live market rate</div>
               </div>
