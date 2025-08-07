@@ -4,6 +4,54 @@ import { CheckCircle2, Clock, XCircle, ArrowRight } from 'lucide-react';
 import { ICONS_CRYPTO_FIAT as icons } from '@/lib/icon-utils';
 import Image from 'next/image';
 
+// Helper: format currency based on asset type and symbol
+function formatAssetValue(amount: number, symbol: string, isSource: boolean = false): string {
+  // Lista de moedas fiat conhecidas
+  const fiatCurrencies = ['BRL', 'USD', 'EUR', 'COP', 'MXN', 'ARS'];
+  const isFiat = fiatCurrencies.includes(symbol);
+  
+  if (isFiat) {
+    // Formatação específica por moeda fiat
+    switch(symbol) {
+      case 'BRL':
+        return amount.toLocaleString('pt-BR', { 
+          style: 'currency', 
+          currency: 'BRL',
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
+      case 'USD':
+        return amount.toLocaleString('en-US', { 
+          style: 'currency', 
+          currency: 'USD',
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
+      case 'EUR':
+        return amount.toLocaleString('de-DE', { 
+          style: 'currency', 
+          currency: 'EUR',
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
+      default:
+        // Para outras moedas fiat, usar formatação genérica
+        return amount.toLocaleString(undefined, { 
+          style: 'currency', 
+          currency: symbol,
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
+    }
+  } else {
+    // Para crypto: valor + símbolo
+    return `${amount.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 8
+    })} ${symbol}`;
+  }
+}
+
 // Helper: status icon and color
 function getStatusMeta(status: string) {
   switch (status) {
@@ -35,14 +83,14 @@ function renderAssetIcon(symbol: string, fallbackUrl: string, variant: 'backgrou
       typeof IconComponent === 'function' ||
       (typeof IconComponent === 'object' && IconComponent !== null);
     if (isReactComponent) {
-      return <IconComponent className="w-10 h-10 shadow" variant={variant} />;
+      return <IconComponent className="w-6 h-6 shadow" variant={variant} />;
     } else if (typeof IconComponent === 'string') {
       return (
         <Image
           src={IconComponent}
           alt={symbol}
-          width={40}
-          height={40}
+          width={24}
+          height={24}
           className="rounded-full border shadow bg-white"
         />
       );
@@ -53,8 +101,8 @@ function renderAssetIcon(symbol: string, fallbackUrl: string, variant: 'backgrou
     <Image
       src={fallbackUrl}
       alt={symbol}
-      width={40}
-      height={40}
+      width={24}
+      height={24}
       className="rounded-full border shadow bg-white"
     />
   );
@@ -75,7 +123,7 @@ export function RecentOrdersSection({ recentTransactions }: any) {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-0">
-        <div className="space-y-2 max-h-80 overflow-y-auto">
+        <div className="space-y-2 max-h-80 overflow-y-auto p-3">
           {recentTransactions.slice(0, 5).map((order: any, index: number) => {
             const statusMeta = getStatusMeta(order.status);
             return (
@@ -115,7 +163,7 @@ export function RecentOrdersSection({ recentTransactions }: any) {
                         {renderAssetIcon(order.source_asset, '', 'background')}
                       </div>
                       <span className="font-semibold text-gray-900 text-sm truncate">
-                        {order.source_amount} {order.source_asset}
+                        {formatAssetValue(order.source_amount, order.source_asset, true)}
                       </span>
                     </div>
 
@@ -130,7 +178,7 @@ export function RecentOrdersSection({ recentTransactions }: any) {
                         {renderAssetIcon(order.target_asset, '', 'default')}
                       </div>
                       <span className="font-semibold text-gray-900 text-sm truncate">
-                        {order.target_amount} {order.target_asset}
+                        {formatAssetValue(order.target_amount, order.target_asset, false)}
                       </span>
                     </div>
                   </div>
