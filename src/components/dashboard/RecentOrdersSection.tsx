@@ -4,51 +4,62 @@ import { CheckCircle2, Clock, XCircle, ArrowRight } from 'lucide-react';
 import { ICONS_CRYPTO_FIAT as icons } from '@/lib/icon-utils';
 import Image from 'next/image';
 
-// Helper: format currency based on asset type and symbol
+// Helper: format currency based on asset type and symbol - mobile optimized
 function formatAssetValue(amount: number, symbol: string, isSource: boolean = false): string {
   // Lista de moedas fiat conhecidas
   const fiatCurrencies = ['BRL', 'USD', 'EUR', 'COP', 'MXN', 'ARS'];
   const isFiat = fiatCurrencies.includes(symbol);
   
   if (isFiat) {
-    // Formatação específica por moeda fiat
+    // Formatação compacta para mobile
+    const formatCompact = (val: number, currency: string, locale: string) => {
+      if (val >= 1000000) {
+        return `${(val / 1000000).toLocaleString(locale, { 
+          style: 'currency', 
+          currency,
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 1
+        })}M`;
+      } else if (val >= 1000) {
+        return `${(val / 1000).toLocaleString(locale, { 
+          style: 'currency', 
+          currency,
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 1
+        })}K`;
+      } else {
+        return val.toLocaleString(locale, { 
+          style: 'currency', 
+          currency,
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 2
+        });
+      }
+    };
+
     switch(symbol) {
       case 'BRL':
-        return amount.toLocaleString('pt-BR', { 
-          style: 'currency', 
-          currency: 'BRL',
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
-        });
+        return formatCompact(amount, 'BRL', 'pt-BR');
       case 'USD':
-        return amount.toLocaleString('en-US', { 
-          style: 'currency', 
-          currency: 'USD',
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
-        });
+        return formatCompact(amount, 'USD', 'en-US');
       case 'EUR':
-        return amount.toLocaleString('de-DE', { 
-          style: 'currency', 
-          currency: 'EUR',
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
-        });
+        return formatCompact(amount, 'EUR', 'de-DE');
       default:
-        // Para outras moedas fiat, usar formatação genérica
-        return amount.toLocaleString(undefined, { 
-          style: 'currency', 
-          currency: symbol,
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
-        });
+        return formatCompact(amount, symbol, 'en-US');
     }
   } else {
-    // Para crypto: valor + símbolo
-    return `${amount.toLocaleString(undefined, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 8
-    })} ${symbol}`;
+    // Para crypto: formato compacto
+    if (amount >= 1000000) {
+      return `${(amount / 1000000).toFixed(1)}M ${symbol}`;
+    } else if (amount >= 1000) {
+      return `${(amount / 1000).toFixed(1)}K ${symbol}`;
+    } else if (amount < 0.01) {
+      return `${amount.toFixed(4)} ${symbol}`;
+    } else if (amount < 1) {
+      return `${amount.toFixed(3)} ${symbol}`;
+    } else {
+      return `${amount.toFixed(2)} ${symbol}`;
+    }
   }
 }
 
@@ -99,21 +110,20 @@ function formatDate(dateStr: string) {
 export function RecentOrdersSection({ recentTransactions }: any) {
   return (
     <Card className="glass-card-enhanced">
-      <CardHeader className="pb-3">
+      <CardHeader className="pb-3 px-3 sm:px-6">
         <CardTitle className="text-lg font-semibold text-main tracking-tight">
           Recent Orders
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-0">
-        <div className="space-y-2 max-h-80 overflow-y-auto p-3">
+      <CardContent className="space-y-0 px-3 sm:px-6">
+        <div className="space-y-3 max-h-80 overflow-y-auto">
           {recentTransactions.slice(0, 5).map((order: any, index: number) => {
             const statusMeta = getStatusMeta(order.status);
             return (
               <div
                 key={order.id}
                 className={`
-                  grid grid-cols-[64px_1fr_80px] items-center gap-4 
-                  px-3 py-3 rounded-xl 
+                  relative p-3 sm:p-4 rounded-xl 
                   bg-gradient-to-r from-white/95 to-white/90 
                   hover:from-primary/5 hover:to-primary/10 
                   border border-white/40 hover:border-primary/20
@@ -122,61 +132,118 @@ export function RecentOrdersSection({ recentTransactions }: any) {
                   ${index === 0 ? 'ring-1 ring-primary/10' : ''}
                 `}
               >
-                {/* Status Badge */}
-                <div className="flex justify-center">
-                  <Badge
-                    className={`
-                      flex items-center gap-1.5 px-2 py-1 
-                      border font-medium text-xs
-                      ${statusMeta.color}
-                      shadow-sm
-                    `}
-                  >
-                    {statusMeta.icon}
-                  </Badge>
-                </div>
+                {/* Mobile Layout */}
+                <div className="block sm:hidden">
+                  {/* Status Badge - Top */}
+                  <div className="flex justify-between items-center mb-3">
+                    <Badge
+                      className={`
+                        flex items-center gap-1.5 px-2 py-1 
+                        border font-medium text-xs
+                        ${statusMeta.color}
+                        shadow-sm
+                      `}
+                    >
+                      {statusMeta.icon}
+                    </Badge>
+                    <span className="text-xs font-medium text-gray-500">
+                      {formatDate(order.created_at)}
+                    </span>
+                  </div>
 
-                {/* Order Details */}
-                <div className="flex items-center min-w-0">
-                  <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 w-full">
+                  {/* Transaction Flow - Vertical */}
+                  <div className="space-y-2">
                     {/* Source */}
-                    <div className="flex items-center gap-2 min-w-0">
-                      <div className="flex-shrink-0">
-                        {renderAssetIcon(order.source_asset, order.source_asset_icon || '', 'background')}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 min-w-0 flex-1">
+                        <div className="flex-shrink-0">
+                          {renderAssetIcon(order.source_asset, order.source_asset_icon || '', 'background')}
+                        </div>
+                        <span className="font-semibold text-gray-900 text-sm truncate">
+                          {formatAssetValue(order.source_amount, order.source_asset, true)}
+                        </span>
                       </div>
-                      <span className="font-semibold text-gray-900 text-sm truncate">
-                        {formatAssetValue(order.source_amount, order.source_asset, true)}
-                      </span>
+                      <div className="text-xs text-gray-500 font-medium">FROM</div>
                     </div>
 
                     {/* Arrow */}
-                    <div className="flex justify-center">
-                      <ArrowRight className="w-4 h-4 text-gray-400" />
+                    <div className="flex justify-center py-1">
+                      <ArrowRight className="w-4 h-4 text-gray-400 rotate-90" />
                     </div>
 
                     {/* Target */}
-                    <div className="flex items-center gap-2 min-w-0">
-                      <div className="flex-shrink-0">
-                        {renderAssetIcon(order.target_asset, order.target_asset_icon || '', 'background')}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 min-w-0 flex-1">
+                        <div className="flex-shrink-0">
+                          {renderAssetIcon(order.target_asset, order.target_asset_icon || '', 'background')}
+                        </div>
+                        <span className="font-semibold text-gray-900 text-sm truncate">
+                          {formatAssetValue(order.target_amount, order.target_asset, false)}
+                        </span>
                       </div>
-                      <span className="font-semibold text-gray-900 text-sm truncate">
-                        {formatAssetValue(order.target_amount, order.target_asset, false)}
-                      </span>
+                      <div className="text-xs text-gray-500 font-medium">TO</div>
                     </div>
                   </div>
                 </div>
 
-                {/* Date */}
-                <div className="flex justify-end">
-                  <span className="text-xs font-medium text-gray-500 whitespace-nowrap">
-                    {formatDate(order.created_at)}
-                  </span>
+                {/* Desktop Layout */}
+                <div className="hidden sm:grid sm:grid-cols-[80px_1fr_100px] items-center gap-4">
+                  {/* Status Badge */}
+                  <div className="flex justify-center">
+                    <Badge
+                      className={`
+                        flex items-center gap-1.5 px-2 py-1 
+                        border font-medium text-xs
+                        ${statusMeta.color}
+                        shadow-sm
+                      `}
+                    >
+                      {statusMeta.icon}
+                    </Badge>
+                  </div>
+
+                  {/* Order Details */}
+                  <div className="flex items-center min-w-0">
+                    <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 w-full">
+                      {/* Source */}
+                      <div className="flex items-center gap-2 min-w-0">
+                        <div className="flex-shrink-0">
+                          {renderAssetIcon(order.source_asset, order.source_asset_icon || '', 'background')}
+                        </div>
+                        <span className="font-semibold text-gray-900 text-sm truncate">
+                          {formatAssetValue(order.source_amount, order.source_asset, true)}
+                        </span>
+                      </div>
+
+                      {/* Arrow */}
+                      <div className="flex justify-center">
+                        <ArrowRight className="w-4 h-4 text-gray-400" />
+                      </div>
+
+                      {/* Target */}
+                      <div className="flex items-center gap-2 min-w-0">
+                        <div className="flex-shrink-0">
+                          {renderAssetIcon(order.target_asset, order.target_asset_icon || '', 'background')}
+                        </div>
+                        <span className="font-semibold text-gray-900 text-sm truncate">
+                          {formatAssetValue(order.target_amount, order.target_asset, false)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Date */}
+                  <div className="flex justify-end">
+                    <span className="text-xs font-medium text-gray-500 whitespace-nowrap">
+                      {formatDate(order.created_at)}
+                    </span>
+                  </div>
                 </div>
               </div>
             );
           })}
         </div>
-    </CardContent>
+      </CardContent>
     </Card>
   );
 }
