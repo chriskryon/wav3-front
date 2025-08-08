@@ -66,43 +66,39 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ open, onOpen
   const user = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('user') || '{}') : {};
   const [loading, setLoading] = useState(false);
 
-  // Create a basic timeline if the order doesn't have one
+  // Use the timeline from API or create a basic one as fallback
   const getOrderTimeline = (order: any) => {
-    if (order.timelines) {
+    // Se a API retorna timelines, use-as diretamente
+    if (order.timelines && Array.isArray(order.timelines)) {
       return order.timelines;
     }
 
-    // Create basic timeline based on order status
-    const baseTimeline = [
+    // Fallback simples se não houver timeline da API
+    return [
       {
         order_step: 'Order Created',
         executed: true,
-        comments: '',
+        comments: 'Order successfully created',
         executed_at: order.created_at,
       },
       {
-        order_step: 'Payment Processing',
-        executed: ['confirmed', 'processing'].includes(order.status),
-        comments: '',
-        executed_at: order.status === 'confirmed' ? order.created_at : '0001-01-01T00:00:00Z',
-      },
-      {
-        order_step: 'Settlement',
+        order_step: 'Processing',
         executed: order.status === 'confirmed',
-        comments: '',
+        comments: order.status === 'confirmed' ? 'Order processed successfully' : 'Awaiting processing',
         executed_at: order.status === 'confirmed' ? order.created_at : '0001-01-01T00:00:00Z',
       },
     ];
+  };
 
-    if (order.status === 'failed') {
-      baseTimeline[1] = {
-        ...baseTimeline[1],
-        executed: false,
-        comments: 'Payment failed',
-      };
+  // Gerar comentário padrão baseado no step
+  const getDefaultStepComment = (stepName: string, executed: boolean, isCurrent: boolean) => {
+    if (executed) {
+      return 'Step completed successfully';
+    } else if (isCurrent) {
+      return 'Currently in progress...';
+    } else {
+      return 'Operation not created/initiated';
     }
-
-    return baseTimeline;
   };
 
   const getStatusColor = (status: string) => {
@@ -180,7 +176,7 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ open, onOpen
                       </div>
                     </div>
                     <div className="text-center">
-                      <div className="text-sm font-bold text-gray-900">{orderData.source_amount}</div>
+                      <div className="text-sm font-bold text-gray-900">{Number(orderData.source_amount).toLocaleString()}</div>
                       <div className="text-xs text-gray-500 font-medium">{orderData.source_asset}</div>
                     </div>
                   </div>
@@ -207,7 +203,7 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ open, onOpen
                       </div>
                     </div>
                     <div className="text-center">
-                      <div className="text-sm font-bold text-gray-900">{orderData.target_amount}</div>
+                      <div className="text-sm font-bold text-gray-900">{Number(orderData.target_amount).toLocaleString()}</div>
                       <div className="text-xs text-gray-500 font-medium">{orderData.target_asset}</div>
                     </div>
                   </div>
@@ -220,7 +216,7 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ open, onOpen
               <div className="space-y-3">
                 <div className="bg-gray-50 rounded-xl p-3">
                   <Label className='text-xs font-medium text-gray-500 uppercase tracking-wider'>Recipient Email</Label>
-                  <p className='font-semibold text-gray-900 mt-1'>{orderData.recipient_email}</p>
+                  <p className='font-semibold text-gray-900 mt-1'>{orderData.recipient_email || 'No recipient specified'}</p>
                 </div>
                 <div className="bg-gray-50 rounded-xl p-3">
                   <Label className='text-xs font-medium text-gray-500 uppercase tracking-wider'>Description</Label>
@@ -229,12 +225,14 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ open, onOpen
               </div>
               <div className="space-y-3">
                 <div className="bg-gray-50 rounded-xl p-3">
-                  <Label className='text-xs font-medium text-gray-500 uppercase tracking-wider'>Created At</Label>
-                  <p className='font-semibold text-gray-900 mt-1'>{new Date(orderData.created_at).toLocaleString()}</p>
+                  <Label className='text-xs font-medium text-gray-500 uppercase tracking-wider'>Total Fee</Label>
+                  <p className='font-semibold text-gray-900 mt-1'>
+                    {orderData.total_fee ? `${Number(orderData.total_fee).toLocaleString()} ${orderData.target_asset}` : 'No fee'}
+                  </p>
                 </div>
                 <div className="bg-gray-50 rounded-xl p-3">
-                  <Label className='text-xs font-medium text-gray-500 uppercase tracking-wider'>Settlement Status</Label>
-                  <p className='font-semibold text-gray-900 mt-1'>{orderData.settlement_status || 'Pending'}</p>
+                  <Label className='text-xs font-medium text-gray-500 uppercase tracking-wider'>Created At</Label>
+                  <p className='font-semibold text-gray-900 mt-1'>{new Date(orderData.created_at).toLocaleString()}</p>
                 </div>
               </div>
             </div>
@@ -291,9 +289,9 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ open, onOpen
                               )}
                             </div>
                             <p className="text-xs text-gray-500">
-                              {step.comments || 
-                                (step.executed ? 'Completed successfully' : 
-                                 isCurrent ? 'Currently in progress...' : 'Pending execution')}
+                              {(step.comments && step.comments.trim() !== '') 
+                                ? step.comments 
+                                : getDefaultStepComment(String(step.order_step || ''), step.executed, isCurrent)}
                             </p>
                           </div>
                         </div>
