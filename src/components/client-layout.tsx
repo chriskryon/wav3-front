@@ -6,8 +6,10 @@ import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { AppSidebar, SidebarCollapseContext } from '@/components/app-sidebar';
 import { AppHeader } from '@/components/app-header';
+import { useNotifications } from '@/hooks/useNotifications';
 
 export function ClientLayout({ children }: { children: React.ReactNode }) {
+  useNotifications();
   const pathname = usePathname();
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);

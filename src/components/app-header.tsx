@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
 import { useSidebarCollapse } from './app-sidebar';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import { NotificationStatus } from './NotificationStatus';
 
 export function AppHeader() {
   const [userData, setUserData] = useState<any>(null);
@@ -130,6 +131,7 @@ export function AppHeader() {
             </DropdownMenu.Item>
           </DropdownMenu.Content>
         </DropdownMenu.Root>
+        <NotificationStatus />
       </div>
     </header>
   );
