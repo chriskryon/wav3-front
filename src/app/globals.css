@@ -309,4 +309,39 @@
 			transform: translateY(0);
 		}
 	}
+
+	/* Custom Scrollbar for BalancesSection */
+	.scrollbar-thin {
+		scrollbar-width: thin;
+	}
+
+	.scrollbar-thin::-webkit-scrollbar {
+		width: 6px;
+	}
+
+	.scrollbar-thin::-webkit-scrollbar-track {
+		background: transparent;
+	}
+
+	.scrollbar-thin::-webkit-scrollbar-thumb {
+		background-color: #d1d5db;
+		border-radius: 3px;
+		transition: background-color 0.2s ease;
+	}
+
+	.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+		background-color: #9ca3af;
+	}
+
+	.scrollbar-track-transparent::-webkit-scrollbar-track {
+		background: transparent;
+	}
+
+	.scrollbar-thumb-gray-300::-webkit-scrollbar-thumb {
+		background-color: #d1d5db;
+	}
+
+	.scrollbar-thumb-gray-400::-webkit-scrollbar-thumb:hover {
+		background-color: #9ca3af;
+	}
 }

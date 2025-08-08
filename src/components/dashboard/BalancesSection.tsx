@@ -168,7 +168,28 @@ export function BalancesSection({ accountBalances, isBalancesLoading, renderAsse
     
     const isCompact = balances.length > 3;
     
-    return (
+    // Calcular quantos itens cabem em uma linha baseado no grid responsivo
+    const getItemsPerRow = () => {
+      if (typeof window === 'undefined') return 2; // SSR fallback
+      
+      if (isCompact) {
+        // grid-cols-2 lg:grid-cols-3 xl:grid-cols-4
+        if (window.innerWidth >= 1280) return 4; // xl
+        if (window.innerWidth >= 1024) return 3; // lg
+        return 2; // mobile
+      } else {
+        // grid-cols-2 md:grid-cols-3 lg:grid-cols-4
+        if (window.innerWidth >= 1024) return 4; // lg
+        if (window.innerWidth >= 768) return 3; // md
+        return 2; // mobile
+      }
+    };
+    
+    const itemsPerRow = getItemsPerRow();
+    // Só ativa scroll se tiver mais de uma linha completa
+    const needsScroll = balances.length > itemsPerRow;
+    
+    const gridContent = (
       <div className={`grid ${isCompact ? 'grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5' : 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3'}`}>
         {balances.map((b: any, index: number) => (
           <div
@@ -264,6 +285,33 @@ export function BalancesSection({ accountBalances, isBalancesLoading, renderAsse
         ))}
       </div>
     );
+
+    // Se precisa de scroll, envolve o grid em um container com scroll
+    if (needsScroll) {
+      // Altura dinâmica: 1 linha completa + metade da segunda linha
+      const cardHeight = isCompact ? 120 : 130; // min-h dos cards
+      const gap = isCompact ? 10 : 12; // gap entre cards (2.5 = 10px, 3 = 12px)
+      const maxHeight = cardHeight + (cardHeight + gap) * 0.5; // 1 linha + 50% da segunda
+      
+      return (
+        <div className="relative">
+          {/* Gradient fade effects para indicar scroll */}
+          <div className="absolute top-0 left-0 right-0 h-3 bg-gradient-to-b from-white/90 to-transparent z-10 pointer-events-none" />
+          <div className="absolute bottom-0 left-0 right-0 h-3 bg-gradient-to-t from-white/90 to-transparent z-10 pointer-events-none" />
+          
+          {/* Container com scroll */}
+          <div 
+            className="overflow-y-auto overflow-x-hidden pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent hover:scrollbar-thumb-gray-400 transition-colors"
+            style={{ maxHeight: `${maxHeight}px` }}
+          >
+            {gridContent}
+          </div>
+        </div>
+      );
+    }
+
+    // Se não precisa de scroll, retorna o grid normal
+    return gridContent;
   }
 
   function renderCryptoBalances() {
