@@ -149,7 +149,7 @@ export default function BankingAccountPage() {
               <div>
                 <h2 className='text-lg font-bold mb-3 flex items-center gap-2 px-1'>
                   <span className='inline-block w-3 h-3 rounded-full bg-green-500 mr-2' />{' '}
-                  Accounts for Deposit (Shared)
+                  Accounts for Deposit
                 </h2>
                 {/* Deduplica contas shared por instant_payment (ou id se não houver) */}
                 {(() => {
@@ -188,7 +188,7 @@ export default function BankingAccountPage() {
               <div>
                 <h2 className='text-lg font-bold mb-3 flex items-center gap-2 px-1'>
                   <span className='inline-block w-3 h-3 rounded-full bg-blue-500 mr-2' />{' '}
-                  Accounts for Withdraw (External)
+                  Accounts for Withdraw
                 </h2>
                 {bankAccounts.filter((a: any) => a.bank_type === 'external').length === 0 ? (
                   <div>
