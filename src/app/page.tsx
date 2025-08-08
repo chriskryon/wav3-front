@@ -4,15 +4,15 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getAccountBalances } from '@/services/account-api-service';
+import { listAssets } from '@/services/asset-api-service';
+import { listOrders } from '@/services/exchange-api-service';
 import { BalancesSection } from '@/components/dashboard/BalancesSection';
 import { QuickActionsSection } from '@/components/dashboard/QuickActionsSection';
 import { RecentOrdersSection } from '@/components/dashboard/RecentOrdersSection';
 import { AssetsSection } from '@/components/dashboard/AssetsSection';
 import { ActionModal } from '@/components/action-modal';
 import { ICONS_CRYPTO_FIAT as icons } from '@/lib/icon-utils';
-import { listAssets } from '@/services/asset-api-service';
 import Image from 'next/image';
-import { orders } from './orders/mock';
 
 export default function OverviewPage() {
   // Fetch balances from API
@@ -33,6 +33,13 @@ export default function OverviewPage() {
     queryKey: ['assets', 'fiat'],
     queryFn: async () => await listAssets('fiat'),
     staleTime: 1000 * 60,
+  });
+
+  // Query para buscar orders da API
+  const { data: ordersData, isLoading: isOrdersLoading } = useQuery({
+    queryKey: ['orders'],
+    queryFn: async () => await listOrders(), // Busca as orders mais recentes
+    staleTime: 1000 * 60 * 5, // Cache por 5 minutos (orders mudam a cada 5min)
   });
 
   // Calculate totals
@@ -119,7 +126,10 @@ export default function OverviewPage() {
         <QuickActionsSection setActiveModal={setActiveModal} />
 
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
-          <RecentOrdersSection recentTransactions={orders} />
+          <RecentOrdersSection 
+            recentTransactions={ordersData?.orders || []} 
+            isLoading={isOrdersLoading} 
+          />
           <AssetsSection
             assetsTab={assetsTab}
             setAssetsTab={setAssetsTab}

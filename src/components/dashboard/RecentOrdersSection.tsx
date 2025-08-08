@@ -3,6 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { CheckCircle2, Clock, XCircle, ArrowRight } from 'lucide-react';
 import { ICONS_CRYPTO_FIAT as icons } from '@/lib/icon-utils';
 import Image from 'next/image';
+import Wav3Loading from '../loading-wav3';
 
 // Helper: format currency based on asset type and symbol - mobile optimized
 function formatAssetValue(amount: number, symbol: string, isSource: boolean = false): string {
@@ -107,7 +108,46 @@ function formatDate(dateStr: string) {
   return d.toLocaleDateString('pt-BR');
 }
 
-export function RecentOrdersSection({ recentTransactions }: any) {
+export function RecentOrdersSection({ recentTransactions, isLoading = false }: { recentTransactions: any[], isLoading?: boolean }) {
+  // Se está carregando, mostra o loading
+  if (isLoading) {
+    return (
+      <Card className="glass-card-enhanced">
+        <CardHeader className="pb-3 px-3 sm:px-6">
+          <CardTitle className="text-lg font-semibold text-main tracking-tight">
+            Recent Orders
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="px-3 sm:px-6">
+          <div className="flex justify-center py-8">
+            <Wav3Loading />
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // Se não há transações, mostra estado vazio
+  if (!recentTransactions || recentTransactions.length === 0) {
+    return (
+      <Card className="glass-card-enhanced">
+        <CardHeader className="pb-3 px-3 sm:px-6">
+          <CardTitle className="text-lg font-semibold text-main tracking-tight">
+            Recent Orders
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="px-3 sm:px-6">
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center mb-4 shadow-sm">
+              <ArrowRight className="w-8 h-8 text-gray-400" />
+            </div>
+            <h3 className="text-gray-900 text-sm font-semibold mb-2">No recent orders</h3>
+            <p className="text-gray-500 text-xs max-w-xs leading-relaxed">Your recent exchange orders will appear here</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
   return (
     <Card className="glass-card-enhanced">
       <CardHeader className="pb-3 px-3 sm:px-6">
