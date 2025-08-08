@@ -25,11 +25,11 @@ const menuItems = [
     url: '/',
     icon: Home,
   },
-  {
-    title: 'Assets',
-    url: '/assets',
-    icon: Coins,
-  },
+  // {
+  //   title: 'Assets',
+  //   url: '/assets',
+  //   icon: Coins,
+  // },
   {
     title: 'Crypto Wallet',
     url: '/wallets',
@@ -50,11 +50,11 @@ const menuItems = [
     url: '/orders',
     icon: ReceiptText,
   },
-  {
-    title: 'Cards',
-    url: '/cards',
-    icon: CreditCard,
-  },
+  // {
+  //   title: 'Cards',
+  //   url: '/cards',
+  //   icon: CreditCard,
+  // },
 ];
 
 // Sempre mostra o menu de profile como último item
