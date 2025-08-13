@@ -1,13 +1,18 @@
 // src/components/NotificationStatus.tsx
 import { useNotifications } from '@/hooks/useNotifications';
+import { useUser } from '@/hooks/useUser';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Bell, Wifi, WifiOff } from 'lucide-react';
 
 export function NotificationStatus() {
-  const { isConnected, testNotification, userId } = useNotifications();
+  const { isConnected, testNotification } = useNotifications();
+  const { user, isHydrated } = useUser();
 
-  if (!userId) return null;
+  // Não renderizar nada até que o store esteja hidratado
+  if (!isHydrated) return null;
+  
+  if (!user?.id) return null;
 
   return (
     <div className="flex items-center gap-2">
@@ -25,19 +30,6 @@ export function NotificationStatus() {
         {isConnected ? <Wifi className="w-3 h-3" /> : <WifiOff className="w-3 h-3" />}
         {isConnected ? 'Online' : 'Offline'}
       </Badge>
-
-      {/* Test Button (apenas em desenvolvimento) */}
-      {process.env.NODE_ENV === 'development' && (
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={testNotification}
-          className="h-6 px-2 text-xs"
-        >
-          <Bell className="w-3 h-3 mr-1" />
-          Teste
-        </Button>
-      )}
     </div>
   );
 }
