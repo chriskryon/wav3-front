@@ -11,6 +11,8 @@ import { QuickActionsSection } from '@/components/dashboard/QuickActionsSection'
 import { RecentOrdersSection } from '@/components/dashboard/RecentOrdersSection';
 import { AssetsSection } from '@/components/dashboard/AssetsSection';
 import { ActionModal } from '@/components/action-modal';
+import { SharedBankAccountModal } from '@/components/banking/SharedBankAccountModal';
+import { CreateDepositWalletModal } from '@/components/modals/CreateDepositWalletModal';
 import { ICONS_CRYPTO_FIAT as icons } from '@/lib/icon-utils';
 import Image from 'next/image';
 
@@ -146,6 +148,25 @@ export default function OverviewPage() {
         onClose={() => setActiveModal(null)}
         type='deposit'
       />
+      
+      {/* Crypto Deposit Modal - Create Deposit Wallet */}
+      <CreateDepositWalletModal 
+        open={activeModal === 'deposit-crypto'}
+        onOpenChange={(open) => !open && setActiveModal(null)}
+        onSuccess={() => {
+          setActiveModal(null);
+        }}
+      />
+      
+      {/* Fiat Deposit Modal - Choose asset for shared account */}
+      <SharedBankAccountModal 
+        open={activeModal === 'deposit-fiat'}
+        onOpenChange={(open) => !open && setActiveModal(null)}
+        onSuccess={() => {
+          setActiveModal(null);
+        }}
+      />
+      
       <ActionModal
         isOpen={activeModal === 'exchange'}
         onClose={() => setActiveModal(null)}
