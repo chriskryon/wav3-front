@@ -103,7 +103,11 @@ export async function listOrders(params: ListOrdersParams = {}): Promise<ListOrd
     return response.data;
   } catch (error: any) {
     if (error.response?.data?.message) {
-      throw new Error(error.response.data.message);
+      const customError = new Error(error.response.data.message);
+      // Preservar o status HTTP no erro
+      (customError as any).status = error.response?.status;
+      (customError as any).statusCode = error.response?.status;
+      throw customError;
     }
     throw new Error("Failed to list orders");
   }

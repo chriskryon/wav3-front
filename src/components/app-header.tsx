@@ -17,9 +17,12 @@ export function AppHeader() {
   const setOpenMobile = () => setCollapsed(false); // ou sua lógica de mobile
 
   useEffect(() => {
-    const user = localStorage.getItem('user');
-    if (user) {
-      setUserData(JSON.parse(user));
+    // Só acessar localStorage no cliente
+    if (typeof window !== 'undefined') {
+      const user = localStorage.getItem('user');
+      if (user) {
+        setUserData(JSON.parse(user));
+      }
     }
   }, []);
 

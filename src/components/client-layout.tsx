@@ -39,15 +39,18 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    const user = localStorage.getItem('user');
-    const userExists = !!user;
-    setIsAuthenticated(userExists);
+    // Só verificar autenticação no cliente após hidratação
+    if (typeof window !== 'undefined') {
+      const user = localStorage.getItem('user');
+      const userExists = !!user;
+      setIsAuthenticated(userExists);
 
-    // Redirect logic
-    if (!userExists && pathname !== '/auth') {
-      router.push('/auth');
-    } else if (userExists && pathname === '/auth') {
-      router.push('/');
+      // Redirect logic
+      if (!userExists && pathname !== '/auth') {
+        router.push('/auth');
+      } else if (userExists && pathname === '/auth') {
+        router.push('/');
+      }
     }
   }, [pathname, router]);
 

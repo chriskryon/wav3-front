@@ -1,14 +1,14 @@
-import { ArrowDown, RefreshCw, Send, ArrowDownToLine, Repeat2, SendHorizontal } from 'lucide-react';
+import { ArrowDown, RefreshCw, Send, ArrowDownToLine, Repeat2, SendHorizontal, Coins, CreditCard } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
 export function QuickActionsSection({ setActiveModal }: { setActiveModal: (type: string | null) => void }) {
   const actions = [
     {
-      key: 'deposit',
-      label: 'Deposit',
-      description: 'Add funds to your wallet',
-      icon: <ArrowDownToLine className='w-5 h-5' />,
+      key: 'deposit-crypto',
+      label: 'Deposit Crypto',
+      description: 'Create crypto wallet',
+      icon: <Coins className='w-5 h-5' />,
       gradient: 'from-primary to-primary/80',
       hoverGradient: 'hover:from-primary/90 hover:to-primary/70',
       bgGlow: 'shadow-primary/25',
@@ -16,13 +16,13 @@ export function QuickActionsSection({ setActiveModal }: { setActiveModal: (type:
       iconColor: 'text-white',
     },
     {
-      key: 'exchange',
-      label: 'Exchange',
-      description: 'Swap between assets',
-      icon: <Repeat2 className='w-5 h-5' />,
-      gradient: 'from-primary/90 to-primary/70',
-      hoverGradient: 'hover:from-primary/80 hover:to-primary/60',
-      bgGlow: 'shadow-primary/20',
+      key: 'deposit-fiat',
+      label: 'Deposit Fiat',
+      description: 'Add funds via bank',
+      icon: <CreditCard className='w-5 h-5' />,
+      gradient: 'from-green-500 to-green-600',
+      hoverGradient: 'hover:from-green-400 hover:to-green-500',
+      bgGlow: 'shadow-green-500/25',
       iconBg: 'bg-white/20',
       iconColor: 'text-white',
     },
@@ -47,7 +47,7 @@ export function QuickActionsSection({ setActiveModal }: { setActiveModal: (type:
         </CardTitle>
       </CardHeader>
       <CardContent className="px-3 sm:px-6">
-        <div className='grid grid-cols-1 sm:grid-cols-3 gap-4'>
+        <div className='grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4'>
           {actions.map(({ key, label, description, icon, gradient, hoverGradient, bgGlow, iconBg, iconColor }, index) => (
             <div
               key={key}
@@ -56,6 +56,7 @@ export function QuickActionsSection({ setActiveModal }: { setActiveModal: (type:
                 ${index === 0 ? 'animation-delay-0' : ''}
                 ${index === 1 ? 'animation-delay-100' : ''}
                 ${index === 2 ? 'animation-delay-200' : ''}
+                ${index === 3 ? 'animation-delay-300' : ''}
               `}
             >
               <Button

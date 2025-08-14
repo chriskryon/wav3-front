@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { pdf } from '@react-pdf/renderer';
 import { OrderDetailPDF } from './OrderDetailPDF';
 import { Download } from 'lucide-react';
+import { useUser } from '@/hooks/useUser';
 
 // Mock detailed order data
 export const mockOrderDetail = {
@@ -63,7 +64,7 @@ interface OrderDetailModalProps {
 export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ open, onOpenChange, order }) => {
   // Use the passed order or fallback to mock data
   const orderData = order || mockOrderDetail;
-  const user = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('user') || '{}') : {};
+  const { user } = useUser();
   const [loading, setLoading] = useState(false);
 
   // Use the timeline from API or create a basic one as fallback

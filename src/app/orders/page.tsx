@@ -20,9 +20,9 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { FakeDataAlert } from '@/components/FakeDataAlert';
 import { OrderDetailModal } from './OrderDetailModal';
 import { OrdersGrid } from '@/components/orders/OrdersGrid';
+import { RequireBetaAccount } from '@/components/auth/RequireBetaAccount';
 import { listOrders, getOrderDetails } from '@/services/exchange-api-service';
 
 export default function OrdersPage() {
@@ -33,10 +33,26 @@ export default function OrdersPage() {
   const [showOrderDetailModal, setShowOrderDetailModal] = useState(false);
   
   // Query para buscar orders da API - mesma queryKey da home para compartilhar cache
-  const { data: ordersData, isLoading: isOrdersLoading } = useQuery({
+  const { data: ordersData, isLoading: isOrdersLoading, error: ordersError } = useQuery({
     queryKey: ['orders'],
-    queryFn: async () => await listOrders(),
+    queryFn: async () => {
+      try {
+        const result = await listOrders();
+        return result;
+      } catch (error: any) {
+        console.error('❌ listOrders: Error fetching orders:', error);
+        // Re-throw para que o TanStack Query capture o erro
+        throw error;
+      }
+    },
     staleTime: 1000 * 60 * 5, // Cache por 5 minutos
+    retry: (failureCount, error: any) => {
+      // Não fazer retry se for erro 400 de Beta subaccount
+      if (error?.status === 400 && error?.message?.includes('Beta subaccount')) {
+        return false;
+      }
+      return failureCount < 3;
+    },
   });
 
   // Query para buscar detalhes da order selecionada
@@ -78,6 +94,27 @@ export default function OrdersPage() {
   // Usar dados da API ou array vazio se ainda carregando
   const allOrders = ordersData?.orders || [];
   
+  // Verificar se é erro de Beta subaccount - verificação mais flexível
+  const isBetaAccountError = ordersError && (
+    (ordersError?.status === 400 && ordersError?.message?.includes('Beta subaccount')) ||
+    (ordersError?.statusCode === 400 && ordersError?.message?.includes('Beta subaccount')) ||
+    (ordersError?.message?.includes('Beta subaccount')) ||
+    (ordersError?.toString()?.includes('Beta subaccount'))
+  );
+  
+  // Debug logs para entender a estrutura do erro
+  useEffect(() => {
+    if (ordersError) {
+      console.log('🔍 Orders Error Debug:');
+      console.log('📄 Full error object:', ordersError);
+      console.log('📊 Error status:', ordersError?.status);
+      console.log('💬 Error message:', ordersError?.message);
+      console.log('🔧 Error name:', ordersError?.name);
+      console.log('📋 Error properties:', Object.keys(ordersError));
+      console.log('✅ isBetaAccountError check:', isBetaAccountError);
+    }
+  }, [ordersError, isBetaAccountError]);
+  
   // Aplicar filtro de status
   const filteredOrders = statusFilter === 'all' 
     ? allOrders 
@@ -86,10 +123,24 @@ export default function OrdersPage() {
   const totalPages = Math.max(1, Math.ceil(filteredOrders.length / ordersPerPage));
   const paginatedOrders = filteredOrders.slice((currentPage - 1) * ordersPerPage, currentPage * ordersPerPage);
 
+  // Se for erro de Beta subaccount, mostrar RequireBetaAccount
+  if (isBetaAccountError) {
+    console.log("Tem erro")
+    return (
+      <div className='content-height p-8 scroll-area bg-background'>
+        <div className='max-w-7xl mx-auto space-y-8'>
+          <RequireBetaAccount hasBetaAccount={false}>
+            {/* Este children nunca será renderizado */}
+            <div />
+          </RequireBetaAccount>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className='content-height p-8 scroll-area bg-background'>
       <div className='max-w-7xl mx-auto space-y-8'>
-        <FakeDataAlert />
         {/* Header */}
         <div className='flex flex-col md:flex-row md:items-center justify-between gap-4'>
           <div>

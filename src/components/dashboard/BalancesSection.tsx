@@ -1,30 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Wallet, DollarSign } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import Wav3Loading from '../loading-wav3';
 
 export function BalancesSection({ accountBalances, isBalancesLoading, renderAssetIcon }: any) {
-
-  // CSS para animações (poderia ser movido para um arquivo CSS global)
-  React.useEffect(() => {
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes fadeInUp {
-        from {
-          opacity: 0;
-          transform: translateY(20px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-    `;
-    document.head.appendChild(style);
-    return () => {
-      document.head.removeChild(style);
-    };
-  }, []);
 
   // Funções de formatação melhoradas
   const formatCryptoValue = (value: number, symbol: string) => {
@@ -316,7 +295,7 @@ export function BalancesSection({ accountBalances, isBalancesLoading, renderAsse
 
   function renderCryptoBalances() {
     const cryptoBalances = (accountBalances?.filter((b: any) => b.type === 'crypto' && b.balance !== null) ?? []);
-    const balancesToShow = cryptoBalances.length > 0 ? cryptoBalances : mockCryptoBalances;
+    const balancesToShow = cryptoBalances.length > 0 ? cryptoBalances : cryptoBalances;
     
     return renderBalances(
       balancesToShow,
