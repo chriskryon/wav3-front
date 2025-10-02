@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     siteName: 'Wav3',
     images: [
       {
-        url: '/og-image.png',
+        url: '/og-image.svg',
         width: 1200,
         height: 630,
         alt: 'Wav3 Banner',
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Wav3 - Cross-border Cryptocurrency',
     description: 'Online Cross-border Cryptocurrency',
-    images: ['/og-image.png'],
+    images: ['/og-image.svg'],
   },
   icons: {
     icon: '/favicon.ico',

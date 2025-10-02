@@ -2,8 +2,10 @@
 @import "tailwindcss";
 
 @theme {
-	--color-wav3: #1ea3ab;
-	--color-primary: #1ea3ab;
+	/* --color-wav3: #1ea3ab;
+	--color-primary: #1ea3ab; */
+	--color-wav3: #00109b;
+	--color-primary: #00109b;
 }
 
 * {
