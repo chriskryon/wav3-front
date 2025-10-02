@@ -146,15 +146,15 @@ export function SharedBankAccountModal({
                     <button
                       key={opt.value}
                       type="button"
-                      className={`flex flex-col items-center justify-center px-3 py-4 rounded-lg border transition-colors font-medium w-20 h-20 text-sm focus:outline-none focus:ring-2 focus:ring-[#1ea3ab]/50 bg-white
-                        ${asset === opt.value ? 'border-[#1ea3ab] bg-[#1ea3ab]/5' : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'}`}
+                      className={`flex flex-col items-center justify-center px-3 py-4 rounded-lg border transition-colors font-medium w-20 h-20 text-sm focus:outline-none focus:ring-2 focus:ring-[#00109b]/50 bg-white
+                        ${asset === opt.value ? 'border-[#00109b] bg-[#00109b]/5' : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'}`}
                       onClick={() => setAsset(opt.value)}
                       aria-label={opt.label}
                     >
                       <div className="mb-1">
                         {opt.icon}
                       </div>
-                      <span className={`font-medium text-xs text-center ${asset === opt.value ? 'text-[#1ea3ab]' : 'text-gray-700'}`}>
+                      <span className={`font-medium text-xs text-center ${asset === opt.value ? 'text-[#00109b]' : 'text-gray-700'}`}>
                         {opt.value}
                       </span>
                     </button>
@@ -360,7 +360,7 @@ export function SharedBankAccountModal({
             <Button
               type='submit'
               onClick={handleSubmit}
-              className='bg-[#1ea3ab] hover:bg-[#188a91] text-white font-medium rounded-lg h-10 text-sm border border-[#1ea3ab] transition-colors w-full'
+              className='bg-[#00109b] hover:bg-[#188a91] text-white font-medium rounded-lg h-10 text-sm border border-[#00109b] transition-colors w-full'
               disabled={isRegistering}
             >
               {isRegistering ? (
@@ -385,7 +385,7 @@ export function SharedBankAccountModal({
               </Button>
               <Button
                 onClick={handleDone}
-                className="flex-1 bg-[#1ea3ab] hover:bg-[#188a91] text-white text-sm"
+                className="flex-1 bg-[#00109b] hover:bg-[#188a91] text-white text-sm"
               >
                 Done
               </Button>

@@ -20,7 +20,7 @@ export const PixQRCode: React.FC<PixQRCodeProps> = ({ value, size = 160 }) => {
       }}
     >
       <QRCodeSVG value={value} size={size} bgColor="#fff" fgColor="#222" />
-      <span className="mt-2 text-xs text-[#1ea3ab] font-mono">PIX QR Code</span>
+      <span className="mt-2 text-xs text-[#00109b] font-mono">PIX QR Code</span>
     </Card>
   );
 };

@@ -134,7 +134,7 @@ export function CreateDepositWalletModal({
       <DialogContent className='max-w-lg bg-white border border-gray-200 rounded-xl shadow-xl'>
         <DialogHeader className="pb-4 border-b border-gray-100">
           <DialogTitle className='text-xl font-semibold text-gray-900 flex items-center gap-2'>
-            <BanknoteArrowDown className='w-5 h-5 text-[#1ea3ab]' />
+            <BanknoteArrowDown className='w-5 h-5 text-[#00109b]' />
             Create Deposit Wallet
           </DialogTitle>
           <p className='text-sm text-gray-600 mt-1'>
@@ -184,7 +184,7 @@ export function CreateDepositWalletModal({
                     <Button
                       size='sm'
                       onClick={() => copyToClipboard(sharedResult.address)}
-                      className='bg-[#1ea3ab] hover:bg-[#188a91] text-white px-3 py-2 rounded-lg border border-[#1ea3ab] transition-colors'
+                      className='bg-[#00109b] hover:bg-[#188a91] text-white px-3 py-2 rounded-lg border border-[#00109b] transition-colors'
                     >
                       <Copy className='w-4 h-4' />
                     </Button>
@@ -202,7 +202,7 @@ export function CreateDepositWalletModal({
               
               <Button
                 onClick={handleDone}
-                className='w-full bg-[#1ea3ab] hover:bg-[#188a91] text-white font-medium py-3 rounded-lg border border-[#1ea3ab] transition-colors'
+                className='w-full bg-[#00109b] hover:bg-[#188a91] text-white font-medium py-3 rounded-lg border border-[#00109b] transition-colors'
               >
                 Done
               </Button>
@@ -218,7 +218,7 @@ export function CreateDepositWalletModal({
                     <HandCoins className='w-4 h-4 text-gray-400' />
                   </span>
                   <Select value={sharedWallet.asset} onValueChange={handleSharedAssetChange}>
-                    <SelectTrigger className='bg-white border border-gray-300 rounded-lg pl-10 py-3 focus:border-[#1ea3ab] focus:ring-1 focus:ring-[#1ea3ab] transition-colors'>
+                    <SelectTrigger className='bg-white border border-gray-300 rounded-lg pl-10 py-3 focus:border-[#00109b] focus:ring-1 focus:ring-[#00109b] transition-colors'>
                       <SelectValue placeholder='Select asset' />
                     </SelectTrigger>
                     <SelectContent className='bg-white border border-gray-200 rounded-lg shadow-lg'>
@@ -257,7 +257,7 @@ export function CreateDepositWalletModal({
                   <Label className='text-xs font-medium text-gray-500 uppercase tracking-wide'>Network</Label>
                   <div className='relative flex items-center mt-1'>
                     <Select value={sharedWallet.network} onValueChange={(value) => setSharedWallet(prev => ({ ...prev, network: value }))}>
-                      <SelectTrigger className='bg-white border border-gray-300 rounded-lg py-3 focus:border-[#1ea3ab] focus:ring-1 focus:ring-[#1ea3ab] transition-colors'>
+                      <SelectTrigger className='bg-white border border-gray-300 rounded-lg py-3 focus:border-[#00109b] focus:ring-1 focus:ring-[#00109b] transition-colors'>
                         <SelectValue placeholder='Select network' />
                       </SelectTrigger>
                       <SelectContent className='bg-white border border-gray-200 rounded-lg shadow-lg'>
@@ -284,7 +284,7 @@ export function CreateDepositWalletModal({
                 </Button>
                 <Button
                   type='submit'
-                  className='flex-1 bg-[#1ea3ab] hover:bg-[#188a91] text-white font-medium py-3 rounded-lg border border-[#1ea3ab] transition-colors'
+                  className='flex-1 bg-[#00109b] hover:bg-[#188a91] text-white font-medium py-3 rounded-lg border border-[#00109b] transition-colors'
                   disabled={isRegisteringShared || !sharedWallet.asset || !sharedWallet.network}
                 >
                   {isRegisteringShared ? (

@@ -47,7 +47,7 @@ export function OrdersGrid({ orders, onOrderClick, onViewDetails }: OrdersGridPr
     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
   };
 
-  const renderAssetIcon = (asset: string, size: 'sm' | 'md' | 'lg' = 'sm', color = '#1ea3ab') => {
+  const renderAssetIcon = (asset: string, size: 'sm' | 'md' | 'lg' = 'sm', color = '#00109b') => {
     const key = asset?.toUpperCase() as keyof typeof ICONS_CRYPTO_FIAT;
     const IconComponent = ICONS_CRYPTO_FIAT[key];
     
@@ -106,7 +106,7 @@ export function OrdersGrid({ orders, onOrderClick, onViewDetails }: OrdersGridPr
                 <div className="flex flex-col items-center gap-2">
                   <div className="relative">
                     <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center shadow-md">
-                      {renderAssetIcon(order.source_asset, 'md', '#1ea3ab')}
+                      {renderAssetIcon(order.source_asset, 'md', '#00109b')}
                     </div>
                     <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
                       <span className="text-xs text-white font-bold">-</span>
@@ -133,7 +133,7 @@ export function OrdersGrid({ orders, onOrderClick, onViewDetails }: OrdersGridPr
                 <div className="flex flex-col items-center gap-2">
                   <div className="relative">
                     <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-green-500/20 to-green-500/10 flex items-center justify-center shadow-md">
-                      {renderAssetIcon(order.target_asset, 'md', '#1ea3ab')}
+                      {renderAssetIcon(order.target_asset, 'md', '#00109b')}
                     </div>
                     <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
                       <span className="text-xs text-white font-bold">+</span>

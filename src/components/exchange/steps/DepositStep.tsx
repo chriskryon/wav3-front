@@ -63,9 +63,9 @@ export const DepositStep: React.FC<DepositStepProps> = ({ data, onBack, onNext }
             <span className="text-sm text-gray-600">Network</span>
             <span className="font-medium text-gray-900 text-sm">{data?.network}</span>
           </div>
-          <div className="flex items-center justify-between p-2 bg-[#1ea3ab]/5 rounded border border-[#1ea3ab]/20">
+          <div className="flex items-center justify-between p-2 bg-[#00109b]/5 rounded border border-[#00109b]/20">
             <span className="text-sm font-medium text-gray-600">Amount</span>
-            <span className="font-bold text-[#1ea3ab] text-sm">{data?.amount}</span>
+            <span className="font-bold text-[#00109b] text-sm">{data?.amount}</span>
           </div>
         </div>
       </div>
@@ -82,7 +82,7 @@ export const DepositStep: React.FC<DepositStepProps> = ({ data, onBack, onNext }
           <button
             type="button"
             onClick={handleCopyAddress}
-            className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-gray-600 hover:text-[#1ea3ab] hover:bg-gray-50 rounded transition-colors"
+            className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-gray-600 hover:text-[#00109b] hover:bg-gray-50 rounded transition-colors"
           >
             <ClipboardCopy className="w-3 h-3" />
             Copy
@@ -105,7 +105,7 @@ export const DepositStep: React.FC<DepositStepProps> = ({ data, onBack, onNext }
           type="button"
           onClick={onNext}
           disabled={loading}
-          className="flex-1 px-3 py-2 text-sm font-medium text-white bg-[#1ea3ab] border border-[#1ea3ab] rounded-lg hover:bg-[#188a91] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="flex-1 px-3 py-2 text-sm font-medium text-white bg-[#00109b] border border-[#00109b] rounded-lg hover:bg-[#188a91] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           {loading ? 'Loading...' : 'Deposit Made'}
         </button>
