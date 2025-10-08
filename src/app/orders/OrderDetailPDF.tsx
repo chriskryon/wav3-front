@@ -5,16 +5,16 @@ import type { mockOrderDetail } from './OrderDetailModal';
 // Estilos refinados para o PDF estilo invoice moderno e compacto
 const pdfStyles = StyleSheet.create({
   page: { padding: 30, fontSize: 10, fontFamily: 'Helvetica', backgroundColor: '#f5f5f5' },
-  header: { marginBottom: 20, textAlign: 'center', borderBottom: '1px dashed #00109b', paddingBottom: 10 },
+  header: { marginBottom: 20, textAlign: 'center', borderBottom: '1px dashed #1ea3ab', paddingBottom: 10 },
   logo: { width: 100, marginBottom: 5, alignSelf: 'center' },
-  title: { fontSize: 20, fontWeight: 'bold', color: '#00109b' },
+  title: { fontSize: 20, fontWeight: 'bold', color: '#1ea3ab' },
   section: { marginBottom: 15 },
-  card: { marginBottom: 10, padding: 15, border: '1px dashed #00109b', borderRadius: 5, backgroundColor: '#ffffff' },
+  card: { marginBottom: 10, padding: 15, border: '1px dashed #1ea3ab', borderRadius: 5, backgroundColor: '#ffffff' },
   cardTitle: { fontSize: 16, fontWeight: 'bold', marginBottom: 8, color: '#333' },
   text: { marginBottom: 4, color: '#555' },
-  timelineCard: { marginTop: 8, padding: 10, border: '1px dashed #00109b', borderRadius: 5, backgroundColor: '#ffffff' },
-  timelineItem: { marginBottom: 8, padding: 8, borderBottom: '1px dashed #00109b' },
-  timelineTitle: { fontSize: 12, fontWeight: 'bold', color: '#00109b' },
+  timelineCard: { marginTop: 8, padding: 10, border: '1px dashed #1ea3ab', borderRadius: 5, backgroundColor: '#ffffff' },
+  timelineItem: { marginBottom: 8, padding: 8, borderBottom: '1px dashed #1ea3ab' },
+  timelineTitle: { fontSize: 12, fontWeight: 'bold', color: '#1ea3ab' },
   timelineText: { fontSize: 10, color: '#555' },
   footer: { position: 'absolute', bottom: 10, left: 0, right: 0, textAlign: 'center', fontSize: 8, color: '#999' },
 });

@@ -96,10 +96,10 @@ export default function AuthPage() {
         <Image
           src={logo}
           alt='WAV3 Logo'
-          width={180}
-          height={220}
+          width={96}
+          height={96}
           priority
-          className='mx-auto md:w-56 md:h-54 lg:w-96 lg:h-20'
+          className='mx-auto md:w-24 md:h-24 lg:w-32 lg:h-32'
         />
       </div>
 

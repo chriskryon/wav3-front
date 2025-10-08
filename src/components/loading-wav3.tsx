@@ -6,8 +6,8 @@ const Wav3Loading = () => (
         <Image
             src={logo}
             alt="WAV3 Logo"
-            width={128}
-            height={128}
+            width={64}
+            height={64}
             className="object-contain transition-all duration-500 ease-in-out"
         />
     </div>

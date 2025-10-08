@@ -95,8 +95,8 @@ export const QuoteStep: React.FC = () => {
     <div className="flex flex-col gap-4 h-full p-4 bg-white rounded-xl border border-gray-200 overflow-y-auto">
       {/* Header */}
       <div className="text-center">
-        <div className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-[#00109b]/10 mb-3">
-          <RefreshCw className="w-4 h-4 text-[#00109b]" />
+        <div className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-[#1ea3ab]/10 mb-3">
+          <RefreshCw className="w-4 h-4 text-[#1ea3ab]" />
         </div>
         <h2 className="text-lg font-semibold text-gray-900 mb-1">Get a Quote</h2>
         <p className="text-sm text-gray-600">Enter your exchange details to get an instant quote</p>
@@ -121,12 +121,12 @@ export const QuoteStep: React.FC = () => {
             >
               {amountType === 'source' ? (
                 <>
-                  <ToggleLeft className="w-4 h-4 text-[#00109b]" />
+                  <ToggleLeft className="w-4 h-4 text-[#1ea3ab]" />
                   <span className="text-xs">Pay Amount</span>
                 </>
               ) : (
                 <>
-                  <ToggleRight className="w-4 h-4 text-[#00109b]" />
+                  <ToggleRight className="w-4 h-4 text-[#1ea3ab]" />
                   <span className="text-xs">Receive Amount</span>
                 </>
               )}
@@ -154,7 +154,7 @@ export const QuoteStep: React.FC = () => {
                   setSourceAmount(''); // Limpar o outro campo
                 }
               }}
-              className="text-lg font-mono bg-white p-3 rounded-lg border border-gray-300 focus:border-[#00109b] focus:ring-1 focus:ring-[#00109b] transition-colors placeholder:text-gray-400"
+              className="text-lg font-mono bg-white p-3 rounded-lg border border-gray-300 focus:border-[#1ea3ab] focus:ring-1 focus:ring-[#1ea3ab] transition-colors placeholder:text-gray-400"
             />
             <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm">
               {amountType === 'source' 
@@ -182,7 +182,7 @@ export const QuoteStep: React.FC = () => {
               value={contextSourceAsset?.symbol}
               onChange={(symbol) => setContextSourceAsset(assets.find((a) => a.symbol === symbol))}
               assets={assets}
-              className="w-full bg-white border-gray-300 focus:border-[#00109b] focus:ring-1 focus:ring-[#00109b]"
+              className="w-full bg-white border-gray-300 focus:border-[#1ea3ab] focus:ring-1 focus:ring-[#1ea3ab]"
             />
           </div>
 
@@ -195,7 +195,7 @@ export const QuoteStep: React.FC = () => {
                 setContextSourceAsset(contextTargetAsset);
                 setContextTargetAsset(temp);
               }}
-              className="bg-[#00109b] text-white p-2 rounded-lg hover:bg-[#188a91] transition-colors border border-[#00109b]"
+              className="bg-[#1ea3ab] text-white p-2 rounded-lg hover:bg-[#188a91] transition-colors border border-[#1ea3ab]"
             >
               <ArrowUpDown className="w-4 h-4" />
             </Button>
@@ -210,7 +210,7 @@ export const QuoteStep: React.FC = () => {
               value={contextTargetAsset?.symbol}
               onChange={(symbol) => setContextTargetAsset(assets.find((a) => a.symbol === symbol))}
               assets={filteredTargetAssets}
-              className="w-full bg-white border-gray-300 focus:border-[#00109b] focus:ring-1 focus:ring-[#00109b]"
+              className="w-full bg-white border-gray-300 focus:border-[#1ea3ab] focus:ring-1 focus:ring-[#1ea3ab]"
             />
           </div>
         </div>
@@ -226,7 +226,7 @@ export const QuoteStep: React.FC = () => {
             (amountType === 'source' ? !sourceAmount : !targetAmount) || 
             contextSourceAsset?.symbol === contextTargetAsset?.symbol
           }
-          className="w-full bg-[#00109b] text-white py-3 px-4 rounded-lg border border-[#00109b] hover:bg-[#188a91] transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full bg-[#1ea3ab] text-white py-3 px-4 rounded-lg border border-[#1ea3ab] hover:bg-[#188a91] transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading ? (
             <div className="flex items-center justify-center gap-3">

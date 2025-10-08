@@ -43,14 +43,14 @@ export function AppHeader() {
 
       <div className='flex flex-col items-center sm:items-start text-center sm:text-left gap-0 py-1'>
         <div className="flex items-center gap-2">
-          <h1 className='text-sm sm:text-base font-semibold text-[#00109b] tracking-tight truncate max-w-[180px] sm:max-w-none'>
+          <h1 className='text-sm sm:text-base font-semibold text-[#1ea3ab] tracking-tight truncate max-w-[180px] sm:max-w-none'>
             {userData?.hasBetaAccount
               ? `Hello, ${userData.name || 'User'}!`
               : 'Complete Your Profile'}
           </h1>
           {userData?.hasBetaAccount ? (
-            <span className='inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[#e6f7f8] text-[#00109b] border border-[#00109b]/30 ml-1 shadow-sm'>
-              <svg width="14" height="14" viewBox="0 0 20 20" fill="none" className="mr-1"><circle cx="10" cy="10" r="10" fill="#00109b"/><path d="M6 10.5L9 13.5L14 8.5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <span className='inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[#e6f7f8] text-[#1ea3ab] border border-[#1ea3ab]/30 ml-1 shadow-sm'>
+              <svg width="14" height="14" viewBox="0 0 20 20" fill="none" className="mr-1"><circle cx="10" cy="10" r="10" fill="#1ea3ab"/><path d="M6 10.5L9 13.5L14 8.5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               <title>Verified</title>
               </svg>
               Verified
@@ -115,7 +115,7 @@ export function AppHeader() {
             className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg focus:outline-none"
           >
             <DropdownMenu.Item
-              className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-[#00109b]/80 hover:text-white rounded-md cursor-pointer transition-colors"
+              className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-[#1ea3ab]/80 hover:text-white rounded-md cursor-pointer transition-colors"
               onSelect={() => {
                 if (typeof window !== 'undefined') {
                   window.location.href = '/profile';

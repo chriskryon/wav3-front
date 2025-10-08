@@ -91,7 +91,7 @@ export function BankAccountCard({
   // Se não houver gradient no mock, usa o padrão do país/moeda
   // Paleta principal: cor do site (PRIMARY) com opacidade/transparência
   const flagIcon = assetIcon[account.asset] || (
-    <Landmark className='w-6 h-6 text-[#00109b]' />
+    <Landmark className='w-6 h-6 text-[#1ea3ab]' />
   );
 
   // ExemplassetIcono: se quiser diferenciar "recebimento" e "envio" por tipo, pode usar um campo do account, ex: account.type === 'shared' ? ...
@@ -145,13 +145,13 @@ export function BankAccountCard({
           <div className='relative z-10 flex flex-col gap-2'>
             <div className='flex items-center gap-3'>
               <div
-                className='rounded-xl bg-white/80 p-1 flex items-center justify-center shadow border border-[#00109b]/30 transition-all duration-300 group-hover:scale-110'
+                className='rounded-xl bg-white/80 p-1 flex items-center justify-center shadow border border-[#1ea3ab]/30 transition-all duration-300 group-hover:scale-110'
                 style={{ minWidth: 40, minHeight: 40 }}
               >
                 {flagIcon}
               </div>
               <div className='flex flex-col'>
-                <span className='font-bold text-base leading-tight text-[#00109b]'>
+                <span className='font-bold text-base leading-tight text-[#1ea3ab]'>
                     {account.bank_name.length > 15
                     ? `${account.bank_name.slice(0, 20)}...`
                     : account.bank_name}
@@ -166,11 +166,11 @@ export function BankAccountCard({
             {(account.instant_payment_type || account.instant_payment) && (
               <div className='flex flex-col sm:flex-row gap-2 sm:gap-6 mt-2'>
                 <div className='flex-1'>
-                  <Label className='text-xs font-semibold text-[#00109b]'>
+                  <Label className='text-xs font-semibold text-[#1ea3ab]'>
                     {account.instant_payment_type ? `${account.instant_payment_type}` : 'Instant'}
                   </Label>
                   <div
-                    className='font-mono text-base text-[#00109b] bg-white/60 rounded-lg px-2 py-1 mt-1 shadow-inner border border-dashed border-[#00109b]/30 truncate max-w-full'
+                    className='font-mono text-base text-[#1ea3ab] bg-white/60 rounded-lg px-2 py-1 mt-1 shadow-inner border border-dashed border-[#1ea3ab]/30 truncate max-w-full'
                     title={account.instant_payment || '-'}
                     style={{ maxWidth: '100%' }}
                   >
@@ -184,8 +184,8 @@ export function BankAccountCard({
               </div>
             )}
             <div className='flex items-center justify-between mt-2'>
-              <span className='text-[10px] sm:text-xs opacity-80 font-mono flex items-center gap-1 text-[#00109b]'>
-                <span className='w-2 h-2 rounded-full animate-pulse mr-1 bg-[#00109b]/30' />
+              <span className='text-[10px] sm:text-xs opacity-80 font-mono flex items-center gap-1 text-[#1ea3ab]'>
+                <span className='w-2 h-2 rounded-full animate-pulse mr-1 bg-[#1ea3ab]/30' />
                 {account.created_at
                   ? new Date(account.created_at).toISOString().slice(0, 10)
                   : ''}
@@ -198,7 +198,7 @@ export function BankAccountCard({
                     e.stopPropagation();
                     onCopy(account.account);
                   }}
-                  className='h-8 w-8 p-0 hover:bg-[#00109b]/20 text-[#00109b] border border-[#00109b]/30 shadow-md'
+                  className='h-8 w-8 p-0 hover:bg-[#1ea3ab]/20 text-[#1ea3ab] border border-[#1ea3ab]/30 shadow-md'
                   aria-label='Copiar conta'
                 >
                   <Copy className='w-4 h-4' />
@@ -206,7 +206,7 @@ export function BankAccountCard({
                 <Button
                   size='icon'
                   variant='outline'
-                  className='h-8 w-8 p-0 glass-button bg-white/60 border border-[#00109b]/30 text-[#00109b] hover:bg-[#00109b]/10 hover:text-primary shadow-md'
+                  className='h-8 w-8 p-0 glass-button bg-white/60 border border-[#1ea3ab]/30 text-[#1ea3ab] hover:bg-[#1ea3ab]/10 hover:text-primary shadow-md'
                   onClick={(e) => {
                     e.stopPropagation();
                     onView(account);

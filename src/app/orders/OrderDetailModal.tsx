@@ -129,7 +129,7 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ open, onOpen
     }
 
     try {
-      return <IconComponent variant='mono' color='#00109b' className={size} />;
+      return <IconComponent variant='mono' color='#1ea3ab' className={size} />;
     } catch {
       return <IconComponent style={{ width: 24, height: 24 }} />;
     }

@@ -6,12 +6,12 @@ import { US, CO, MX, BR, AR, EU } from 'country-flag-icons/react/3x2';
 // Custom icon for USDC, USFRIF, USDRIF (replace with your SVG or component as needed)
 const CustomUsdcUsfrifIcon = ({ size = 32 }: { size?: number }) => (
   <span
-    className={size === 32 ? "w-8 h-8 rounded-full bg-white border border-[#00109b] flex items-center justify-center" : "w-5 h-5 rounded-full bg-white border border-[#00109b] flex items-center justify-center"}
+    className={size === 32 ? "w-8 h-8 rounded-full bg-white border border-[#1ea3ab] flex items-center justify-center" : "w-5 h-5 rounded-full bg-white border border-[#1ea3ab] flex items-center justify-center"}
     style={{ width: size, height: size }}
   >
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <title>Asset Selection</title>
-      <circle cx="12" cy="12" r="12" fill="#00109b"/>
+      <circle cx="12" cy="12" r="12" fill="#1ea3ab"/>
       <text x="12" y="16" textAnchor="middle" fontSize={size === 32 ? 10 : 8} fill="white" fontWeight="bold">USDC</text>
     </svg>
   </span>
@@ -39,15 +39,15 @@ export const AssetSelect: React.FC<AssetSelectProps> = ({
   className = '',
 }) => (
   <Select value={value} onValueChange={onChange}>
-    <SelectTrigger className={`w-full h-12 rounded-xl flex items-center justify-start border-2 border-[#00109b]/40 bg-[#f6fcfd] shadow hover:bg-[#e6f7f8] px-4 ${className}`}>
+    <SelectTrigger className={`w-full h-12 rounded-xl flex items-center justify-start border-2 border-[#1ea3ab]/40 bg-[#f6fcfd] shadow hover:bg-[#e6f7f8] px-4 ${className}`}>
       <div className='flex flex-row items-center gap-3 w-full'>
         {renderAssetIcon(assets.find(a => a.symbol === value))}
-        <span className='text-base font-semibold text-[#00109b]'>
+        <span className='text-base font-semibold text-[#1ea3ab]'>
           {assets.find(a => a.symbol === value)?.name} ({value})
         </span>
       </div>
     </SelectTrigger>
-    <SelectContent className='max-h-64 overflow-y-auto bg-[#f6fcfd]/60 backdrop-blur-sm bg-opacity-90 rounded-xl shadow-lg border border-[#00109b]/20'>
+    <SelectContent className='max-h-64 overflow-y-auto bg-[#f6fcfd]/60 backdrop-blur-sm bg-opacity-90 rounded-xl shadow-lg border border-[#1ea3ab]/20'>
       {assets.filter(a => !excludeSymbol || a.symbol !== excludeSymbol).map((asset) => (
         <SelectItem
           key={asset.symbol}
@@ -56,7 +56,7 @@ export const AssetSelect: React.FC<AssetSelectProps> = ({
         >
           <span className='flex flex-row items-center gap-2'>
             {renderAssetIconSmall(asset)}
-            <span className='text-sm font-medium text-[#00109b] truncate'>
+            <span className='text-sm font-medium text-[#1ea3ab] truncate'>
               {asset.name} ({asset.symbol})
             </span>
           </span>
@@ -84,7 +84,7 @@ export function renderAssetIconUnified(asset?: Asset, size: number = 32) {
   }
   if (asset.type === 'crypto') {
     try {
-      return <TokenIcon symbol={asset.symbol} size={size} color={asset.symbol === 'ETH' ? '#00109b' : undefined} />;
+      return <TokenIcon symbol={asset.symbol} size={size} color={asset.symbol === 'ETH' ? '#1ea3ab' : undefined} />;
     } catch {
       return (
         <span

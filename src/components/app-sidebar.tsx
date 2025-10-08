@@ -109,8 +109,8 @@ export function AppSidebar() {
           <Image
             src={logo}
             alt='WAV3 Logo'
-            width={collapsed ? 48 : 132}
-            height={collapsed ? 48 : 132}
+            width={collapsed ? 48 : 64}
+            height={collapsed ? 48 : 64}
             className='object-contain transition-all duration-500 ease-in-out'
           />
         </div>

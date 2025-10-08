@@ -44,7 +44,7 @@ export const BankAccountDetailsCard: React.FC<BankAccountDetailsCardProps> = ({
   const [copiedField, setCopiedField] = useState<string | null>(null);
   
   const flagIcon = countryIcons[account.country] || (
-    <Building2 className='w-5 h-5 text-[#00109b]' />
+    <Building2 className='w-5 h-5 text-[#1ea3ab]' />
   );
 
   const handleCopy = async (text: string, fieldName: string) => {
@@ -87,7 +87,7 @@ export const BankAccountDetailsCard: React.FC<BankAccountDetailsCardProps> = ({
                 {flagIcon}
               </div>
               <div>
-                <h3 className='font-semibold text-lg text-[#00109b]'>{account.bank_name}</h3>
+                <h3 className='font-semibold text-lg text-[#1ea3ab]'>{account.bank_name}</h3>
                 <div className='flex items-center gap-2 text-sm text-gray-600'>
                   <span>{account.asset}</span>
                   <span>•</span>
@@ -102,7 +102,7 @@ export const BankAccountDetailsCard: React.FC<BankAccountDetailsCardProps> = ({
                 {onEdit && (
                   <button
                     type='button'
-                    className='p-2 text-gray-500 hover:text-[#00109b] hover:bg-gray-50 rounded-lg transition-colors'
+                    className='p-2 text-gray-500 hover:text-[#1ea3ab] hover:bg-gray-50 rounded-lg transition-colors'
                     title='Edit account'
                     onClick={(e) => {
                       e.stopPropagation();
@@ -141,7 +141,7 @@ export const BankAccountDetailsCard: React.FC<BankAccountDetailsCardProps> = ({
                 </div>
                 <button
                   type='button'
-                  className='absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-[#00109b] hover:bg-white rounded transition-colors opacity-0 group-hover/field:opacity-100'
+                  className='absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-[#1ea3ab] hover:bg-white rounded transition-colors opacity-0 group-hover/field:opacity-100'
                   title='Copy Account ID'
                   onClick={() => handleCopy(account.id || '', 'Account ID')}
                 >
@@ -162,7 +162,7 @@ export const BankAccountDetailsCard: React.FC<BankAccountDetailsCardProps> = ({
                   </div>
                   <button
                     type='button'
-                    className='absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-[#00109b] hover:bg-white rounded transition-colors opacity-0 group-hover/field:opacity-100'
+                    className='absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-[#1ea3ab] hover:bg-white rounded transition-colors opacity-0 group-hover/field:opacity-100'
                     title='Copy Account'
                     onClick={() => handleCopy(account.account, 'Account')}
                   >
@@ -182,7 +182,7 @@ export const BankAccountDetailsCard: React.FC<BankAccountDetailsCardProps> = ({
                   {account.branch && (
                     <button
                       type='button'
-                      className='absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-[#00109b] hover:bg-white rounded transition-colors opacity-0 group-hover/field:opacity-100'
+                      className='absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-[#1ea3ab] hover:bg-white rounded transition-colors opacity-0 group-hover/field:opacity-100'
                       title='Copy Branch'
                       onClick={() => handleCopy(account.branch || '', 'Branch')}
                     >
@@ -204,7 +204,7 @@ export const BankAccountDetailsCard: React.FC<BankAccountDetailsCardProps> = ({
                 </div>
                 <button
                   type='button'
-                  className='absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-[#00109b] hover:bg-white rounded transition-colors opacity-0 group-hover/field:opacity-100'
+                  className='absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-[#1ea3ab] hover:bg-white rounded transition-colors opacity-0 group-hover/field:opacity-100'
                   title='Copy Name'
                   onClick={() => handleCopy(account.name || account.bank_name, 'Name')}
                 >
@@ -236,7 +236,7 @@ export const BankAccountDetailsCard: React.FC<BankAccountDetailsCardProps> = ({
                   </div>
                   <button
                     type='button'
-                    className='px-3 py-2 text-gray-400 hover:text-[#00109b] hover:bg-white border-l border-gray-200 transition-colors'
+                    className='px-3 py-2 text-gray-400 hover:text-[#1ea3ab] hover:bg-white border-l border-gray-200 transition-colors'
                     title='Copy'
                     onClick={() => handleCopy(account.instant_payment || '', 'Instant Payment')}
                   >
