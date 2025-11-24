@@ -92,14 +92,14 @@ export default function AuthPage() {
 
   return (
     <div className='fixed inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-[#e6f2f2] via-[#f8fafc] to-[#e6f2f2] p-4'>
-      <div className='mb-3'>
+      <div className='mb-3 w-full max-w-[120px] md:max-w-[224px] lg:max-w-[384px] mx-auto max-h-[60px]'>
         <Image
           src={logo}
           alt='WAV3 Logo'
-          width={180}
-          height={220}
+          width={120}
+          height={50}
           priority
-          className='mx-auto md:w-56 md:h-54 lg:w-96 lg:h-20'
+          className='w-full h-auto max-h-[60px] object-contain'
         />
       </div>
 
