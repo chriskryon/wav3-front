@@ -70,10 +70,10 @@ export const DepositInstructionStep: React.FC<DepositInstructionStepProps> = ({
             <span className="font-medium text-gray-900 text-sm">{order.network}</span>
           </div>
           
-          <div className="flex items-center justify-between p-2 bg-[#1ea3ab]/5 rounded border border-[#1ea3ab]/20">
+          <div className="flex items-center justify-between p-2 bg-[#00109b]/5 rounded border border-[#00109b]/20">
             <span className="text-sm font-medium text-gray-600">Amount</span>
             <div className="text-right">
-              <div className="font-bold text-[#1ea3ab] font-mono text-sm">
+              <div className="font-bold text-[#00109b] font-mono text-sm">
                 {order.amount?.toLocaleString(undefined, { maximumFractionDigits: 8 })}
               </div>
               <div className="text-xs text-gray-500">{order.asset?.symbol}</div>
@@ -109,7 +109,7 @@ export const DepositInstructionStep: React.FC<DepositInstructionStepProps> = ({
                 navigator.clipboard.writeText(order.wallet_address);
               }
             }}
-            className="px-2 py-2 text-gray-400 hover:text-[#1ea3ab] hover:bg-gray-50 border-l border-gray-200 transition-colors"
+            className="px-2 py-2 text-gray-400 hover:text-[#00109b] hover:bg-gray-50 border-l border-gray-200 transition-colors"
           >
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <title>Copy</title>
@@ -147,7 +147,7 @@ export const DepositInstructionStep: React.FC<DepositInstructionStepProps> = ({
           </Button>
           <Button
             onClick={handleNext}
-            className="flex-1 h-9 text-sm bg-[#1ea3ab] hover:bg-[#188a91] text-white"
+            className="flex-1 h-9 text-sm bg-[#00109b] hover:bg-[#188a91] text-white"
           >
             Next Step
           </Button>

@@ -57,7 +57,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ local }) => {
                 onClick={() => navigator.clipboard.writeText(accountid)}
               >
                 <span className="sr-only">Copy</span>
-                <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#1ea3ab">
+                <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#00109b">
                   <title>Copy</title>
                   <rect x="7" y="7" width="10" height="10" rx="2" strokeWidth="2"/><rect x="3" y="3" width="10" height="10" rx="2" strokeWidth="2"/></svg>
               </button>

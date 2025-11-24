@@ -43,7 +43,7 @@ export const ExternalWallet: React.FC<ExternalWalletProps> = ({
       <div className='relative flex items-center mt-1'>
         <Input
           placeholder='My Bitcoin wallet'
-          className='bg-white border border-gray-300 rounded-lg pl-10 py-2 focus:border-[#1ea3ab] focus:ring-1 focus:ring-[#1ea3ab] transition-colors'
+          className='bg-white border border-gray-300 rounded-lg pl-10 py-2 focus:border-[#00109b] focus:ring-1 focus:ring-[#00109b] transition-colors'
           name='name'
           value={newWallet.name}
           onChange={onChange}
@@ -59,7 +59,7 @@ export const ExternalWallet: React.FC<ExternalWalletProps> = ({
           <HandCoins className='w-4 h-4 text-gray-400' />
         </span>
         <Select value={newWallet.asset} onValueChange={onAssetChange}>
-          <SelectTrigger className='bg-white border border-gray-300 rounded-lg pl-10 py-2 focus:border-[#1ea3ab] focus:ring-1 focus:ring-[#1ea3ab] transition-colors'>
+          <SelectTrigger className='bg-white border border-gray-300 rounded-lg pl-10 py-2 focus:border-[#00109b] focus:ring-1 focus:ring-[#00109b] transition-colors'>
             <SelectValue placeholder='Select asset' />
           </SelectTrigger>
           <SelectContent className='bg-white border border-gray-200 rounded-lg shadow-lg'>
@@ -97,7 +97,7 @@ export const ExternalWallet: React.FC<ExternalWalletProps> = ({
       <div className='relative flex items-center mt-1'>
         <Input
           placeholder='Enter wallet address'
-          className='bg-white border border-gray-300 rounded-lg pl-10 py-2 focus:border-[#1ea3ab] focus:ring-1 focus:ring-[#1ea3ab] transition-colors'
+          className='bg-white border border-gray-300 rounded-lg pl-10 py-2 focus:border-[#00109b] focus:ring-1 focus:ring-[#00109b] transition-colors'
           name='address'
           value={newWallet.address}
           onChange={onChange}
@@ -117,7 +117,7 @@ export const ExternalWallet: React.FC<ExternalWalletProps> = ({
       </Button>
       <Button
         type='submit'
-        className='flex-1 bg-[#1ea3ab] hover:bg-[#188a91] text-white font-medium py-2 rounded-lg border border-[#1ea3ab] transition-colors'
+        className='flex-1 bg-[#00109b] hover:bg-[#188a91] text-white font-medium py-2 rounded-lg border border-[#00109b] transition-colors'
         disabled={isLoading}
       >
         {isLoading ? (

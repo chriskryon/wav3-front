@@ -429,12 +429,12 @@ export default function WalletsPage() {
               <DialogTitle className='text-xl font-semibold text-gray-900 flex items-center gap-2'>
                 {showNewWalletModal === 'external' ? (
                   <>
-                    <BanknoteArrowUp className='w-5 h-5 text-[#1ea3ab]' />
+                    <BanknoteArrowUp className='w-5 h-5 text-[#00109b]' />
                     Add Withdrawal Wallet
                   </>
                 ) : (
                   <>
-                    <BanknoteArrowDown className='w-5 h-5 text-[#1ea3ab]' />
+                    <BanknoteArrowDown className='w-5 h-5 text-[#00109b]' />
                     Create Deposit Wallet
                   </>
                 )}
@@ -563,7 +563,7 @@ export default function WalletsPage() {
                     <Button
                       size='sm'
                       onClick={() => copyToClipboard(selectedWallet.address)}
-                      className='bg-[#1ea3ab] hover:bg-[#188a91] text-white px-3 py-2 rounded border border-[#1ea3ab] transition-colors'
+                      className='bg-[#00109b] hover:bg-[#188a91] text-white px-3 py-2 rounded border border-[#00109b] transition-colors'
                     >
                       <Copy className='w-4 h-4' />
                     </Button>

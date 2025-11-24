@@ -2,8 +2,10 @@
 @import "tailwindcss";
 
 @theme {
-	--color-wav3: #1ea3ab;
-	--color-primary: #1ea3ab;
+	/* --color-wav3: #00109b;
+	--color-primary: #00109b; */
+	--color-wav3: #00109b;
+	--color-primary: #00109b;
 }
 
 * {
@@ -15,7 +17,7 @@
 	:root {
 		--color-background: #ffffff;
 		--color-border: #111c25;
-		--color-primary: #1ea3ab;
+		--color-primary: #00109b;
 		--color-text: #111c25;
 		--color-text-muted: #6b7280;
 		--color-surface: #f8fafc;

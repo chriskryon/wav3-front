@@ -30,7 +30,7 @@ export function NoBankAccountCard({
           className='bg-primary hover:bg-primary/90 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300'
           onClick={onAdd}
         >
-           {type === 'shared' ? 'deposit' : 'withdraw'}
+           {type === 'shared' ? 'Add deposit account' : 'Add withdraw account'}
         </Button>
       </div>
     </div>
